@@ -1,0 +1,100 @@
+<a class="show mobile-3" href="#"><i class="fa fa-align-justify"></i></a>
+<div class="desktop-3 tablet-4 tablet-push-1 mobile-3" id="sidebar">
+
+  {% if collection.image %}
+    <div class="collection-page-image clearfix filter">
+      {% render 'basic-responsive-image', type: collection.image %}
+      <noscript>
+        <img src="{{ collection.image | img_url: '220x' }}" class="collection-sidebar-image">
+      </noscript>
+    </div>
+  {% endif %}
+
+  {% if section.blocks.size == 0 %}
+  <p>
+    The sidebar is enabled but no content has been added. Click "add content" to add a menu, filter, text or image
+  </p>
+  {% endif %}
+
+  {% for block in section.blocks %}
+  {% if block.type == 'vendor_list' %}
+
+    {% if collection.handle == "all" %}
+    <ul>
+      <h4>{{ block.settings.shop_by_designer_title | escape }}</h4>
+      {% for product_vendor in shop.vendors %}
+      <li>{{ product_vendor | link_to_vendor  }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <ul>
+      <h4>{{ block.settings.shop_by_designer_title }}</h4>
+      {% for product_vendor in collection.all_vendors %}
+      <li class="{{ product_vendor | handelize }}">{{ product_vendor | link_to_vendor }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+  {% elsif block.type == 'menu' %}
+
+    <h4>{{ block.settings.title | escape }}</h4>
+    <ul {{ block.shopify_attributes }}>
+      {% for link in linklists[block.settings.side_nav].links %}
+      <li>{{ link.title | link_to: link.url }}</li>
+      {% endfor %}
+    </ul>
+
+  {% elsif block.type == 'filter' %}
+
+  <h4>{{ block.settings.title | escape }}</h4>
+  <div class="clearfix filter">
+    {% assign tags = block.settings.tags  | replace: ' ,', ',' | replace: ', ', ',' | split: ',' %}
+    <ul>
+      {% for tag in tags %}
+      {% if current_tags contains tag %}
+      <li class="current">{{ tag | link_to_remove_tag: tag }}</li>
+      {% elsif collection.all_tags contains tag %}
+      <li>{{ tag | link_to_add_tag: tag }}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% elsif block.type == 'sort' %}
+
+  <div class="clearfix filter">
+    <select id="sort-by" class="styled-select">
+      <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+      <option value="price-ascending">{{ 'collections.sorting.price_ascending' | t }}</option>
+      <option value="price-descending">{{ 'collections.sorting.price_descending' | t }}</option>
+      <option value="title-ascending">{{ 'collections.sorting.az' | t }}</option>
+      <option value="title-descending">{{ 'collections.sorting.za' | t }}</option>
+      <option value="created-ascending">{{ 'collections.sorting.date_ascending' | t }}</option>
+      <option value="created-descending">{{ 'collections.sorting.date_descending' | t }}</option>
+      <option value="best-selling">{{ 'collections.sorting.best_selling' | t }}</option>
+    </select>
+  </div>
+
+  {% elsif block.type == 'text' %}
+
+  <h4>{{ block.settings.title | escape }}</h4>
+  <div class="clearfix filter">
+    <div class="rte">
+      {{ block.settings.sidebar_text }}
+    </div>
+  </div>
+
+  {% elsif block.type == 'image' %}
+
+  {% if block.settings.image != blank %}
+  <div class="clearfix filter">
+    {% if block.settings.link != blank %}<a href="{{ block.settings.link }}">{% endif %}
+      {% render 'basic-responsive-image', type: block.settings.image %}
+    {% if block.settings.link != blank %}</a>{% endif %}
+  {% endif %}
+  </div>
+
+  {% endif %}
+
+  {% endfor %}
+</div>

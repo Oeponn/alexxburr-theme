@@ -1,0 +1,80 @@
+<div id="page" class="desktop-12 tablet-6 mobile-3">
+  <h2>{{ 'general.search.title' | t }}</h2>
+
+  {% case section.settings.grid %}
+  {% when 2 %}
+  {%- assign grid_item_width = 'desktop-6 tablet-3 mobile-half' -%}
+  {% when 3 %}
+  {%- assign grid_item_width = 'desktop-4 tablet-2 mobile-half' -%}
+  {% when 4 %}
+  {%- assign grid_item_width = 'desktop-3 tablet-2 mobile-half' -%}
+  {% endcase %}
+
+  {%- assign product_limit = section.settings.grid | times: section.settings.rows -%}
+  {% paginate search.results by product_limit %}
+
+  <div id="search-bar">
+    <form action="/search" method="get">
+      {% if search.performed %}
+      {% if search.results_count == 0 %}
+      <p>{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
+      {% else %}
+      <p>{{ 'general.search.results_for_html' | t: terms: search.terms }}</p>
+      {% endif %}
+      {% endif %}
+      <input type="text" name="q" id="q" placeholder="{{ 'general.search.placeholder' | t }}"/>
+      {% if settings.search_products %}
+      <input type="hidden" name="type" value="product">
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+{% if search.performed %}
+
+<div class="desktop-12 tablet-6 mobile-3">
+  <div id="product-loop">
+    {% for item in search.results %}
+      {% assign products_per_row = section.settings.grid%}
+      <div id="product-listing-{{ item.id }}" class="product-index {% if products_per_row == 6 %}desktop-2{% cycle ' first', '', '', '', '', ' last' %}{% elsif products_per_row == 4 %}desktop-3{% cycle ' first', '', '', ' last' %}{% elsif products_per_row == 3 %}desktop-4{% cycle ' first', '', ' last' %}{% elsif products_per_row == 5 %}desktop-fifth{% cycle ' first', '', '', '', ' last' %}{% elsif products_per_row == 2 %}desktop-6{% cycle ' first', ' last' %}{% endif %} tablet-half mobile-half" data-alpha="{{ item.title }}" data-price="{{ item.price }}"  data-product-id="{{ item.id }}">
+        {% render 'product-listing', product: item, collection: collection %}
+      </div>
+    {% endfor %}
+  </div>
+
+  {% render 'pagination', paginate: paginate %}
+
+  {% endif %}
+
+  {% endpaginate %}
+
+</div>
+
+
+
+
+{% schema %}
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "range",
+        "id": "grid",
+        "min": 2,
+        "max": 4,
+        "step": 1,
+        "label": "Items per row",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "rows",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "Rows",
+        "default": 4
+      }
+  ]
+}
+{% endschema %}

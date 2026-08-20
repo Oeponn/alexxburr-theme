@@ -1,0 +1,698 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "password": {
+    "general": {
+      "thanks": "Thank you",
+      "enter_store": "",
+      "password": "Passcode",
+      "enter": "join",
+      "email_address": "        ",
+      "submit": "Submit",
+      "powered": "                  "
+    }
+  },
+  "general": {
+    "404": {
+      "title": "sorry about that!",
+      "subtext": "This page does not exist. Try searching for what you would like to find"
+    },
+    "forms": {
+      "post_error": ""
+    },
+    "breadcrumbs": {
+      "home": "Home"
+    },
+    "pagination": {
+      "showing_items": "Showing items",
+      "of": "of"
+    },
+    "newsletter_form": {
+      "newsletter_email": "email *",
+      "submit": "Submit",
+      "confirmation": "Welcome"
+    },
+    "search": {
+      "no_results_html": "Your search for \"{{ terms }}\" did not yield any results.",
+      "results_for_html": "Your search for \"{{ terms }}\" revealed the following:",
+      "title": "Search our store",
+      "placeholder": "Search",
+      "submit": "Search"
+    },
+    "currency": {
+      "dropdown_label": "Currency"
+    },
+    "language": {
+      "dropdown_label": "Language"
+    },
+    "accessibility": {
+      "unit_price_separator": "per"
+    }
+  },
+  "blogs": {
+    "article": {
+      "recent_posts": "Recent Posts",
+      "posted_on_date_html": "Posted on {{ date }}",
+      "tags": "Tags",
+      "tagged": "Tagged",
+      "comments": "Comments",
+      "read_more": "Read More",
+      "more_posts": "More Posts",
+      "older_post": "Previous Post",
+      "newer_post": "Next Post"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "your_name": "Your Name",
+      "your_email": "Your Email",
+      "your_comment": "Your Message",
+      "moderated": "All blog comments are checked prior to publishing",
+      "post": "Post comment",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "sidebar": {
+      "social_title": "Connect with us",
+      "twitter_title": "On Twitter",
+      "facebook_title": "LIKE US ON FACEBOOK"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "My Bag",
+      "close_cart": "Exit",
+      "empty": "Your bag is currently empty, select an item to add",
+      "product": "Product",
+      "price": "Price",
+      "qty": "Quantity",
+      "remove": "Put back",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "continue": "Continue shopping",
+      "update": "Update bag",
+      "checkout": "Checkout",
+      "note": "Please leave special instructions",
+      "recently_viewed": "Recently viewed",
+      "discount_applied": "Discount applied",
+      "savings": "Savings",
+      "discounts": "Discounts"
+    }
+  },
+  "collections": {
+    "general": {
+      "all_collections": "  ",
+      "all_products": "    ",
+      "no_matches": "There are no items here",
+      "items_count": {
+        "zero": "No items",
+        "one": "One",
+        "other": "{{ COUNT }} ITEMS"
+      }
+    },
+    "sidebar": {
+      "linklist_1_title": "SHOP BY XXX",
+      "linklist_2_title": "SHOP BY XXX",
+      "linklist_3_title": "SHOP BY XXX",
+      "linklist_4_title": "SHOP BY XXX",
+      "designers": "EXHIBIT Y"
+    },
+    "sorting": {
+      "title": "",
+      "featured": "Featured",
+      "best_selling": "Favorites",
+      "az": "A-Z",
+      "za": "Z-A",
+      "price_ascending": "Price, highest to lowest",
+      "price_descending": "Price, lowest to highest",
+      "date_descending": "Date, newest to previous",
+      "date_ascending": "Date, previous to newest"
+    },
+    "filter": {
+      "shop_by_size": "Shop by size",
+      "shop_by_color": "Shop by color",
+      "shop_by_material": "Shop by material"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "‎ Name",
+      "firstname": "‎ ",
+      "lastname": "‎ ‎ ",
+      "subject": "Subject",
+      "companyname": "Company",
+      "address": "Address",
+      "email": "Email",
+      "phone": "Phone number",
+      "message": "‎ Message",
+      "websiteurl": "Websiteurl",
+      "acceptsmarketing": "Receive exclusive updates on sales, releases and events",
+      "send": "Send",
+      "post_success": "Success"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "MY EXHIBIT Y",
+      "link": "BACK",
+      "details": "ACCOUNT DETAILS",
+      "returns_content": "RETURNS/EXCHANGES",
+      "view_addresses": "VIEW ADDRESSES",
+      "return": "RETURN TO ACCOUNT DETAILS"
+    },
+    "activate_account": {
+      "title": "ACTIVATE YOUR ACCOUNT",
+      "subtext": "CREATE A PASSWORD TO ACTIVATE YOUR ACCOUNT",
+      "password": "YOUR PASSWORD*",
+      "password_confirm": "CONFIRM YOUR PASSWORD",
+      "submit": "ACTIVATE YOUR ACCOUNT",
+      "cancel": "DECLINE INVITATION"
+    },
+    "addresses": {
+      "title": "YOUR ADDRESS",
+      "default": "PRIMARY ADDRESS",
+      "add_new": "ADD A NEW ADDRESS",
+      "edit_address": "EDIT YOUR ADDRESS",
+      "first_name": "YOUR FIRST NAME",
+      "last_name": "YOUR LAST NAME",
+      "company": "COMPANY",
+      "address1": "ADDRESS 1",
+      "address2": "ADDRESS 2",
+      "city": "CITY",
+      "country": "COUNTRY",
+      "province": "PROVINCE",
+      "zip": "POSTAL/ZIPCODE",
+      "phone": "TELEPHONE",
+      "set_default": "SET AS PRIMARY ADDRESS",
+      "add": "ADD ADDRESS",
+      "update": "UPDATE ADDRESS",
+      "cancel": "DECLINE",
+      "edit": "EDIT",
+      "delete": "REMOVE"
+    },
+    "login": {
+      "title": "LOGIN",
+      "email": "YOUR EMAIL ADDRESS",
+      "password": "YOUR PASSCODE",
+      "forgot_password": "FORGOT YOUR PASSCODE?",
+      "sign_in": "ENTER",
+      "cancel": "RETURN TO STORE",
+      "guest_title": "CONTINUE AS GUEST",
+      "guest_continue": "CONTINUE"
+    },
+    "orders": {
+      "title": "ORDER HISTORY",
+      "order_number": "ORDER",
+      "date": "DATE",
+      "payment_status": "PAYMENT STATUS",
+      "fulfillment_status": "FULFILLMENT STATUS",
+      "total": "TOTAL",
+      "none": "YOU HAVE NOT PLACED ANY ORDERS YET. PLEASE SELECT AN ITEM TO ADD."
+    },
+    "order": {
+      "title": "YOUR ORDER",
+      "date": "PLACED ON",
+      "cancelled": "ORDER CANCELLED ON",
+      "cancelled_reason": "REASON FOR CANCELLATION",
+      "billing_address": "BILLING ADDRESS",
+      "payment_status": "PAYMENT STATUS",
+      "shipping_address": "YOUR SHIPPING ADDRESS",
+      "fulfillment_status": "FULFILLMENT STATUS",
+      "discount": "DISCOUNT",
+      "shipping": "SHIPPING",
+      "tax": "TAX",
+      "order_details": "ORDER DETAILS",
+      "details": {
+        "product": "PRODUCT",
+        "sku": "SKU",
+        "price": "PRICE",
+        "quantity": "QUANTITY",
+        "total": "TOTAL",
+        "fulfilled_at": "FULFILLED {{ DATE }}",
+        "subtotal": "SUBTOTAL"
+      }
+    },
+    "recover_password": {
+      "title": "RESET YOUR PASSCODE",
+      "email": "EMAIL",
+      "submit": "SUBMIT",
+      "cancel": "DECLINE",
+      "subtext": "WE WILL SEND YOU AN EMAIL TO RESET YOUR PASSCODE SHORTLY",
+      "success": "WE HAVE SENT AN EMAIL WITH A LINK TO UPDATE YOUR PASSWORD. "
+    },
+    "reset_password": {
+      "title": "RESET YOUR PASSCODE",
+      "subtext": "SELECT A NEW PASSCODE FOR {{ EMAIL }}",
+      "password": "PASSCODE",
+      "password_confirm": "CONFIRM YOUR PASSCODE",
+      "submit": "RESET YOUR PASSCODE"
+    },
+    "register": {
+      "title": "REGISTER",
+      "first_name": "YOUR FIRST NAME",
+      "last_name": "YOUR LAST NAME",
+      "email": "EMAIL",
+      "password": "PASSCODE",
+      "submit": "REGISTER"
+    }
+  },
+  "layout": {
+    "header": {
+      "menu": "Menu",
+      "my_cart": "My bag",
+      "logout": "Sign out"
+    },
+    "footer": {
+      "copyright": "Copyright",
+      "theme_title": " "
+    },
+    "homepage": {
+      "onboarding": {
+        "no_content": "This section doesn’t currently include any content. Add content to this section using the sidebar."
+      }
+    },
+    "mobile_nav": {
+      "account": "My account",
+      "login": "Sign in",
+      "logout": "Sign out"
+    }
+  },
+  "products": {
+    "general": {
+      "new": "New",
+      "sale": "Sale",
+      "sold": "Sold out",
+      "quick_view": "Quick view",
+      "from": "From",
+      "view_full": "View details",
+      "related": "More",
+      "sale_price": "Sale",
+      "regular_price": "Price"
+    },
+    "product": {
+      "details": "Details",
+      "sold_out": "Sold out",
+      "from_lowest_price_html": "from {{ lowest_price }}",
+      "unavailable": "Unavailable",
+      "compare_at": "Compare at",
+      "add_to_cart": "Add to bag",
+      "pre_order": "Pre order",
+      "quantity": "Quantity",
+      "back_to": "Return",
+      "or": "or",
+      "continue": "Continue",
+      "previous_product_html": "&larr; PREVIOUS PRODUCT",
+      "next_product_html": "NEXT PRODUCT &rarr;",
+      "popup_one": "Size chart",
+      "popup_two": "Delivery",
+      "popup_three": "Returns",
+      "popup_question": "For questions regarding sizing, returns, and other inquiries, submit via contact tab on our site",
+      "add_to_cart_success_link": "View bag and checkout",
+      "add_to_cart_success_html": "Item added to bag {{ link }}",
+      "brand": "EXHIBIT Y",
+      "product_type": "Product type",
+      "product_sku": "SKU",
+      "view_in_space": "View in your space",
+      "view_in_space_label": "View in your space, loads item in augmented reality window",
+      "unit_price_label": "Unit price"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card for {{ shop }}",
+      "subtext": "Here's your gift card",
+      "disabled": "Disabled",
+      "expired": "Expired on {{ expiry }}",
+      "active": "Expires on {{ expiry }}",
+      "redeem": "Use this code at checkout to redeem your gift card",
+      "shop_link": "Start shopping",
+      "print": "Print",
+      "email": "Email"
+    }
+  },
+  "social": {
+    "icons": {
+      "facebook": "SHARE ON FACEBOOK",
+      "twitter": "SHARE ON TWITTER",
+      "pinterest": "SHARE ON PINTEREST"
+    }
+  },
+  "date_formats": {
+    "month_date_year": "%B %d %Y"
+  },
+  "shopify": {
+    "checkout": {
+      "general": {
+        "page_title": "CHECKOUT",
+        "error_page_title": "ERROR",
+        "skip_to_content": "SKIP TO CONTENT",
+        "breadcrumb": "BREADCRUMB",
+        "continue_button_label": "CONTINUE",
+        "complete_purchase_button_label": "COMPLETE PURCHASE",
+        "pay_now_button_label": "PAY NOW",
+        "authenticate_purchase_button_label": "VERIFY PURCHASE",
+        "edit_link_label": "EDIT",
+        "cart": "BAG",
+        "close_modal_label": "CLOSE",
+        "close_notice_label": "CLOSE",
+        "expand_notice_label": "VIEW MORE",
+        "continue_to_shipping_method": "CONTINUE TO SHIPPING METHOD",
+        "continue_to_payment_method": "CONTINUE TO PAYMENT METHOD",
+        "continue_to_review": "REVIEW YOUR ORDER",
+        "back_to_cart": "RETURN TO BAG",
+        "back_to_contact_information": "RETURN TO CONTACT INFORMATION",
+        "back_to_shipping_method": "RETURN TO SHIPPING METHOD",
+        "back_to_payment_method": "RETURN TO PAYMENT METHOD",
+        "choose_shipping_method": "PLEASE SELECT A SHIPPING METHOD",
+        "choose_payment_method": "PLEASE SELECT A PAYMENT METHOD",
+        "choose_billing_address": "CHOOSE YOUR BILLING ADDRESS",
+        "contact_us_html": "QUESTIONS? CONCERNS? PLEASE REACH OUT TO US. ",
+        "autocomplete_title": "SUGGESTION",
+        "autocomplete_single_item": "1 ITEM AVAILABLE",
+        "forwarding_indicator": {
+          "new_window": "OPENS IN A NEW WINDOW",
+          "external": "OPENS EXTERNAL WEBSITE",
+          "external_and_new_window": "OPENS EXTERNAL WEBSITE IN A NEW WINDOW"
+        }
+      },
+      "contact": {
+        "address_title": "YOUR ADDRESS",
+        "shipping_address_title": "YOUR SHIPPING ADDRESS",
+        "delivery_option_title": "DELIVERY METHOD",
+        "contact_method_title": "CONTACT INFORMATION",
+        "email_label": "YOUR EMAIL",
+        "email_placeholder": "YOUR EMAIL",
+        "email_or_phone_label": "YOUR EMAIL ADDRESS OR TELEPHONE NUMBER",
+        "email_or_phone_placeholder": "YOUR EMAIL ADDRESS OR TELEPHONE NUMBER",
+        "stored_addresses_label": "SAVED ADDRESSES",
+        "new_address_label": "USE A NEW ADDRESS",
+        "first_name_label": "YOUR FIRST NAME",
+        "last_name_label": "YOUR LAST NAME",
+        "company_label": "COMPANY",
+        "address1_label": "ADDRESS 1",
+        "address2_label": "APARTMENT, SUITE, ETC.",
+        "optional_address2_label": "APARTMENT, SUITE, ETC.",
+        "city_label": "CITY",
+        "country_label": "COUNTRY/REGION",
+        "country_code": "COUNTRY/REGION CODE",
+        "province_label": "PROVINCE",
+        "province_placeholder": "PROVICE",
+        "county_label": "COUNTY",
+        "county_placeholder": "COUNTY",
+        "state_label": "STATE",
+        "state_placeholder": "STATE",
+        "region_label": "REGION",
+        "region_placeholder": "REGION",
+        "region_none": "NONE",
+        "prefecture_label": "PREFECTURE",
+        "prefecture_placeholder": "PREFECTURE",
+        "governorate_label": "GOVERNORATE",
+        "governorate_placeholder": "GOVERNORATE",
+        "emirate_label": "EMIRATE",
+        "emirate_placeholder": "EMIRATE",
+        "state_and_territory_label": "STATE/TERRITORY",
+        "state_and_territory_placeholder": "STATE/TERRITORY",
+        "phone_label": "TELEPHONE",
+        "phone_placeholder": "TELEPHONE",
+        "phone_tooltip": "IN CASE WE NEED TO CONTACT YOUR REGARDING YOUR ORDER",
+        "zip_code_label": "ZIP CODE",
+        "zip_code_placeholder": "ZIPCODE",
+        "postal_code_label": "POSTAL CODE",
+        "postal_code_placeholder": "POSTAL CODE",
+        "postcode_label": "POSTCODE",
+        "postcode_placeholder": "POSTCODE",
+        "pincode_label": "PIN CODE",
+        "pincode_placeholder": "PIN CODE",
+        "civic_number_warning": "ADD A HOUSE NUMBER IF YOU HAVE ONE"
+      },
+      "delivery_options": {
+        "free_total_label": "FREE",
+        "ship": "SHIP",
+        "shipping_address": "SHIPPING ADDRESS"
+      },
+      "customer_account": {
+        "have_an_account_label": "ALREADY REGISTERED?",
+        "sign_in_link_label": "SIGN IN",
+        "sign_out_link_label": "SIGN OUT",
+        "save_my_information_label": "SAVE THIS INFORMATION FOR NEXT TIME"
+      },
+      "stock": {
+        "page_title": "INVENTORY ISSUES",
+        "title": "OUT OF STOCK",
+        "items_unavailable_notice": "THIS ITEM IS NO LONGER AVAILABLE. YOUR BAG HAS BEEN UPDATED",
+        "product_column_header": "PRODUCTS",
+        "quantity_column_header": "QUANTITY",
+        "price_column_header": "PRICE",
+        "status_column_header": "STATUS",
+        "removed_from_cart_notice": "REMOVED FROM YOUR BAG",
+        "sold_out_label": "SOLD OUT",
+        "reduced_label": "REDUCED",
+        "remove_from_cart_button_label": "REMOVE FROM BAG",
+        "continue_shopping_button_label": "CONTINUE",
+        "go_back_to_cart_button_label": "RETURN TO MY BAG"
+      },
+      "order_summary": {
+        "title": "YOUR ORDER SUMMARY",
+        "shopping_cart_label": "SHOPPING BAG",
+        "subtotal_label": "SUBTOTAL",
+        "shipping_label": "SHIPPING",
+        "calculating_shipping": "CALCULATING...",
+        "shipping_default_value": "CALCULATED AT NEXT STEP.",
+        "shipping_pending_message": "SHIPPING PENDING",
+        "shipping_policy_link": "SHIPPING COSTS",
+        "taxes_label": "TAXES",
+        "estimated_taxes_label": "ESTIMATED TAXES",
+        "total_label": "TOTAL",
+        "total_outstanding_label": "BALANCE DUE",
+        "partial_total_label": "TOTAL",
+        "paid_label": "PAID",
+        "payment_due_label": "PAYMENT DUE"
+      },
+      "shipping": {
+        "title": "SHIPPING",
+        "shipping_method_title": "SHIPPING METHOD"
+      },
+      "payment": {
+        "amount_left_to_pay_label": "PAYMENT DUE",
+        "title": "PAYMENT",
+        "card_number_label": "CARD NUMBER",
+        "card_number_placeholder": "CARD NUMBER",
+        "card_pay_with": "PAY WITH:",
+        "card_security_notice": "ALL TRANSACTIONS ARE SECURED AND ENCRYPTED",
+        "card_information_notice": "ALL TRANSACTIONS ARE SECURED AND ENCRYPTED. YOUR CARD INFORMATION IS NEVER STORED.",
+        "name_on_card_label": "NAME ON CARD",
+        "name_on_card_placeholder": "NAME ON CARD",
+        "card_expiry_label": "EXPIRATION DATE",
+        "card_expiry_placeholder": "EXPIRATION DATE",
+        "credit_card_start_month": "START MONTH",
+        "credit_card_start_year": "START YEAR",
+        "card_verification_value_label": "CVV",
+        "card_verification_value_placeholder": "CVV",
+        "card_expiry_date_explanation": "CARD EXPIRATION DATE: MONTH, MONTH, YEAR, YEAR",
+        "card_expiration_month_label": "EXPIRATON MONTH",
+        "card_expiration_year_label": "EXPIRATION YEAR",
+        "card_verification_value_explanation": "3-DIGIT SECURITY CODE FOUND ON THE BACK OF YOUR CARD. AMERICAN EXPRESS HAVE 4-DIGITS LOCATED ON THE FRONT.",
+        "card_verification_value_explanation_amex": "4-DIGIT SECURITY CODE ON THE FRONT OF YOUR AMERICAN EXPRESS",
+        "card_verification_value_explanation_other": "3-DIGIT SECURITY CODE ON THE BACK OF YOUR CARD",
+        "card_start_label": "ISSUE DATE (MM/YY)",
+        "card_start_placeholder": "ISSUE DATE (MM/YY)",
+        "card_issue_number_label": "CARD NUMBER",
+        "card_issue_number_placeholder": "CARD NUMBER",
+        "card_change_label": "CHANGE",
+        "same_billing_address_label": "SAME AS SHIPPING ADDRESS",
+        "different_billing_address_label": "USE A DIFFERENT BILLING ADDRESS",
+        "billing_address_title": "BILLING ADDRESS",
+        "billing_address_description": "PLEASE INPUT THE ADDRESS THAT MATCHES YOUR CARD OR OTHER PAYMENT METHOD",
+        "billing_address_description_no_shipping_address": "PLEASE INPUT THE ADDRESS THAT MATCHES YOUR CARD OR OTHER PAYMENT METHOD",
+        "no_js_credit_card_fields_redirect_hint": "YOU WILL BE REDIRECTED TO ADD YOUR PAYMENT METHOD",
+        "card_fields_processing_error": "THERE WAS AN ISSUE PROCESSING YOUR PAYMENT. PLEASE TRY AGAIN IN A FEW MINUTES.",
+        "technical_error": "PAYMENTS CANNOT BE PROCESSED DUE TO A TECHNICAL ISSUE. WE APOLOGIZE FOR ANY INCONVENIENCE.",
+        "no_method_error": "THERE'S BEEN AN ERROR WITH OUR PAYMENTS. PLEASE CONTACT US TO COMPLETE YOUR ORDER. ",
+        "not_configured_error": "THERE'S BEEN AN ERROR WITH OUR PAYMENTS. PLEASE CONTACT US TO COMPLETE YOUR ORDER. ",
+        "missing_credit_card_error": "PLEASE ENTER YOUR CARD DETAILS TO COMPLETE YOUR PAYMENT.",
+        "billing_address_not_supported_for_payment_method_error": "THIS PAYMENT METHOD ISNT AVAILABLE. PLEASE SELECT A DIFFERENT PAYMENT METHOD AND TRY AGAIN. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+        "generic_incorrect_card_info": "YOUR PAYMENT DETAILS COULD NOT BE VERIFIED. PLEASE MAKE SURE YOUR INFORMATION IS CORRECT AND TRY AGAIN. "
+      },
+      "field_errors": {
+        "handle_phone_invalid": "PLEASE ENTER A VALID TELEPHONE NUMBER",
+        "handle_email_invalid": "PLEASE ENTER A VALID EMAIL ADDRESS",
+        "email_invalid": "PLEASE ENTER A VALID EMAIL ADDRESS",
+        "email_or_phone_blank": "PLEASE ENTER YOUR PREFERRED TELEPHONE NUMBER OR EMAIL ADDRESS",
+        "email_or_phone_invalid": "PLEASE ENTER A VALID TELEPHONE NUMBER OR EMAIL ADDRESS",
+        "address_first_name_blank": "YOUR FIRST NAME",
+        "address_last_name_blank": "YOUR LAST NAME",
+        "address_address1_blank": "YOUR ADDRESS",
+        "address_address2_blank": "PLEASE ENTER YOUR APARTMENT OR SUITE INFORMATION",
+        "address_city_blank": "PLEASE ENTER YOUR CITY",
+        "address_country_blank": "PLEASE ENTER YOUR COUNTRY/REGION",
+        "address_country_not_supported": "WE DO NOT CURRENTLY SHIP TO THIS ADDRESS. PLEASE ENTER A NEW ADDRESS AND TRY AGAIN. WE APOLOGIZE FOR ANY INCONVENIENCE.",
+        "address_province_blank": "PLEASE ENTER YOUR STATE/PROVINCE",
+        "address_company_blank": "PLEASE ENTER YOUR COMPANY/PLACE OF BUSINESS",
+        "address_phone_blank": "PLEASE ENTER A VALID TELEPHONE NUMBER",
+        "address_zip_blank": "PLEASE ENTER YOUR ZIP/POSTAL CODE",
+        "address_zip_invalid_for_country": "PLEASE ENTER A VALID ZIP/POSTAL CODE FOR YOUR COUNTRY",
+        "address_zip_invalid_for_country_and_province": "PLEASE ENTER A VALID ZIP/POSTAL CODE FOR YOUR COUNTRY AND PROVINCE",
+        "credit_card_name_blank": "PLEASE ENTER YOUR NAME EXACTLY AS WRITTEN ON YOUR CREDIT CARD",
+        "credit_card_name_invalid": "PLEASE ENTER YOUR NAME EXACTLY AS WRITTEN ON YOUR CREDIT CARD",
+        "credit_card_number_invalid": "PLEASE ENTER A VALID CREDIT CARD NUMBER",
+        "credit_card_expiry_invalid": "PLEASE ENTER A VALID CREDIT CARD EXPIRATION DATE",
+        "credit_card_month_invalid": "PLEASE ENTER A VALID CREDIT CARD EXPIRATION MONTH",
+        "credit_card_year_invalid": "PLEASE ENTER A VALID CREDIT CARD EXPIRATION YEAR",
+        "credit_card_start_invalid": "PLEASE ENTER A VALID CREDIT CARD START DATE",
+        "credit_card_start_month_invalid": "PLEASE ENTER A VALID CREDIT CARD START MONTH",
+        "credit_card_start_year_invalid": "PLEASE ENTER A VALID CREDIT CARD START YEAR",
+        "credit_card_verification_value_blank": "PLEASE ENTER THE CVV OR SECURITY CODE FOUND ON YOUR CARD",
+        "shipping_line_phone_blank": "PLEASE ENTER YOUR TELEPHONE NUMBER TO USE THIS DELIVERY METHOD",
+        "shipping_line_phone_invalid": "PLEASE ENTER A VALID TELEPHONE NUMBER TO USE THIS DELIVERY METHOD",
+        "payment_gateway_needs_paid_plan_error": "THIS PAYMENT METHOD IS NOT AVAILABLE ON OUR STORE YET. WE APOLOGIZE FOR ANY INCONVENIENCE."
+      },
+      "payment_errors": {
+        "generic_error": "THERE WAS AN ISSUE PROCESSING YOUR PAYMENT. PLEASE SELECT A NEW PAYMENT METHOD AND TRY AGAIN. WE APOLOGIZE FOR ANY INCONVENIENCE.",
+        "rejected_transaction": "YOUR PAYMENT HAS BEEN DECLINED. PLEASE SELECT A NEW PAYMENT METHOD AND TRY AGAIN. ",
+        "credit_card_processing": "YOUR PAYMENT IS UNABLE TO BE PROCESSED DUE TO TECHNICAL ISSUES. PLEASE TRY AGAIN IN A FEW MINUTES. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+        "order_total_changed": "YOUR ORDER TOTAL HAS CHANGED. REFRESH YOUR BAG AND TRY AGAIN.",
+        "payment_processing": "YOUR PAYMENT IS UNABLE TO BE PROCESSED DUE TO TECHNICAL ISSUES. PLEASE TRY AGAIN IN A FEW MINUTES. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+        "insufficient_funds": "YOUR PAYMENT WAS DECLINED DUE TO INSUFFICIENT FUNDS. TRY AGAIN OR USE A DIFFERENT PAYMENT METHOD. ",
+        "fraud_payment_errors": {
+          "transaction_declined": "THIS TRANSACTION HAS BEEN DECLINED.",
+          "address_mismatch": "STREET ADDRESS AND POSTAL CODE DO NOT MATCH.",
+          "cannot_process": "THIS TRANSACTION CANNOT BE PROCESSED.",
+          "no_match": "NO MATCH",
+          "card_declined": "YOUR CARD WAS DECLINED. "
+        }
+      },
+      "shipping_errors": {
+        "shipping_method": "YOUR BAG HAS BEEN UPDATED AND THE PREVIOUS SHIPPING RATE ISNT AVAILABLE. SELECT A NEW ONE AND CONTINUE. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+        "shipping_method_not_available": "YOUR BAG HAS BEEN UPDATED AND THE ITEMS YOU SELECTED CANNOT BE SHIPPED TO YOUR ADDRESS. REMOVE THE ITEMS TO COMPLETE YOUR ORDER.",
+        "shipping_method_not_available_generic": {
+          "one": "THIS ORDER CANNOT BE SHIPPED TO YOUR LOCATION. PLEASE CONTACT US FOR MORE INFORMATION. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+          "other": "SOME ITEMS IN YOUR BAG CANNOT BE SHIPPED TO YOU LOCATION. PLEASE CONTACT US FOR MORE INFORMATION. WE APOLOGIZE FOR ANY INCONVENIENCE. "
+        },
+        "shipping_method_not_available_updated": {
+          "one": "THE ITEM YOU ADDED DOES NOT SHIP TO YOUR LOCATION. PLEASE REMOVE THE ITEM TO CONTINUE. WE APOLOGIZE FOR ANY INCONVENIENCE. ",
+          "other": "ONE OR MORE OF THE ITEMS YOU ADDED DOES NOT SHIP TO YOUR LOCATION. PLEASE REMOVE THE ITEM(S) TO CONTINUE. WE APOLOGIZE FOR ANY INCONVENIENCE. "
+        }
+      },
+      "processing": {
+        "redirecting_page_title": "REDIRECTING...",
+        "redirecting_title": "REDIRECTING...",
+        "redirecting_notice": "PLEASE BE PATIENT WHILE WE REDIRECT YOU...",
+        "complete_your_purchase_title": "COMPLETE YOUR PURCHASE",
+        "continue_to_payment_gateway_notice": "PLEASE CONTINUE TO PAYMENT TO ADD YOUR PAYMENT INFORMATION",
+        "continue_to_payment_gateway_button_label": "PLEASE CONTINUE TO PAYMENT",
+        "complete_your_purchase_title_error": "PLEASE CORRECT YOUR PAYMENT INFORMATION. ",
+        "continue_to_payment_gateway_notice_error": "YOUR PAYMENT INFORMATION COULD NOT BE VERIFIED. ",
+        "page_title": "PROCESSING YOUR ORDER",
+        "title": "PROCESSING YOUR ORDER",
+        "your_order_has_been_received_title": "THANK YOU FOR YOUR ORDER",
+        "you_will_not_be_charged": "YOU WILL NOT BE CHARGED YET.",
+        "you_will_receive_confirmation": "YOU WILL RECEIVE CONFIRMATION AS WELL AS TRACKING BY EMAIL OR TEXT MESSAGE. IF YOU DO NOT RECEIVE A CONFIRMATION MESSAGE WITHIN AN HOUR, PLEASE CONTACT US. ",
+        "wait": {
+          "short": "PLEASE WAIT, YOUR ORDER IS BEING PROCESSED.",
+          "long": "PLEASE WAIT, YOU WILL RECEIVE AN EMAIL AS SOON AS YOUR ORDER IS PROCESSED. THERE IS CURRENTLY A HIGH VOLUME OF ORDERS.",
+          "medium": {
+            "one": "YOUR ORDER IS BEING PROCESSED."
+          }
+        }
+      },
+      "failed_payment": {
+        "page_title": "YOUR PAYMENT COULD NOT BE PROCESSED",
+        "title": "YOUR PAYMENT COULD NOT BE PROCESSED",
+        "payment_not_processed_title": "YOUR PAYMENT COULD NOT BE PROCESSED",
+        "payment_not_processed_text": "YOU HAVE NOT BEEN CHARGED. PLEASE RETURN TO YOUR BAG TO COMPLETE YOUR PURCHASE.",
+        "return_to_cart_button_label": "RETURN TO YOUR BAG"
+      },
+      "thank_you": {
+        "title": "THANK YOU FOR YOUR PURCHASE, ",
+        "confirmation_email_sent_text": "A CONFIRMATION HAS BEEN SENT TO THE EMAIL ADDRESS PROVIDED",
+        "return_to_store_link_label": "CONTINUE SHOPPING",
+        "print_link_label": "PRINT RECEIPT",
+        "payment_information_title": "PAYMENT INFORMATION",
+        "shipping_information_title": "SHIPPING INFORMATION",
+        "page_title": "THANK YOU",
+        "page_title_no_name": "THANK YOU",
+        "cancelled_page_title": "YOUR ORDER HAS BEEN CANCELLED",
+        "customer_information_title": "CLIENT INFORMATION",
+        "contact_information_title": "CLIENT INFORMATION",
+        "billing_address_title": "BILLING ADDRESS",
+        "shipping_address_title": "SHIPPING ADDRESS",
+        "payment_method_title": "PAYMENT METHOD",
+        "shipping_method_title": "SHIPPING METHOD",
+        "tracking_number": "TRACKING NUMBER:",
+        "estimated_arrival": "ESTIMATED ARRIVAL:",
+        "re-order": "PURCHASE AGAIN",
+        "confirmed": "CONFIRMED",
+        "thank_you_confirmed_order_with_email": "YOU WILL RECEIVE A CONFIRMATION EMAIL WITH YOUR ORDER NUMBER SHORTLY",
+        "thank_you_confirmed_order_with_phone": "YOU WILL RECEIVE A CONFIRMATION TEXT MESSAGE WITH YOUR ORDER NUMBER SHORTLY",
+        "thank_you_confirmed_order_with_email_and_phone": "YOU WILL RECEIVE A CONFIRMATION EMAIL AND TEXT MESSAGE WITH YOUR ORDER NUMBER SHORTLY",
+        "order_status_confirmed_order_with_email": "YOU WILL RECEIVE AN EMAIL WHEN YOUR ORDER IS READY",
+        "order_status_confirmed_order_with_phone": "YOU WILL RECEIVE A TEXT MESSAGE WHEN YOUR ORDER IS READY",
+        "order_status_confirmed_order_with_email_and_phone": "YOU WILL RECEIVE AN EMAIL AND TEXT MESSAGE WHEN YOUR ORDER IS READY",
+        "order_status_updates_with_email": "YOU WILL RECEIVE ORDER SHIPPING AND DELIVERY UPDATES VIA EMAIL",
+        "order_status_updates_with_phone": "YOU WILL RECEIVE ORDER SHIPPING AND DELIVERY UPDATES VIA TEXT MESSAGE",
+        "order_status_updates_with_email_and_phone": "YOU WILL RECEIVE ORDER SHIPPING AND DELIVERY UPDATES VIA EMAIL AND TEXT MESSAGE",
+        "order_status_updates_with_missing": "CHOOSE HOW YOU WOULD LIKE TO RECEIVE SHIPPING UPDATES",
+        "confirmed_title": "YOUR ORDER IS CONFIRMED",
+        "confirmed_description": "YOUR ORDER HAS BEEN ACCEPTED AND IT IS GETTING READY TO BE SHIPPED. PLEASE RETURN TO THIS PAGE TO VIEW UPDATES. ",
+        "order_updates_title": "ORDER UPDATES",
+        "in_transit": "YOUR ORDER IS ON ITS WAY",
+        "in_transit_title": "YOUR ORDER IS ON ITS WAY",
+        "in_transit_description": "PLEASE RETURN BACK TO THIS PAGE FOR UPDATES",
+        "in_transit_description_days": "YOUR ORDER WILL ARRIVE SOON",
+        "in_transit_description_today": "YOUR SHOULD RECEIVE YOUR ORDER TODAY",
+        "in_transit_description_tomorrow": "YOU SHOULD RECEIVE YOUR ORDER TOMORROW",
+        "out_for_delivery": "YOUR ORDER IS OUT FOR DELIVERY",
+        "out_for_delivery_title": "YOUR ORDER IS OUT FOR DELIVERY",
+        "out_for_delivery_local_title": "YOUR ORDER IS OUT FOR DELIVERY",
+        "out_for_delivery_local_description_html": "YOUR ORDER WILL ARRIVE SOON",
+        "attempted_delivery": "ATTEMPTED DELIVERY",
+        "attempted_delivery_title": "AN ATTEMPT WAS MADE TO DELIVER YOUR ORDER",
+        "attempted_delivery_description_html": "AN ATTEMPT WAS MADE TO DELIVER YOUR ORDER, BUT WAS UNSUCCESSFUL. PLEASE REACH OUT TO YOUR LOCAL DELIVERY SERVICES ",
+        "delivered": "YOUR ORDER HAS BEEN DELIVERED",
+        "delivered_title": "YOUR ORDER HAS BEEN DELIVERED",
+        "delivered_local_title": "YOUR ORDER HAS BEEN DELIVERED",
+        "contact_us": "NEED ASSISTANCE? CONTACT US",
+        "failure": "YOUR ORDER HAS NOT BEEN DELIVERED",
+        "failed_title": "YOUR ORDER COULD NOT BE DELIVERED",
+        "failed_contact_merchant_no_company": "CONTACT US TO ARRANGE DELIVERY",
+        "non_shippable_title": "YOUR ORDER IS COMPLETE. ",
+        "let_us_know": "LET US KNOW",
+        "login_title": "PLEASE SIGN IN TO VIEW ORDER DETAILS",
+        "login_description": "YOU CAN FIND YOUR ORDER DETAILS IN THE RECEIPT SENT TO YOU VIA EMAIL",
+        "login_description_phone": "YOU CAN FIND YOUR ORDER DETAILS IN THE RECEIPT SENT TO YOU VIA TEXT",
+        "customer_information_hidden_fields_message": "PLEASE SIGN IN TO VIEW DETAILS",
+        "cancelled_title": "YOUR ORDER HAS BEEN CANCELLED",
+        "order_number_label": "ORDER NUMBER",
+        "customer_validation_error": "PLEASE ENTER A VALID EMAIL ADDRESS OR ORDER NUMBER",
+        "customer_validation_error_phone": "PLEASE ENTER A VALID TELEPHONE NUMBER OR ORDER NUMBER",
+        "login": "SIGN IN",
+        "unfulfilled_items_title": "PREPARING YOUR ORDER",
+        "unfulfilled_items_description": "WE ARE CURRENTLY PREPARING YOUR ORDER FOR SHIPMENT",
+        "order_updates_description_missing": "YOU ARE NOT RECEIVING ORDER UPDATES",
+        "order_updates_subscribe_to_email_notifications": "RECEIVE ORDER UPDATES VIA EMAIL",
+        "order_updates_subscribe_to_email_or_phone_notifications": "RECEIVE ORDER UPDATED VIA TELEPHONE OR EMAIL",
+        "order_updates_subscribe_to_phone_notifications": "RECEIVE ORDER UPDATED VIA TELEPHONE",
+        "order_updates_submit_subscription": "SUBMIT",
+        "track_shipment": "TRACK YOUR ORDER",
+        "other_options": "OTHER OPTIONS",
+        "delivery_information_label": "ORDER DELIVERY INFORMATION"
+      },
+      "remember_me": {
+        "description_html": "    "
+      }
+    },
+    "links": {
+      "powered_by_shopify": "            "
+    }
+  }
+}
