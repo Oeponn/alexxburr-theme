@@ -1765,7 +1765,7 @@
     "tumblr_url": "",
     "youtube_url": "",
     "googleplus_url": "",
-    "instagram_id": "",
+    "instagram_id": "alexxburrrr",
     "snapchat_id": "",
     "weibo_id": "",
     "popup": false,
@@ -1791,19 +1791,6 @@
     "sections": {
       "header": {
         "type": "header",
-        "blocks": {
-          "mega_menu_zy9KAy": {
-            "type": "mega_menu",
-            "disabled": true,
-            "settings": {
-              "menu_item": "",
-              "link": ""
-            }
-          }
-        },
-        "block_order": [
-          "mega_menu_zy9KAy"
-        ],
         "settings": {
           "full_width_header": true,
           "show_announcement_text": false,
