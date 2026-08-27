@@ -1,8 +1,10 @@
 /* Header section styles. Dynamic values come from the custom properties
    emitted by sections/header.liquid. */
 
-@media screen and ( min-width: 740px ) {
-  #logo img { max-width: var(--header-logo-max-width); }
+@media screen and (min-width: 740px) {
+  #logo img {
+    max-width: var(--header-logo-max-width);
+  }
 }
 
 #logo a {
@@ -90,7 +92,9 @@ nav {
 
 @media screen and (min-width: 981px) {
   ul#cart li.mm-trigger,
-  ul#cart li.mobile-logo { display: none; }
+  ul#cart li.mobile-logo {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 980px) {
@@ -101,7 +105,7 @@ nav {
   ul#cart li span.my-cart-text,
   ul#social-icons,
   #logo,
-  nav  {
+  nav {
     display: none;
   }
   ul#cart {
@@ -130,7 +134,8 @@ nav {
   ul#cart li {
     padding: 0 15px;
   }
-  ul#cart li a,ul#cart li i {
+  ul#cart li a,
+  ul#cart li i {
     color: var(--header-mobile-icons-color);
   }
 }
