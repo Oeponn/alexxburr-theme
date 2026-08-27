@@ -1,0 +1,153 @@
+/* Header section styles. Dynamic values come from the custom properties
+   emitted by sections/header.liquid. */
+
+@media screen and ( min-width: 740px ) {
+  #logo img { max-width: var(--header-logo-max-width); }
+}
+
+#logo a {
+  font-size: var(--header-logo-font-size);
+  text-transform: var(--header-logo-text-transform);
+}
+
+#hello p {
+  font-size: var(--header-announcement-text-size);
+  margin-bottom: 0;
+}
+
+ul#main-nav li {
+  line-height: var(--header-nav-height);
+}
+ul#main-nav li ul.submenu {
+  top: var(--header-nav-height);
+}
+ul.megamenu {
+  top: var(--header-nav-height);
+}
+nav {
+  border-top: var(--header-nav-top-border-height) solid var(--header-nav-border-color);
+  border-bottom: var(--header-nav-bottom-border-height) solid var(--header-nav-border-color);
+}
+
+/* Inline nav style. These rules only apply when sections/header.liquid renders
+   the .nav-inner-container wrapper (nav_style: inline). */
+.nav-inner-container {
+  display: grid;
+  grid-template-columns: 3fr 8fr 3fr;
+  margin: 0 auto;
+  align-items: center;
+  line-height: var(--header-nav-height);
+  position: relative;
+}
+.nav-inner-container ul#main-nav {
+  position: unset;
+}
+.nav-inner-container ul#main-nav li {
+  line-height: unset;
+}
+.nav-inner-container div#logo {
+  line-height: unset;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.nav-inner-container #logo a {
+  line-height: unset;
+  display: block;
+}
+.nav-inner-container #logo a img {
+  vertical-align: middle;
+  display: block;
+  max-height: var(--header-nav-inline-logo-max-height);
+}
+@media screen and (min-width: 740px) {
+  .nav-inner-container {
+    width: 720px;
+  }
+}
+@media screen and (min-width: 980px) {
+  .nav-inner-container {
+    width: 960px;
+  }
+}
+@media screen and (min-width: 1220px) {
+  .nav-inner-container {
+    width: 1200px;
+  }
+}
+@media screen and (min-width: 1680px) {
+  .nav-inner-container {
+    width: 1400px;
+  }
+}
+.gridlock-fluid .row {
+  width: 98%;
+}
+@media screen and (max-width: 740px) {
+  .nav-inner-container {
+    width: 98%;
+  }
+}
+
+@media screen and (min-width: 981px) {
+  ul#cart li.mm-trigger,
+  ul#cart li.mobile-logo { display: none; }
+}
+
+@media screen and (max-width: 980px) {
+  ul#cart li.seeks,
+  ul#cart li.cust,
+  ul#cart li.lang-selector,
+  ul#cart li.curr-selector,
+  ul#cart li span.my-cart-text,
+  ul#social-icons,
+  #logo,
+  nav  {
+    display: none;
+  }
+  ul#cart {
+    display: grid;
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    background: var(--header-wrapper-background);
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+  }
+  ul#cart li.mm-trigger {
+    text-align: left;
+    font-size: 18px;
+  }
+  ul#cart li.mobile-logo {
+    text-align: center;
+  }
+  li.mobile-logo a img {
+    vertical-align: middle;
+    max-width: 300px;
+  }
+  div#upper-content {
+    width: 100%;
+  }
+  ul#cart li {
+    padding: 0 15px;
+  }
+  ul#cart li a,ul#cart li i {
+    color: var(--header-mobile-icons-color);
+  }
+}
+@media screen and (max-width: 740px) {
+  header {
+    line-height: 40px;
+  }
+  header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 5;
+  }
+  .header-wrapper {
+    margin-top: var(--header-wrapper-margin-top);
+  }
+  li.mobile-logo a img {
+    max-width: 200px;
+  }
+}
