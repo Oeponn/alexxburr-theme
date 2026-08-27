@@ -1,9 +1,20 @@
 /* Header section styles. Dynamic values come from the custom properties
    emitted by sections/header.liquid. */
 
+/* div#upper-content {
+  width: 100%;
+  border: 5px solid red !important;
+} */
+
+.row {
+  padding: 0 1rem;
+}
+
 @media screen and (min-width: 740px) {
   #logo img {
-    max-width: var(--header-logo-max-width);
+    /* max-width: var(--header-logo-max-width); */
+    max-width: 100px;
+    aspect-ratio: 1/1;
   }
 }
 
@@ -57,7 +68,6 @@ nav {
   display: block;
 }
 .nav-inner-container #logo a img {
-  vertical-align: middle;
   display: block;
   max-height: var(--header-nav-inline-logo-max-height);
 }
@@ -82,11 +92,11 @@ nav {
   }
 }
 .gridlock-fluid .row {
-  width: 98%;
+  width: 100%;
 }
 @media screen and (max-width: 740px) {
   .nav-inner-container {
-    width: 98%;
+    width: 100%;
   }
 }
 
@@ -126,7 +136,7 @@ nav {
   }
   li.mobile-logo a img {
     vertical-align: middle;
-    max-width: 300px;
+    max-width: 100px;
   }
   div#upper-content {
     width: 100%;
@@ -153,6 +163,6 @@ nav {
     margin-top: var(--header-wrapper-margin-top);
   }
   li.mobile-logo a img {
-    max-width: 200px;
+    max-width: 50px;
   }
 }
