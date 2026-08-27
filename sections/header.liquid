@@ -29,7 +29,7 @@
 {%- capture logo_mark -%}
   {%- if section.settings.logo != blank -%}
     <img
-      src="{{ section.settings.logo | img_url: '400x' }}"
+      src="{{ section.settings.logo | image_url: width: 400 }}"
       alt="{{ section.settings.logo.alt | default: shop.name }}"
       itemprop="logo"
       width="{{ section.settings.logo.width }}"
@@ -77,10 +77,10 @@
         both halves take the width of the wider one, so the logo lands dead
         centre of the pill however uneven the two halves' text is.
       {%- endcomment -%}
-      <nav class="site-header__nav" aria-label="{{ 'general.navigation.menu' | t | default: 'Main navigation' }}">
+      <nav class="site-header__nav" aria-label="{{ 'layout.header.menu' | t }}">
 
         <div class="site-header__nav-half site-header__nav-half--start">
-          <button type="button" class="site-header__icon-btn site-header__mm-trigger mm-trigger" aria-label="{{ 'layout.mobile_nav.menu' | t | default: 'Menu' }}">
+          <button type="button" class="site-header__icon-btn site-header__mm-trigger mm-trigger" aria-label="{{ 'layout.header.menu' | t }}">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
           <ul id="main-nav" class="main-nav site-header__nav-list">
@@ -214,7 +214,7 @@
           data-search-input>
         {% if settings.search_products %}<input type="hidden" name="type" value="product">{% endif %}
       </form>
-      <button type="button" class="search-overlay__close" data-search-close aria-label="{{ 'general.search.close' | t | default: 'Close search' }}">
+      <button type="button" class="search-overlay__close" data-search-close aria-label="{{ 'general.search.title' | t }}">
         <i class="fa fa-times" aria-hidden="true"></i>
       </button>
     </div>

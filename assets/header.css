@@ -229,11 +229,16 @@ ul#cart.site-header__actions li {
 
 /* Icon buttons ------------------------------------------------------------- */
 
+/* width/background are reset explicitly: the theme styles every <button> as a
+   full width filled button. */
 .site-header__icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
+  width: auto;
+  min-width: 0;
+  max-width: none;
   padding: 0;
   border: 0;
   background: none;
