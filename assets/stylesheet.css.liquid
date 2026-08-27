@@ -1114,34 +1114,6 @@ li.seeks {
   position: relative;
 }
 
-#searchbox {
-  display: none;
-  position: absolute;
-  right: 25px;
-  top: 90%;
-  left: 50%;
-  z-index: 10;
-  margin-bottom: 0;
-  margin-left: -215px;
-  width: 500px;
-  min-width: 500px;
-  padding: 0;
-}
-
-#searchbox #q {
-  margin-bottom: 0;
-  height: 46px;
-}
-
-@media screen and (min-width: 980px) {
-  #searchbox {
-    top: 0;
-    left: auto;
-    margin-left: 0;
-    width: auto;
-    min-width: 250px;
-  }
-}
 
 .icon-shopping-cart {
   margin-right: 5px;
@@ -2934,7 +2906,9 @@ dd {
 }
 
 .page-wrap {
-  overflow: hidden;
+  /* clip, not hidden: hidden would make this a scroll container and break
+     position: sticky on the header. */
+  overflow-x: clip;
 }
 
 #bottom-logo {
@@ -3722,22 +3696,22 @@ nav {
   z-index: 2;
 }
 
-ul#main-nav {
+ul.main-nav {
   list-style: none;
   text-align: center;
   margin-bottom: 0;
   position: relative;
 }
 
-ul#main-nav li {
+ul.main-nav li {
   display: inline-block;
 }
 
-ul#main-nav li:hover {
+ul.main-nav li:hover {
   background: {{ settings.nav_hover_color }};
 }
 
-ul#main-nav li a {
+ul.main-nav li a {
   font-family: {{ nav_font.family}};
   font-weight: {{ nav_font.weight }};
   font-size: {{ settings.nav_size }}px;
@@ -3747,21 +3721,21 @@ ul#main-nav li a {
   text-transform: {{ settings.navigation_transform}};
 }
 
-ul#main-nav li a:hover {
+ul.main-nav li a:hover {
   color: {{ settings.nav_hover_link_color }};
   text-decoration: none;
   border-bottom: none;
 }
-ul#main-nav li a:visited {
+ul.main-nav li a:visited {
   border-bottom: none;
 }
-ul#main-nav li.dropdown > a:after {
+ul.main-nav li.dropdown > a:after {
   font-family: 'FontAwesome';
   content: "\f107";
   margin-left: 10px;
 }
 
-ul#main-nav li ul.submenu {
+ul.main-nav li ul.submenu {
   display: none;
   position: absolute;
   top: 0;
@@ -3773,11 +3747,11 @@ ul#main-nav li ul.submenu {
   border-right: 1px solid {{ settings.nav_border_color }};
 }
 
-ul#main-nav li:hover ul.submenu{
+ul.main-nav li:hover ul.submenu{
   display: block;
 }
 
-ul#main-nav li ul.submenu li{
+ul.main-nav li ul.submenu li{
   line-height: 34px !important;
   margin: 0;
   padding: 0;
@@ -3788,11 +3762,11 @@ ul#main-nav li ul.submenu li{
   position: relative;
 }
 
-ul#main-nav li ul.submenu li:hover {
+ul.main-nav li ul.submenu li:hover {
   background: {{ settings.dropdown_hover_background }} !important;
 }
 
-ul#main-nav li ul.submenu li a{
+ul.main-nav li ul.submenu li a{
   text-align: left;
   font-weight: {{ main_font.weight }};
   text-transform: none !important;
@@ -3801,7 +3775,7 @@ ul#main-nav li ul.submenu li a{
   font-family:{{ main_font.family }} !important;
 }
 
-ul#main-nav li ul.submenu li a:hover {
+ul.main-nav li ul.submenu li a:hover {
   color: {{ settings.dropdown_link_hover_color }};
 }
 
@@ -3810,7 +3784,7 @@ ul.submenu li.nest.has_sub_menu.edge:hover ul.nested {
   right: 100%;
 }
 
-ul#main-nav li ul.submenu li.nest:after {
+ul.main-nav li ul.submenu li.nest:after {
   position: absolute;
   top: 0px;
   right: 10px;
@@ -3834,7 +3808,7 @@ ul#main-nav li ul.submenu li.nest:after {
 
 /* Megamenu */
 
-ul#main-nav li.dropdown:hover > ul.megamenu {
+ul.main-nav li.dropdown:hover > ul.megamenu {
   display: block;
 }
 
@@ -3898,11 +3872,11 @@ ul.megamenu li > ul.mega-stack li a:hover {
   margin-top: 20px;
 }
 
-ul#main-nav li.dropdown ul.megamenu li.desktop-3:nth-child(5n) {
+ul.main-nav li.dropdown ul.megamenu li.desktop-3:nth-child(5n) {
   clear: left;
 }
 
-ul#main-nav li.dropdown ul.megamenu li h4 a {
+ul.main-nav li.dropdown ul.megamenu li h4 a {
   padding-left: 0;
 }
 

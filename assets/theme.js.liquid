@@ -3410,14 +3410,6 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
-  $(document).on('click', function(e) {
-    if ( $(e.target).closest('.seeks').length ) {
-      $("#searchbox").show();
-    }else if ( ! $(e.target).closest('#searchbox').length ) {
-      $('#searchbox').hide();
-    }
-  });
-
   $('.no-fouc').removeClass('no-fouc');
   $('.load-wait').addClass('hide');
 
@@ -5223,8 +5215,8 @@ theme.Header = (function() {
     });
 
     if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPad/i)) || (navigator.userAgent.match(/android/i))) {
-      $("nav #main-nav li.dropdown:has(ul)").doubleTapToGo();
-      $("nav #main-nav .submenu li.has_sub_menu").doubleTapToGo();
+      $("nav .main-nav li.dropdown:has(ul)").doubleTapToGo();
+      $("nav .main-nav .submenu li.has_sub_menu").doubleTapToGo();
     }
 
     /* lang and currency disclosure */

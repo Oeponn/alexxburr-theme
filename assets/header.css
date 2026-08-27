@@ -1,219 +1,493 @@
-/* Header section styles. Dynamic values come from the custom properties
-   emitted by sections/header.liquid.
+/* Header.
+   Dynamic values come from the custom properties emitted by sections/header.liquid.
 
-   Mobile first: the base rules are the small screen header (hamburger, centred
-   logo, fixed to the top). The 980px block builds the desktop header on top. */
+   One row on every screen. A rounded pill holds the menu, with a circular logo
+   breaking out of its centre. At the top of the page the bar has a solid
+   background and the side rails are visible; on scroll the background fades,
+   the rails slide off each edge, and the pill floats over the content.
+
+   Mobile first - the base rules are the small screen floating bar, the 980px
+   block builds the desktop row on top. */
 
 .row {
   padding: 0 1rem;
 }
 
-/* Shared ------------------------------------------------------------------- */
+/* Sticky shell -------------------------------------------------------------- */
 
-#logo a {
+/* The sticky element has to be the section wrapper. position: sticky is bounded
+   by its parent's box, and .site-header's own parents are exactly as tall as the
+   header, which leaves it no travel at all. The negative offset - the measured
+   announcement height, set from header.js - lets the announcement scroll out of
+   view before the header itself pins to the top of the window. */
+#shopify-section-header {
+  position: sticky;
+  top: calc(-1 * var(--header-announcement-height, 0px));
+  z-index: 60;
+  /* See-through once scrolled and taller than the pill, so let clicks through
+     everywhere except the real controls. */
+  pointer-events: none;
+}
+
+.announcement-bar,
+.site-header__nav,
+.site-header__rail {
+  pointer-events: auto;
+}
+
+/* Announcement ------------------------------------------------------------- */
+
+/* Deliberately outside the sticky header so it scrolls away on its own and the
+   header's height never changes (a changing sticky height makes the page jump). */
+.announcement-bar {
+  background: var(--header-announcement-bg);
+  color: var(--header-announcement-color);
+  text-align: center;
+}
+
+.announcement-bar__inner {
+  padding: 7px 16px;
+  font-size: var(--header-announcement-text-size);
+  line-height: 1.4;
+}
+
+.announcement-bar__inner p {
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Shell -------------------------------------------------------------------- */
+
+.site-header {
+  --header-logo-current: var(--header-logo-mobile);
+  --header-nav-font-current: var(--header-nav-font-top);
+  --header-pill-bg-current: var(--header-pill-bg);
+
+  position: relative;
+  background: transparent;
+  line-height: normal;
+  transition: background-color 0.35s ease;
+}
+
+.site-header__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Constant: sized off the at-rest logo, never the current one, so shrinking
+     the circle on scroll cannot change the header's height. */
+  height: calc(var(--header-logo-mobile) + 20px);
+  padding: 0 var(--header-mobile-inset);
+  margin: 0 auto;
+}
+
+/* Side rails --------------------------------------------------------------- */
+
+.site-header__rail {
+  display: none;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.site-header__social,
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Beats ul#cart in stylesheet.css, which floats this list right. */
+ul#cart.site-header__actions {
+  float: none;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  text-align: left;
+}
+
+ul#cart.site-header__actions li {
+  padding: 0;
+  vertical-align: middle;
+}
+
+.site-header__social a,
+.site-header__actions a,
+.site-header__icon-btn {
+  color: var(--header-color);
+  font-size: 17px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.site-header__social a:hover,
+.site-header__actions a:hover,
+.site-header__icon-btn:hover {
+  opacity: 0.6;
+}
+
+.my-cart-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.my-cart-text {
+  font-size: 13px;
+}
+
+/* Pill --------------------------------------------------------------------- */
+
+/* Two equal 1fr tracks either side of an auto sized logo track. Under intrinsic
+   sizing equal fr tracks both take the width of the wider one, so the logo sits
+   dead centre of the pill no matter how uneven the two halves of the menu are. */
+.site-header__nav {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  /* Definite row height. Without it the row sizes to the logo, which is taller
+     than the pill, and the menu halves get pushed below the outline. */
+  grid-template-rows: var(--header-row-height);
+  align-items: center;
+  height: var(--header-row-height);
+  width: auto;
+  margin: 0;
+  padding: 0 22px;
+  background: var(--header-pill-bg-current);
+  border: var(--header-pill-border-width) solid var(--header-pill-border-color);
+  border-radius: 999px;
+  overflow: visible;
+  transition: background-color 0.35s ease, backdrop-filter 0.35s ease;
+}
+
+.site-header__nav-half {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.site-header__nav-half--start {
+  justify-content: flex-end;
+}
+
+.site-header__nav-half--end {
+  justify-content: flex-start;
+}
+
+.site-header__nav-list {
+  display: none;
+  align-items: center;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Logo --------------------------------------------------------------------- */
+
+/* Taller than the row it lives in, so it overflows the pill rather than
+   stretching it. The bar's height never changes, only the circle's. */
+.site-header__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex: 0 0 auto;
+  width: var(--header-logo-current);
+  height: var(--header-logo-current);
+  margin: 0 18px;
+  padding: 9px;
+  background: var(--header-pill-bg);
+  border: var(--header-pill-border-width) solid var(--header-pill-border-color);
+  border-radius: 50%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-decoration: none;
+  transition: width 0.35s ease, height 0.35s ease;
+}
+
+.site-header__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.site-header__logo-text {
   font-size: var(--header-logo-font-size);
   text-transform: var(--header-logo-text-transform);
+  color: var(--header-color);
+  text-align: center;
+  line-height: 1.1;
+  word-break: break-word;
 }
 
-#hello p {
-  font-size: var(--header-announcement-text-size);
-  margin-bottom: 0;
+/* Icon buttons ------------------------------------------------------------- */
+
+.site-header__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--header-mobile-icons-color);
+  font-size: 17px;
+  line-height: 1;
 }
 
-ul#main-nav li {
-  line-height: var(--header-nav-height);
-}
-
-ul#main-nav li ul.submenu {
-  top: var(--header-nav-height);
-}
-
-ul.megamenu {
-  top: var(--header-nav-height);
-}
-
-nav {
-  border-top: var(--header-nav-top-border-height) solid var(--header-nav-border-color);
-  border-bottom: var(--header-nav-bottom-border-height) solid var(--header-nav-border-color);
+.site-header__cart-count {
+  font-size: 12px;
 }
 
 /* Small screens ------------------------------------------------------------ */
 
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 5;
-  line-height: 40px;
+/* The pill holds the hamburger, the logo and the cart, held in from the screen
+   edges so the whole thing reads as floating above the page. */
+.site-header__mm-trigger {
+  margin-right: auto;
 }
 
-.header-wrapper {
-  margin-top: var(--header-wrapper-margin-top);
+.site-header__mobile-cart {
+  margin-left: auto;
 }
 
-#logo img {
-  max-width: 60%;
-}
-
-/* The desktop nav, search, account and social links all collapse into the
-   hamburger row on small screens. */
-ul#cart li.seeks,
-ul#cart li.cust,
-ul#cart li.lang-selector,
-ul#cart li.curr-selector,
-ul#cart li span.my-cart-text,
-ul#social-icons,
-#logo,
-nav {
-  display: none;
-}
-
-ul#cart {
-  display: grid;
-  width: 100%;
-  margin: 0;
-  padding: 10px 0;
-  background: var(--header-wrapper-background);
-  grid-template-columns: 1fr 3fr 1fr;
-  align-items: center;
-}
-
-ul#cart li {
-  padding: 0 15px;
-}
-
-ul#cart li.mm-trigger {
-  text-align: left;
-  font-size: 18px;
-}
-
-ul#cart li.mobile-logo {
-  text-align: center;
-}
-
-/* Scales smoothly from 50px on a phone to 100px approaching the desktop
-   breakpoint, so the logo needs no breakpoint of its own. */
-li.mobile-logo a img {
-  vertical-align: middle;
-  max-width: clamp(50px, 12vw, 100px);
-}
-
-ul#cart li a,
-ul#cart li i {
-  color: var(--header-mobile-icons-color);
-}
-
-div#upper-content {
-  width: 100%;
-}
-
-/* Inline nav style. These rules only apply when sections/header.liquid renders
-   the .nav-inner-container wrapper (nav_style: inline). */
-.nav-inner-container {
-  display: grid;
-  grid-template-columns: 3fr 8fr 3fr;
-  width: 100%;
-  margin: 0 auto;
-  align-items: center;
-  line-height: var(--header-nav-height);
-  position: relative;
-}
-
-.nav-inner-container ul#main-nav {
-  position: unset;
-}
-
-.nav-inner-container ul#main-nav li {
-  line-height: unset;
-}
-
-.nav-inner-container div#logo {
-  line-height: unset;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.nav-inner-container #logo a {
-  line-height: unset;
-  display: block;
-}
-
-.nav-inner-container #logo a img {
-  display: block;
-  max-height: var(--header-nav-inline-logo-max-height);
+.site-header__bar > .site-header__nav {
+  flex: 1 1 auto;
+  max-width: 100%;
+  padding: 0 18px;
 }
 
 /* Desktop ------------------------------------------------------------------ */
 
 @media screen and (min-width: 980px) {
-  header {
-    position: relative;
-    line-height: 48px;
+  .site-header {
+    --header-logo-current: var(--header-logo-top);
+    background: var(--header-bg);
   }
 
-  .header-wrapper {
-    margin-top: 0;
+  .site-header.is-scrolled {
+    --header-logo-current: var(--header-logo-scrolled);
+    --header-nav-font-current: var(--header-nav-font-scrolled);
+    --header-pill-bg-current: var(--header-pill-bg-scrolled);
+    background: transparent;
   }
 
-  div#upper-content {
-    width: auto;
+  .site-header.is-scrolled .site-header__nav {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
 
-  #logo img {
-    max-width: 100px;
-    aspect-ratio: 1 / 1;
+  .site-header__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    height: calc(var(--header-logo-top) + 20px);
+    padding: 0 24px;
   }
 
-  /* Restores the values these carry in stylesheet.css - the list items are
-     inline-block, the wrappers are ordinary blocks. */
-  ul#cart li.seeks,
-  ul#cart li.cust,
-  ul#cart li.lang-selector,
-  ul#cart li.curr-selector {
-    display: inline-block;
-  }
-
-  ul#cart li span.my-cart-text {
-    display: inline;
-  }
-
-  ul#social-icons,
-  #logo,
-  nav {
-    display: block;
-  }
-
-  ul#cart {
-    display: block;
-    width: auto;
-    padding: 0;
-    background: none;
-  }
-
-  ul#cart li {
-    padding: 0 0 0 10px;
-  }
-
-  ul#cart li.mm-trigger,
-  ul#cart li.mobile-logo {
-    display: none;
-  }
-
-  ul#cart li a,
-  ul#cart li i {
-    color: inherit;
-  }
-
-  .nav-inner-container {
-    width: 92%;
+  .site-header__bar--contained {
     max-width: 1200px;
+  }
+
+  .site-header__rail {
+    display: flex;
+    align-items: center;
+  }
+
+  .site-header__rail--start {
+    justify-content: flex-start;
+  }
+
+  .site-header__rail--end {
+    justify-content: flex-end;
+  }
+
+  .site-header.is-scrolled .site-header__rail--start {
+    transform: translateX(-140%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-header.is-scrolled .site-header__rail--end {
+    transform: translateX(140%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-header__bar > .site-header__nav {
+    flex: none;
+    padding: 0 26px;
+  }
+
+  .site-header__nav-list {
+    display: flex;
+  }
+
+  .site-header__mm-trigger,
+  .site-header__mobile-cart {
+    display: none;
   }
 }
 
 /* Ultra wide --------------------------------------------------------------- */
 
 @media screen and (min-width: 1600px) {
-  .nav-inner-container {
+  .site-header__bar--contained {
     max-width: 1440px;
+  }
+}
+
+/* Menu links --------------------------------------------------------------- */
+
+/* Both halves of the split menu carry .main-nav, so the dropdown and mega menu
+   rules in stylesheet.css still apply to either side. */
+ul.main-nav {
+  float: none;
+  width: auto;
+  text-align: left;
+}
+
+ul.main-nav > li {
+  line-height: var(--header-row-height);
+}
+
+ul.main-nav > li > a {
+  font-size: var(--header-nav-font-current);
+  transition: font-size 0.35s ease;
+}
+
+ul.main-nav li ul.submenu,
+ul.megamenu {
+  top: var(--header-row-height);
+}
+
+/* Search overlay ----------------------------------------------------------- */
+
+.search-overlay[hidden] {
+  display: none;
+}
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.search-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+.search-overlay__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 26px var(--header-mobile-inset);
+  background: #fff;
+  transform: translateY(-100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-overlay.is-open .search-overlay__backdrop {
+  opacity: 1;
+}
+
+.search-overlay.is-open .search-overlay__panel {
+  transform: translateY(0);
+}
+
+.search-overlay__form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  border-bottom: 1px solid var(--header-pill-border-color);
+}
+
+.search-overlay__icon {
+  font-size: 18px;
+  color: var(--header-color);
+  flex: none;
+}
+
+.search-overlay__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--header-color);
+  outline: none;
+  box-shadow: none;
+}
+
+.search-overlay__input:focus {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+/* width: auto beats the theme's full width button rule, which otherwise makes
+   this button 100% wide and squeezes the field out of the row. */
+.search-overlay__close {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  padding: 6px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--header-color);
+}
+
+.search-overlay__close:hover {
+  opacity: 0.6;
+}
+
+@media screen and (min-width: 980px) {
+  .search-overlay__panel {
+    padding: 40px 48px;
+  }
+
+  .search-overlay__input {
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header__nav,
+  .site-header__logo,
+  .site-header__rail,
+  .search-overlay__panel,
+  .search-overlay__backdrop,
+  ul.main-nav > li > a {
+    transition: none;
   }
 }
