@@ -57,17 +57,19 @@ td.cart-price {
   text-align: center;
 }
 
+/* !important is load-bearing here: #shopping-cart td above carries an id, so it
+   outranks these selectors on specificity. */
 td.cart-price,
 td.cart-remove,
 td.cart-quantity,
 .cart-total {
-  clear: none;
+  clear: none !important;
   float: left;
   width: 23%;
   margin: 1%;
-  display: inline-block;
+  display: inline-block !important;
   line-height: 48px;
-  border-bottom: 0;
+  border-bottom: 0 !important;
 }
 
 .ajaxifyCart--qty {
@@ -207,6 +209,7 @@ div#full-width-filter .filter {
     text-align: inherit;
   }
 
+  /* Matches the !important in the small-screen rule above. */
   td.cart-price,
   td.cart-remove,
   td.cart-quantity,
@@ -214,7 +217,7 @@ div#full-width-filter .filter {
     float: none;
     width: auto;
     margin: 0;
-    display: table-cell;
+    display: table-cell !important;
     line-height: inherit;
   }
 
@@ -292,7 +295,7 @@ div#full-width-filter .filter {
 
 /*
 * These two cannot be written mobile first. The slideshow caption sizes are set
-* from sections/slideshow.liquid in an inline <style> block whose values come
+* from sections/slideshow.liquid in an inline style block whose values come
 * from section settings, so the only way to beat them on small screens is an
 * !important override scoped to those screens - there is no fixed desktop value
 * to restore. .product-modal likewise suppresses a hover-reveal rule.
