@@ -41,7 +41,8 @@
     var section = root.closest ? root.closest('.shopify-section') : null;
     var wrapper = section || document.getElementById('shopify-section-header');
     var bar = (root.querySelector && root.querySelector('.announcement-bar')) || null;
-    if (!wrapper) return;
+    if (!wrapper || wrapper.dataset.announcementBound === 'true') return;
+    wrapper.dataset.announcementBound = 'true';
 
     function measure() {
       var h = bar ? Math.round(bar.getBoundingClientRect().height) : 0;

@@ -239,6 +239,7 @@
       --header-announcement-color: {{ section.settings.announcement_color }};
 
       --header-pill-border-width: {{ section.settings.pill_border_width }}px;
+      --header-shade: {{ section.settings.shading_strength | divided_by: 100.0 }};
       --header-pill-border-color: {{ section.settings.pill_border_color }};
       --header-pill-bg: {{ section.settings.pill_background }};
       --header-pill-bg-scrolled: {{ section.settings.pill_background_scrolled }};
@@ -379,7 +380,21 @@
       "label": "Menu outline width",
       "default": 1
     },
-    { "type": "color", "id": "pill_border_color", "label": "Menu outline", "default": "#262525" },
+    {
+      "type": "color",
+      "id": "pill_border_color",
+      "label": "Menu outline",
+      "default": "rgba(38,37,37,0.16)",
+      "info": "A low opacity tint of the text colour reads far softer than a solid line."
+    },
+    {
+      "type": "range",
+      "id": "shading_strength",
+      "min": 0, "max": 100, "step": 5, "unit": "%",
+      "label": "Shading",
+      "default": 40,
+      "info": "Subtle top-to-bottom shading on the menu and logo so they sit off the page. 0 turns it off."
+    },
     { "type": "color", "id": "pill_background", "label": "Menu background at top", "default": "#ffffff" },
     {
       "type": "color",
