@@ -54,7 +54,7 @@
     color: {{ section.settings.subheading_color }} !important;
     font-weight: {{ section.settings.subheading_font_weight }} !important;
     font-size: {{ section.settings.subheading_font_size }}px !important;
-    max-width: 60%;
+    max-width: 100%;
     margin: 0 auto !important;
     line-height: 24px;
     padding-bottom: 20px !important;
@@ -66,9 +66,9 @@
   .homepage-newsletter-{{ section.id }} p a:hover {
     text-decoration: underline;
   }
-  @media screen and (max-width: 500px) {
+  @media screen and (min-width: 980px) {
     .homepage-newsletter-{{ section.id }} p {
-      max-width: 100%;
+      max-width: 60%;
     }
   }
   .homepage-newsletter-{{ section.id }} ul#social-icons li a:hover {

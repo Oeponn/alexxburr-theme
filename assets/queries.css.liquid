@@ -1,123 +1,303 @@
-@media screen and (max-width: 980px) {
+/*
+* Small screen overrides.
+*
+* Mobile first: the rules below the banner are the phone/tablet layout and apply
+* unconditionally. The 980px block puts the desktop layout back. There is one
+* small max-width block at the bottom for rules that can only be expressed that
+* way - see the comment there.
+*/
+
+/* Cart ---------------------------------------------------------------------- */
+
+#continue-shopping a {
+  text-align: center;
+  display: block;
+  text-decoration: underline;
+  padding: 8px;
+}
+
+h3.total-price {
+  text-align: right;
+}
+
+#basket-right {
+  text-align: center;
+}
+
+.add {
+  width: 100%;
+}
+
+#shopping-cart thead {
+  display: none;
+}
+
+#shopping-cart td {
+  clear: left;
+  display: block;
+}
+
+#shopping-cart tr {
+  border-bottom: 1px solid {{ settings.dotted_color }};
+}
+
+.cart-title {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.cart-image {
+  display: block;
+  text-align: center;
+}
+
+td.cart-price {
+  text-align: center;
+}
+
+td.cart-price,
+td.cart-remove,
+td.cart-quantity,
+.cart-total {
+  clear: none;
+  float: left;
+  width: 23%;
+  margin: 1%;
+  display: inline-block;
+  line-height: 48px;
+  border-bottom: 0;
+}
+
+.ajaxifyCart--qty {
+  margin-bottom: 10px;
+}
+
+#looked-at {
+  display: none;
+}
+
+/* Sidebars and filters ------------------------------------------------------ */
+
+.show {
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+}
+
+#sidebar {
+  display: none;
+  text-align: center;
+}
+
+#sidebar.open {
+  display: block;
+}
+
+#sidebar ul li {
+  padding: 5px 0;
+}
+
+#page-sidebar {
+  margin-top: 20px;
+  text-align: center;
+}
+
+ul#sortme li.filter {
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+ul#sortme li.filter .styled-select {
+  width: 100%;
+  min-width: 100%;
+}
+
+div#full-width-filter .filter {
+  width: 100%;
+}
+
+/* Product and collection grids ---------------------------------------------- */
+
+/* Two up below the desktop breakpoint, so every odd card starts a new row. */
+.first {
+  clear: none;
+}
+
+.product-index:nth-child(2n + 1),
+.article-index:nth-child(2n + 1),
+.collection-index:nth-child(2n + 1) {
+  clear: left;
+}
+
+.grid-item.mobile-full {
+  width: 100%;
+  clear: both;
+}
+
+.product-quick-view {
+  width: 100%;
+}
+
+/* Misc ---------------------------------------------------------------------- */
+
+.homepage-promo .promo-inner p {
+  display: none;
+  opacity: 0;
+}
+
+#subscribe_popup {
+  width: 100%;
+}
+
+#subscribe_popup img {
+  min-width: 280px;
+}
+
+.mobile-search-form form input {
+  margin-bottom: 0;
+}
+
+/* Desktop ------------------------------------------------------------------- */
+
+@media screen and (min-width: 980px) {
   #continue-shopping a {
-    text-align: center;
-    display: block;
-    text-decoration: underline;
-    padding: 8px;
+    text-align: inherit;
+    display: inline;
+    text-decoration: none;
+    padding: 0;
   }
 
   h3.total-price {
+    text-align: inherit;
+  }
+
+  #basket-right {
     text-align: right;
   }
 
-  .additional-checkout-buttons {
-    margin-top: -8px;
+  .add {
+    width: auto;
   }
 
-}
-
-@media screen and (max-width: 980px) and (min-width: 740px) {
-  .product-quick-view {
-    width: 100%;
+  #shopping-cart thead {
+    display: table-header-group;
   }
 
-  .show {
-    text-align: center;
-    width: 100%;
-    display: block;
-    margin-bottom: 20px;
-  }
-
-  #sidebar {
-    display: none;
-    text-align: center;
-  }
-
-  #sidebar.open {
-    display: block;
-  }
-
-  #sidebar ul li {
-    padding: 5px 0;
-  }
-
-  .first {
+  #shopping-cart td {
     clear: none;
+    display: table-cell;
   }
 
-  .product-index:nth-child(2n+1),
-  .article-index:nth-child(2n+1) {
-    clear: left;
+  #shopping-cart tr {
+    border-bottom: 0;
   }
 
-  .flex-caption {
-    display: block !important;
-  }
-
-  .flex-caption h2.slide-title {
-    font-size: 24px !important;
-    margin-bottom: 5px !important;
-  }
-
-  .flex-caption p.caption {
-    font-size: 16px !important;
-  }
-
-  .flex-caption .cta {
-    margin-top: 15px !important;
-  }
-
-  .flex-caption .cta a {
-    font-size: 16px !important;
-    padding: 8px 10px !important;
-  }
-
-  .collection-index.desktop-3.tablet-2.mobile-half:nth-child(3n+1) {
-    clear: left;
-  }
-}
-
-@media screen and (max-width: 740px) {
-  #subscribe_popup img {
-    min-width: 280px;
-  }
-
-  .mobile-search-form form input {
+  .cart-title {
+    display: inline-block;
+    text-align: inherit;
+    margin-top: 0;
     margin-bottom: 0;
   }
 
-  .dl-menuwrapper {
-    display: block !important;
+  .cart-image {
+    display: inline-block;
+    text-align: inherit;
   }
 
-  .mobile-hide {
-    display: none;
+  td.cart-price,
+  td.cart-remove,
+  td.cart-quantity,
+  .cart-total {
+    float: none;
+    width: auto;
+    margin: 0;
+    display: table-cell;
+    line-height: inherit;
   }
 
-  .product-modal {
-    display: none !important;
+  td.cart-price {
+    text-align: inherit;
+  }
+
+  .ajaxifyCart--qty {
+    margin-bottom: 0;
+  }
+
+  #looked-at {
+    display: block;
   }
 
   .show {
-    text-align: center;
-    width: 100%;
-    display: block;
-    margin-bottom: 20px;
+    display: none;
   }
 
   #sidebar {
-    display: none;
-    text-align: center;
-  }
-
-  #sidebar.open {
     display: block;
+    text-align: inherit;
   }
 
   #sidebar ul li {
-    padding: 5px 0;
+    padding: 0;
   }
 
+  #page-sidebar {
+    margin-top: 0;
+    text-align: inherit;
+  }
+
+  ul#sortme li.filter {
+    width: auto;
+    margin: 0;
+  }
+
+  ul#sortme li.filter .styled-select {
+    width: auto;
+    min-width: 0;
+  }
+
+  .first {
+    clear: left;
+  }
+
+  .product-index:nth-child(2n + 1),
+  .article-index:nth-child(2n + 1),
+  .collection-index:nth-child(2n + 1) {
+    clear: none;
+  }
+
+  .homepage-promo .promo-inner p {
+    display: block;
+    opacity: 1;
+  }
+
+  #subscribe_popup img {
+    min-width: 0;
+  }
+
+  /* Row clearing for the desktop column counts. */
+  .collection-index.desktop-6:nth-child(2n + 1),
+  .collection-index.desktop-4:nth-child(3n + 1),
+  .collection-index.desktop-3:nth-child(4n + 1) {
+    clear: left;
+  }
+
+  .map-section-wrapper {
+    height: 400px;
+    margin-top: 20px;
+  }
+}
+
+/*
+* These two cannot be written mobile first. The slideshow caption sizes are set
+* from sections/slideshow.liquid in an inline <style> block whose values come
+* from section settings, so the only way to beat them on small screens is an
+* !important override scoped to those screens - there is no fixed desktop value
+* to restore. .product-modal likewise suppresses a hover-reveal rule.
+*/
+@media screen and (max-width: 979px) {
   .flex-caption {
     display: block !important;
     text-align: center !important;
@@ -142,140 +322,7 @@
     padding: 5px 8px !important;
   }
 
-  .homepage-promo .promo-inner p {
+  .product-modal {
     display: none !important;
-    opacity: 0 !important;
-  }
-
-  .product-thumbnails {
-    margin-top: 20px;
-  }
-  .product-thumbnail {
-    cursor: pointer;
-    display: inline-block;
-    width: 15%;
-  }
-  #mobile-product {
-    margin-bottom: 20px;
-    display: block;
-  }
-  .zoom-box {
-    width: 0 !important;
-    height: 0 !important;
-  }
-  #page-sidebar {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  #looked-at {
-    display: none;
-  }
-
-  #subscribe_popup {
-    width: 100%;
-  }
-
-  .collection-index:nth-child(2n+1) {
-    clear: left;
-  }
-
-  ul#sortme li.filter {
-    margin-bottom: 10px;
-    width: 100%;
-    margin: 0 0 10px 0;
-  }
-
-  ul#sortme li.filter .styled-select {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  .first {
-    clear: none;
-  }
-
-  .product-index:nth-child(2n+1),
-  .article-index:nth-child(2n+1) {
-    clear: left;
-  }
-
-  #basket-right {
-    text-align: center;
-  }
-
-  .add {
-    width: 100% !important;
-  }
-
-  #shopping-cart thead {
-    display: none;
-  }
-
-  #shopping-cart td {
-    clear: left;
-    display: block;
-  }
-
-  .cart-title {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
-  .cart-image {
-    display: block;
-    text-align: center;
-  }
-
-  td.cart-price {
-    text-align: center;
-  }
-
-  td.cart-price,
-  td.cart-remove,
-  td.cart-quantity,
-  .cart-total {
-    clear: none !important;
-    float: left;
-    width: 23%;
-    margin: 1%;
-    display: inline-block !important;
-    line-height: 48px;
-    border-bottom: 0 !important;
-  }
-
-  #shopping-cart tr {
-    border-bottom: 1px solid {{ settings.dotted_color }};
-  }
-
-  .grid-item.mobile-full {
-    width: 100%;
-    clear: both;
-  }
-
-  .ajaxifyCart--qty {
-    margin-bottom: 10px;
-  }
-}
-
-@media screen and ( min-width: 740px) {
-  .collection-index.desktop-4.tablet-2:nth-child(3n+1) {
-    clear: left;
-  }
-
-  .collection-index.desktop-6.tablet-3:nth-child(2n+1) {
-    clear: left;
-  }
-}
-
-@media screen and ( min-width: 981px) {
-  .collection-index.desktop-3.tablet-2.mobile-3:nth-child(4n+1) {
-    clear: left;
-  }
-  .map-section-wrapper {
-    height: 400px;
-    margin-top: 20px;
   }
 }

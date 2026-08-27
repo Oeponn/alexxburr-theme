@@ -214,9 +214,12 @@
                  .cp-{{ block.type }}-{{ block.id }} .homepage-promo {
                    margin-top: 0;
                  }
-                 @media screen and (max-width: 740px) {
+                 .cp-{{ block.type }}-{{ block.id }} .homepage-promo {
+                   margin-bottom: 15px;
+                 }
+                 @media screen and (min-width: 980px) {
                    .cp-{{ block.type }}-{{ block.id }} .homepage-promo {
-                     margin-bottom: 15px;
+                     margin-bottom: 0;
                    }
                  }
                </style>
@@ -278,7 +281,7 @@
                 .container-{{ block.id }} .background-image {
                   background-size: cover;
                   background-position: center center;
-                  height: {{ block.settings.image_height }}px;
+                  height: {{ block.settings.mobile_image_height }}px;
                 }
                 .container-{{ block.id }} .image-with-text-overlay {
                   position: relative;
@@ -289,17 +292,17 @@
                   position: absolute;
                   top: {{ block.settings.vertical_position }}%;
                   left: {{ block.settings.horizontal_position }}%;
-                  width: 500px;
+                  width: 100%;
                   -webkit-transform: translate(-{{ block.settings.horizontal_position }}%, -{{ block.settings.vertical_position }}%);
                   -ms-transform: translate(-{{ block.settings.horizontal_position }}%, -{{ block.settings.vertical_position }}%);
                   -moz-transform: translate(-{{ block.settings.horizontal_position }}%, -{{ block.settings.vertical_position }}%); -o-transform: translate(-{{ block.settings.horizontal_position }}%, -{{ block.settings.vertical_position }}%); transform: translate(-{{ block.settings.horizontal_position }}%, -{{ block.settings.vertical_position }}%);
                 }
-                @media screen and (max-width: 740px) {
+                @media screen and (min-width: 980px) {
                   .container-{{ block.id }} .image-with-text-overlay .caption {
-                    width: 100%;
+                    width: 500px;
                   }
                   .container-{{ block.id }} .background-image {
-                    height: {{ block.settings.mobile_image_height }}px;
+                    height: {{ block.settings.image_height }}px;
                   }
                 }
             </style>
@@ -404,10 +407,8 @@
                 .container-{{ block.id }} p a {
                   color: {{ block.settings.subheading_color }} !important;
                 }
-                @media screen and (max-width: 740px) {
-                  .container-{{ block.id }} p {
-                    max-width: 100%;
-                  }
+                .container-{{ block.id }} p {
+                  max-width: 100%;
                 }
                 .section-icons ul {
                   list-style: none;
@@ -484,7 +485,7 @@
         <style>
         /* Global CSS from each block type */
         {% assign padding = block.settings.block_padding | divided_by: 2 %}
-        @media screen and (min-width: 981px) {
+        @media screen and (min-width: 980px) {
             .container-{{ block.id }} {
               {% if block.settings.max_width %}
               max-width: {{ block.settings.max_width }}%;

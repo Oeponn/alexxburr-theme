@@ -34,7 +34,7 @@
   }
   {% endif %}
   #image-{{ section.id }}.image-with-text-overlay .image-wrapper {
-    height: {{ section.settings.height }}px;
+    height: {{ section.settings.mobile_height }}px;
   }
   #image-{{ section.id }}.image-with-text-overlay .image-overlay h2 {
     font-size: {{ section.settings.heading_font_size }}px;
@@ -56,9 +56,9 @@
     background-image: url({{ section.settings.image | img_url: '1024x' }});
     opacity: 1;
   }
-  @media screen and (max-width: 740px) {
+  @media screen and (min-width: 980px) {
     #image-{{ section.id }}.image-with-text-overlay .image-wrapper {
-      height: {{ section.settings.mobile_height }}px;
+      height: {{ section.settings.height }}px;
     }
   }
 </style>

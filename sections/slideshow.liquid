@@ -121,7 +121,13 @@
                 -moz-transform: translate(-{{ block.settings.caption_horizontal }}%, -{{ block.settings.caption_vertical }}%); -o-transform: translate(-{{ block.settings.caption_horizontal }}%, -{{ block.settings.caption_vertical }}%); transform: translate(-{{ block.settings.caption_horizontal }}%, -{{ block.settings.caption_vertical }}%);
               }
 
-              @media screen and (max-width: 740px) {
+              {%- comment -%}
+                Mobile only: swaps in the merchant's mobile image and its aspect
+                ratio. The desktop rules above are built from other settings, so
+                there is no fixed value to restore - this stays scoped to small
+                screens rather than inverted.
+              {%- endcomment -%}
+              @media screen and (max-width: 979px) {
                   {%- assign mobile_image = block.settings.mobile_image -%}
                   {% assign image_box_ratio = mobile_image.height | append: ".0" | times: 1 | divided_by: mobile_image.width | times: 100 | append: "%" %}
 

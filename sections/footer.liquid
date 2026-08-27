@@ -37,17 +37,18 @@
                 {% endfor %}
               </ul>
               <style>
-                  @media (min-width: 980px) {
+                  .footer-block.block-{{ block.id }} {
+                    display: inline-block;
+                    width: 49%;
+                    margin-top: 40px;
+                  }
+                  @media screen and (min-width: 980px) {
                     .footer-block.block-{{ block.id }} {
+                      display: block;
+                      width: auto;
+                      margin-top: 0;
                       flex-grow: 1;
                       flex-basis: 180px;
-                    }
-                  }
-                  @media (max-width: 740px) {
-                    .footer-block.block-{{ block.id }} {
-                      display: inline-block;
-                      width: 49%;
-                      margin-top: 40px;
                     }
                   }
               </style>
@@ -68,15 +69,14 @@
                   {% endif %}
                   {% endform %}
                   <style>
-                    @media (min-width: 980px) {
+                    .footer-block.block-{{ block.id }} {
+                      margin-top: 40px;
+                    }
+                    @media screen and (min-width: 980px) {
                       .footer-block.block-{{ block.id }} {
+                        margin-top: 0;
                         flex-grow: 2;
                         flex-basis: 400px
-                      }
-                    }
-                    @media (max-width: 740px) {
-                      .footer-block.block-{{ block.id }} {
-                        margin-top: 40px;
                       }
                     }
                   </style>
@@ -90,7 +90,7 @@
               {%- endif -%}
               {%- if block.settings.footer_text != blank -%}<p>{{ block.settings.footer_text }}</p>{%- endif -%}
               <style>
-                @media (min-width: 980px) {
+                @media screen and (min-width: 980px) {
                   .footer-block.block-{{ block.id }} {
                     flex-grow: 2;
                     flex-basis: 400px
@@ -220,7 +220,7 @@
     text-align: {{ section.settings.footer_text_align }};
   }
 
-  @media (min-width: 980px) {
+  @media screen and (min-width: 980px) {
     #footer {
   	   display: flex;
     }
@@ -271,7 +271,7 @@
     text-transform: capitalize;
   }
 
-  @media (min-width: 980px) {
+  @media screen and (min-width: 980px) {
     #footer #payment {
       text-align: {{ section.settings.footer_text_align }};
     }
@@ -289,34 +289,57 @@
       }
     {% endif %}
   }
-  @media (max-width: 740px) {
+  div#bottom-footer {
+    flex-wrap: wrap;
+  }
+  div#bottom-footer .footer-left {
+    width: 100%;
+    text-align: left;
+    order: 2;
+    margin-top: 31px;
+  }
+  div#bottom-footer .footer-right {
+    width: 100%;
+    text-align: left;
+    order: 1;
+  }
+  div#bottom-footer .selectors-form {
+    justify-content: flex-start;
+    margin: 0;
+  }
+  div#bottom-footer #payment {
+    text-align: left;
+  }
+  div#bottom-footer .footer-section .disclosure__toggle {
+    height: 44px;
+    width: 80px;
+  }
+  /* Harmless once the footer is a flex row at 980px. */
+  section.footer-block {
+    vertical-align: top;
+  }
+
+  @media screen and (min-width: 980px) {
     div#bottom-footer {
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
-    div#bottom-footer .footer-left {
-      width: 100%;
-      text-align: left;
-      order:2;
-      margin-top: 31px;
-    }
+    div#bottom-footer .footer-left,
     div#bottom-footer .footer-right {
-      width: 100%;
-      text-align: left;
-      order: 1;
+      width: auto;
+      text-align: inherit;
+      order: 0;
+      margin-top: 0;
     }
     div#bottom-footer .selectors-form {
-      justify-content: flex-start;
-      margin: 0;
+      justify-content: center;
+      margin: 0 0 10px;
     }
     div#bottom-footer #payment {
-      text-align: left;
+      text-align: {{ section.settings.footer_text_align }};
     }
-    div#bottom-footer  .footer-section .disclosure__toggle {
-      height: 44px;
-      width: 80px;
-    }
-    section.footer-block {
-      vertical-align: top;
+    div#bottom-footer .footer-section .disclosure__toggle {
+      height: auto;
+      width: auto;
     }
   }
 </style>

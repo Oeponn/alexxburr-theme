@@ -1,22 +1,14 @@
 /* Header section styles. Dynamic values come from the custom properties
-   emitted by sections/header.liquid. */
+   emitted by sections/header.liquid.
 
-/* div#upper-content {
-  width: 100%;
-  border: 5px solid red !important;
-} */
+   Mobile first: the base rules are the small screen header (hamburger, centred
+   logo, fixed to the top). The 980px block builds the desktop header on top. */
 
 .row {
   padding: 0 1rem;
 }
 
-@media screen and (min-width: 740px) {
-  #logo img {
-    /* max-width: var(--header-logo-max-width); */
-    max-width: 100px;
-    aspect-ratio: 1/1;
-  }
-}
+/* Shared ------------------------------------------------------------------- */
 
 #logo a {
   font-size: var(--header-logo-font-size);
@@ -31,15 +23,88 @@
 ul#main-nav li {
   line-height: var(--header-nav-height);
 }
+
 ul#main-nav li ul.submenu {
   top: var(--header-nav-height);
 }
+
 ul.megamenu {
   top: var(--header-nav-height);
 }
+
 nav {
   border-top: var(--header-nav-top-border-height) solid var(--header-nav-border-color);
   border-bottom: var(--header-nav-bottom-border-height) solid var(--header-nav-border-color);
+}
+
+/* Small screens ------------------------------------------------------------ */
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+  line-height: 40px;
+}
+
+.header-wrapper {
+  margin-top: var(--header-wrapper-margin-top);
+}
+
+#logo img {
+  max-width: 60%;
+}
+
+/* The desktop nav, search, account and social links all collapse into the
+   hamburger row on small screens. */
+ul#cart li.seeks,
+ul#cart li.cust,
+ul#cart li.lang-selector,
+ul#cart li.curr-selector,
+ul#cart li span.my-cart-text,
+ul#social-icons,
+#logo,
+nav {
+  display: none;
+}
+
+ul#cart {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0;
+  background: var(--header-wrapper-background);
+  grid-template-columns: 1fr 3fr 1fr;
+  align-items: center;
+}
+
+ul#cart li {
+  padding: 0 15px;
+}
+
+ul#cart li.mm-trigger {
+  text-align: left;
+  font-size: 18px;
+}
+
+ul#cart li.mobile-logo {
+  text-align: center;
+}
+
+/* Scales smoothly from 50px on a phone to 100px approaching the desktop
+   breakpoint, so the logo needs no breakpoint of its own. */
+li.mobile-logo a img {
+  vertical-align: middle;
+  max-width: clamp(50px, 12vw, 100px);
+}
+
+ul#cart li a,
+ul#cart li i {
+  color: var(--header-mobile-icons-color);
+}
+
+div#upper-content {
+  width: 100%;
 }
 
 /* Inline nav style. These rules only apply when sections/header.liquid renders
@@ -47,122 +112,108 @@ nav {
 .nav-inner-container {
   display: grid;
   grid-template-columns: 3fr 8fr 3fr;
+  width: 100%;
   margin: 0 auto;
   align-items: center;
   line-height: var(--header-nav-height);
   position: relative;
 }
+
 .nav-inner-container ul#main-nav {
   position: unset;
 }
+
 .nav-inner-container ul#main-nav li {
   line-height: unset;
 }
+
 .nav-inner-container div#logo {
   line-height: unset;
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
 .nav-inner-container #logo a {
   line-height: unset;
   display: block;
 }
+
 .nav-inner-container #logo a img {
   display: block;
   max-height: var(--header-nav-inline-logo-max-height);
 }
-@media screen and (min-width: 740px) {
-  .nav-inner-container {
-    width: 720px;
-  }
-}
-@media screen and (min-width: 980px) {
-  .nav-inner-container {
-    width: 960px;
-  }
-}
-@media screen and (min-width: 1220px) {
-  .nav-inner-container {
-    width: 1200px;
-  }
-}
-@media screen and (min-width: 1680px) {
-  .nav-inner-container {
-    width: 1400px;
-  }
-}
-.gridlock-fluid .row {
-  width: 100%;
-}
-@media screen and (max-width: 740px) {
-  .nav-inner-container {
-    width: 100%;
-  }
-}
 
-@media screen and (min-width: 981px) {
+/* Desktop ------------------------------------------------------------------ */
+
+@media screen and (min-width: 980px) {
+  header {
+    position: relative;
+    line-height: 48px;
+  }
+
+  .header-wrapper {
+    margin-top: 0;
+  }
+
+  div#upper-content {
+    width: auto;
+  }
+
+  #logo img {
+    max-width: 100px;
+    aspect-ratio: 1 / 1;
+  }
+
+  /* Restores the values these carry in stylesheet.css - the list items are
+     inline-block, the wrappers are ordinary blocks. */
+  ul#cart li.seeks,
+  ul#cart li.cust,
+  ul#cart li.lang-selector,
+  ul#cart li.curr-selector {
+    display: inline-block;
+  }
+
+  ul#cart li span.my-cart-text {
+    display: inline;
+  }
+
+  ul#social-icons,
+  #logo,
+  nav {
+    display: block;
+  }
+
+  ul#cart {
+    display: block;
+    width: auto;
+    padding: 0;
+    background: none;
+  }
+
+  ul#cart li {
+    padding: 0 0 0 10px;
+  }
+
   ul#cart li.mm-trigger,
   ul#cart li.mobile-logo {
     display: none;
   }
-}
 
-@media screen and (max-width: 980px) {
-  ul#cart li.seeks,
-  ul#cart li.cust,
-  ul#cart li.lang-selector,
-  ul#cart li.curr-selector,
-  ul#cart li span.my-cart-text,
-  ul#social-icons,
-  #logo,
-  nav {
-    display: none;
-  }
-  ul#cart {
-    display: grid;
-    width: 100%;
-    margin: 0;
-    padding: 10px 0;
-    background: var(--header-wrapper-background);
-    grid-template-columns: 1fr 3fr 1fr;
-    align-items: center;
-  }
-  ul#cart li.mm-trigger {
-    text-align: left;
-    font-size: 18px;
-  }
-  ul#cart li.mobile-logo {
-    text-align: center;
-  }
-  li.mobile-logo a img {
-    vertical-align: middle;
-    max-width: 100px;
-  }
-  div#upper-content {
-    width: 100%;
-  }
-  ul#cart li {
-    padding: 0 15px;
-  }
   ul#cart li a,
   ul#cart li i {
-    color: var(--header-mobile-icons-color);
+    color: inherit;
+  }
+
+  .nav-inner-container {
+    width: 92%;
+    max-width: 1200px;
   }
 }
-@media screen and (max-width: 740px) {
-  header {
-    line-height: 40px;
-  }
-  header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 5;
-  }
-  .header-wrapper {
-    margin-top: var(--header-wrapper-margin-top);
-  }
-  li.mobile-logo a img {
-    max-width: 50px;
+
+/* Ultra wide --------------------------------------------------------------- */
+
+@media screen and (min-width: 1600px) {
+  .nav-inner-container {
+    max-width: 1440px;
   }
 }
