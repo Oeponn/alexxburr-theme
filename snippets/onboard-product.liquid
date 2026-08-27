@@ -1,6 +1,6 @@
 {% comment %}Used for home page sections only when featured products is chosen but no content has been selected{% endcomment %}
 
-<div class="collection-carousel desktop-12 tablet-6 mobile-3" id="carousel-{{ section.id }}">  
+<div class="collection-carousel desktop-12" id="carousel-{{ section.id }}">  
 {% for i in (1..prod_limit) %}
 {% capture current %}{% cycle 1, 2, 3, 4, 5 %}{% endcapture %}
   {%- assign placeholder = 'product-' | append: current -%}

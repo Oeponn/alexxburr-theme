@@ -14,7 +14,7 @@
     {% render 'breadcrumb' %}
     {% endif %}
 
-    <div id="collection-description" class="desktop-12 tablet-6 mobile-3">
+    <div id="collection-description" class="desktop-12">
       <h1>{{ 'collections.general.all_collections' | t }}</h1>
       {% if section.settings.text != blank %}
       {{ section.settings.text }}
@@ -27,7 +27,7 @@
       <div id="product-loop">
         {% assign products-per-row = section.settings.grid %}
         {% for collection in collections %}
-        <div class="collection-index {% if products-per-row == 6 %}desktop-2{% cycle ' first', '', '', '', '', ' last' %}{% elsif products-per-row == 4 %}desktop-3{% cycle ' first', '', '', ' last' %}{% elsif products-per-row == 3 %}desktop-4{% cycle ' first', '', ' last' %}{% elsif products-per-row == 5 %}desktop-fifth{% cycle ' first', '', '', '', ' last' %}{% elsif products-per-row == 2 %}desktop-6{% cycle ' first', ' last' %}{% endif %} tablet-half mobile-half" data-alpha="{{ collection.title }}" {{ block.shopify_attributes }}>
+        <div class="collection-index {% if products-per-row == 6 %}desktop-2{% cycle ' first', '', '', '', '', ' last' %}{% elsif products-per-row == 4 %}desktop-3{% cycle ' first', '', '', ' last' %}{% elsif products-per-row == 3 %}desktop-4{% cycle ' first', '', ' last' %}{% elsif products-per-row == 5 %}desktop-fifth{% cycle ' first', '', '', '', ' last' %}{% elsif products-per-row == 2 %}desktop-6{% cycle ' first', ' last' %}{% endif %} mobile-half" data-alpha="{{ collection.title }}" {{ block.shopify_attributes }}>
           {% render 'collection-grid-item', collection: collection %}
         </div>
         {% endfor %}

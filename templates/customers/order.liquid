@@ -1,6 +1,6 @@
 <section class="customer-order">
   <div class="row">
-    <div class="desktop-12 tablet-6 mobile-3">
+    <div class="desktop-12">
       <a class="return-account" href="{{ routes.account_url }}"><i class="fa fa-angle-left"></i>&nbsp;&nbsp;{{ 'customer.account.link' | t }}</a>
       <h1>{{ 'customer.order.title' | t }} {{ order.name }}</h1>
     </div>
@@ -8,12 +8,12 @@
 
   <div class="row">
     {% if order.cancelled %}
-      <div id="order_cancelled" class="desktop-12 tablet-6 mobile-3">
+      <div id="order_cancelled" class="desktop-12">
         <h5 id="order_cancelled_title">{{ 'customer.order.cancelled' | t }} <span class="note">{{ order.cancelled_at | date: "%B %d, %Y %I:%M%p" }}</span></h5>
         <p class="note">{{ 'customer.order.cancelled_reason' | t }}</p>
       </div>
     {% endif %}
-    <div class="order-content desktop-8 tablet-6 mobile-3">
+    <div class="order-content desktop-8">
       <div id="order_details">
         <div class="labels">
           <p class="product">{{ 'customer.order.details.product' | t }}</p>
@@ -115,7 +115,7 @@
         </div>
       </div>
       <div class="row">
-        <div id="order_summary" class="desktop-5 desktop-push-7 tablet-6 mobile-3">
+        <div id="order_summary" class="desktop-5 desktop-push-7">
             <dl class="order_summary note">
               <dt class="label" colspan="4">{{ 'customer.order.details.subtotal' | t }}</dt>
               <dd class="total money">{{ order.line_items_subtotal_price | money }}</dd>
@@ -153,7 +153,7 @@
         </div>
       </div>
     </div>
-    <div class="order-sidebar desktop-4 tablet-6 mobile-3">
+    <div class="order-sidebar desktop-4">
       <div id="order_payment">
         <h5 class="order_section_title">{{ 'customer.order.billing_address' | t }}</h5>
         <div class="address note">

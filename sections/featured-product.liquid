@@ -42,7 +42,7 @@ data-section-type="product-section">
    "isQuick": false
 }{% endcapture %}
 
- <div class="product-photos desktop-7 tablet-3 mobile-3" data-product-gallery data-product-single-media-group data-gallery-config='{{ product_gallery_config }}'>
+ <div class="product-photos desktop-7" data-product-gallery data-product-single-media-group data-gallery-config='{{ product_gallery_config }}'>
    {%- if product.featured_media -%}
      {% render 'product-image-gallery',
        product: product,
@@ -55,7 +55,7 @@ data-section-type="product-section">
    {%- endif -%}
  </div>
 
- <div class="featured-product-form desktop-5 tablet-3 mobile-3">
+ <div class="featured-product-form desktop-5">
 
    {% if section.settings.vendor %}
      <h4>{{ product.vendor }}</h4>
@@ -102,7 +102,7 @@ data-section-type="product-section">
   {% endif %}
  </div>
 
-  <div class="featured-product-description desktop-8 desktop-push-2 tablet-6 mobile-3">
+  <div class="featured-product-description desktop-8 desktop-push-2">
    <div class="rte">
      {{ product.description }}
    </div>

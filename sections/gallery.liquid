@@ -11,22 +11,22 @@
       {% case block.settings.image_width %}
       {% when '25%' %}
       {%- assign image_size = '600x' -%}
-      {%- assign image_width = 'desktop-3 tablet-fourth' -%}
+      {%- assign image_width = 'desktop-3' -%}
       {% when '33%' %}
       {%- assign image_size = '600x' -%}
-      {%- assign image_width = 'desktop-4 tablet-2' -%}
+      {%- assign image_width = 'desktop-4' -%}
       {% when '50%' %}
       {%- assign image_size = '800x' -%}
-      {%- assign image_width = 'desktop-6 tablet-3' -%}
+      {%- assign image_width = 'desktop-6' -%}
       {% when '66%' %}
       {%- assign image_size = '1200x' -%}
-      {%- assign image_width = 'desktop-8 tablet-4' -%}
+      {%- assign image_width = 'desktop-8' -%}
       {% when '75%' %}
       {%- assign image_size = '1200x' -%}
-      {%- assign image_width = 'desktop-9 tablet-three-fourths' -%}
+      {%- assign image_width = 'desktop-9' -%}
       {% when '100%' %}
       {%- assign image_size = '1920x' -%}
-      {%- assign image_width = 'desktop-12 tablet-6 contained' -%}
+      {%- assign image_width = 'desktop-12 contained' -%}
       {% endcase %}
 
      {%- assign img_url = block.settings.image | img_url: image_size -%}

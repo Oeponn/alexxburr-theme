@@ -217,7 +217,7 @@
   <div class="map-section-wrapper gridlock-fluid">
     <div class="row">
       <div class="row {{ section.settings.text_position }}">
-        <div class="map-section-content-wrapper desktop-3 tablet-2 mobile-3">
+        <div class="map-section-content-wrapper desktop-3">
           <div class="map-section-content">
             {% if section.settings.hours_heading != blank %}
               <h2>{{ section.settings.hours_heading }}</h2>
@@ -244,7 +244,7 @@
             {% endif %}
           </div>
         </div>
-        <div class="map-section-background-wrapper contained desktop-9 tablet-4 mobile-3">
+        <div class="map-section-background-wrapper contained desktop-9">
           {%- if bg_image -%}
             <div class="map-section-image lazyload lazyload-fade"
               data-bgset="{% render 'bgset', image: bg_image %}"

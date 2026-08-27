@@ -14,7 +14,7 @@
       {% render 'breadcrumb' %}
     {% endif %}
 
-    <h1 class="page-title desktop-12 tablet-6 mobile-3">
+    <h1 class="page-title desktop-12">
       {% if current_tags %}
         {{ blog.title | link_to: blog.url }} &raquo; {{ current_tags.first }}
       {% else %}
@@ -23,7 +23,7 @@
     </h1>
 
     {% if section.settings.text != blank %}
-    <div class="desktop-12 tablet-6 mobile-3">
+    <div class="desktop-12">
       {{ section.settings.text }}
     </div>
     {% endif %}
@@ -32,7 +32,7 @@
     <div class="clear"></div>
 
     {% if section.settings.tiled_blog_layout %}
-      <div class="desktop-12 tablet-6 mobile-3">
+      <div class="desktop-12">
         <div id="article-loop">
           {% for article in blog.articles  %}
 
@@ -45,10 +45,10 @@
         </div>
       </div>
     {% else %}
-      <div id="blog-articles" class="desktop-9 tablet-6 mobile-3">
+      <div id="blog-articles" class="desktop-9">
         {% for article in blog.articles  %}
           <div class="single-article">
-            <div class="article-body desktop-12 tablet-6 mobile-3">
+            <div class="article-body desktop-12">
               <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
               {% if section.settings.show_author %}
                 <p class="posted author">{{ article.author }}</p>
@@ -91,7 +91,7 @@
           </div>
         {% endfor %}
       </div>
-      <div id="blog-sidebar" class="desktop-3 tablet-6 mobile-3">
+      <div id="blog-sidebar" class="desktop-3">
 
         {% for block in section.blocks %}
           {% if block.type == 'tags' %}

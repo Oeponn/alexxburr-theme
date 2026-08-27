@@ -20,7 +20,7 @@
 {% endcase %}
 
 {% capture logo %}
-<div id="logo"{% if nav_inline == false %} class="desktop-12 tablet-6 mobile-3"{% endif %}>
+<div id="logo"{% if nav_inline == false %} class="desktop-12"{% endif %}>
   {% if section.settings.logo != blank %}
   {%- assign image_size = '800x' -%}
   <a href="{{ routes.root_url }}">
@@ -41,7 +41,7 @@
       <div class="row">
         {% endif %}
         <div class="row" id="upper-content">
-          <ul id="social-icons" class="{% if section.settings.show_announcement_text %}desktop-4{% else%}desktop-6{% endif %} tablet-6 mobile-3">
+          <ul id="social-icons" class="{% if section.settings.show_announcement_text %}desktop-4{% else%}desktop-6{% endif %}">
             {% if settings.facebook_url != blank %}<li><a href="{{ settings.facebook_url }}" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>{% endif %}
             {% if settings.instagram_id != blank %}<li><a href="//instagram.com/{{ settings.instagram_id }}" target="_blank"><i class="fa fa-instagram fa-2x" aria-hidden="true"></i></a></li>{% endif %}
             {% if settings.twitter_url != blank %}<li><a href="{{ settings.twitter_url }}" target="_blank"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a></li>{% endif %}
@@ -53,11 +53,11 @@
             {% if settings.weibo_id != blank %}<li><a href="//weibo.com/{{ settings.weibo_id }}" target="_blank"><i class="fa fa-weibo fa-2x" aria-hidden="true"></i></a></li>{% endif %}
           </ul>
           {%- unless section.settings.show_announcement_text == false -%}
-            <div id="hello" class="desktop-4 tablet-6 mobile-3">
+            <div id="hello" class="desktop-4">
                 {{ section.settings.announcement_text }}
             </div>
           {%- endunless -%}
-          <ul id="cart" class="{% if section.settings.show_announcement_text %}desktop-4 {% else %}desktop-6{% endif %} tablet-6 mobile-3">
+          <ul id="cart" class="{% if section.settings.show_announcement_text %}desktop-4 {% else %}desktop-6{% endif %}">
             <li class="mm-trigger">
               <i class="fa fa-bars" aria-hidden="true"></i>
             </li>

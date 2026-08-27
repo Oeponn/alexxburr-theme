@@ -1,4 +1,4 @@
-<div id="pagination" class="desktop-12 tablet-6 mobile-3">
+<div id="pagination" class="desktop-12">
   <span class="count">{{ 'general.pagination.showing_items' | t }} {{ paginate.current_offset | plus: 1 }}-{% if paginate.next %}{{ paginate.current_offset | plus: paginate.page_size }}{% else %}{{ paginate.items }}{% endif %} {{ 'general.pagination.of' | t }} {{ paginate.items }}.</span>
   
   <div class="clear"></div> 

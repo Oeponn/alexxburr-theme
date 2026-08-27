@@ -22,7 +22,7 @@
    }{% endcapture %}
 
     <div class="product-top">
-      <div class="product-photos carousel-container desktop-7 tablet-3 mobile-3"
+      <div class="product-photos carousel-container desktop-7"
       data-product-gallery data-product-single-media-group data-gallery-config='{{ product_gallery_config }}'>
         {%- if product.featured_media -%}
           {% render 'product-image-gallery',
@@ -35,7 +35,7 @@
           {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
         {%- endif -%}
       </div>
-      <div id="product-right" class="desktop-5 tablet-3 mobile-3">
+      <div id="product-right" class="desktop-5">
         <div id="product-description">
           {% if settings.vendor %}
             <h3>{{ product.vendor }}</h3>

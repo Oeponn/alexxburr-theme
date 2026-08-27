@@ -16,7 +16,7 @@
  }{% endcapture %}
 
   <div class="product-top">
-    <div class="product-photos carousel-container desktop-7 tablet-3 mobile-3"
+    <div class="product-photos carousel-container desktop-7"
       data-product-gallery data-product-single-media-group data-gallery-config='{{ product_gallery_config }}'>
       {%- if product.featured_media -%}
         {% render 'product-image-gallery',
@@ -29,7 +29,7 @@
         {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
       {%- endif -%}
     </div>
-    <div id="product-right" class="desktop-5 tablet-3 mobile-3">
+    <div id="product-right" class="desktop-5">
       <div id="product-description">
         {% if settings.vendor %}
           <h3>{{ product.vendor }}</h3>
@@ -108,7 +108,7 @@
 
   {% if section.settings.product_description == 'bottom' %}
     <div class="clear"></div>
-    <div id="lower-description" class="desktop-8 desktop-push-2 tablet-6 mobile-3">
+    <div id="lower-description" class="desktop-8 desktop-push-2">
       <div class="section-title lines"><h2>{{ 'products.product.details' | t }}</h2></div>
       <div class="rte">{{ product.description }}</div>
     </div>

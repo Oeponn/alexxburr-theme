@@ -1,11 +1,11 @@
 <section class="customer-account">
 
   <div class="row">
-    <h1 class="desktop-12 tablet-6 mobile-3">{{ 'customer.account.title' | t }}</h1>
+    <h1 class="desktop-12">{{ 'customer.account.title' | t }}</h1>
   </div>
 
   <div class="row">
-    <div class="sidebar desktop-3 tablet-2 mobile-3">
+    <div class="sidebar desktop-3">
       <ul class="sidebar-nav">
         <li>
           <a class="account-details selected" onClick="Toggle('account-details')" href="javascript:void(0)">{{ 'customer.account.details' | t }}</a>
@@ -27,7 +27,7 @@
       </ul>
     </div>
 
-    <div class="content desktop-9 tablet-4 mobile-3">
+    <div class="content desktop-9">
       <div id="account-details" class="content-item">
         <h5 class="name">{{ customer.name }}</h5>
         <p class="email note">{{ customer.email }}</p>
@@ -69,7 +69,7 @@
         {% paginate customer.addresses by 12 %}
           <div class="row">
             {% for address in customer.addresses %}
-              <div id="view_address_{{address.id}}" class="customer_address desktop-4 tablet-6 mobile-3">
+              <div id="view_address_{{address.id}}" class="customer_address desktop-4">
                 <h4 class="address_title">
                   {% if address == customer.default_address %}{{ 'customer.addresses.default' | t }}{% endif %}
                 </h4>
@@ -84,7 +84,7 @@
                 </p>
 
                 {% comment %}Add an Address Popup {% endcomment %}
-                <div id="add-address" class="customer_address edit_address desktop-8 mobile-3" style="display:none;">
+                <div id="add-address" class="customer_address edit_address desktop-8" style="display:none;">
 
                   {% form 'customer_address', customer.new_address %}
 
@@ -146,7 +146,7 @@
                   {% endform %}
                 </div>
                 {% comment %} Edit an Address Popup {% endcomment %}
-                <div id="edit-address" class="customer_address edit_address desktop-8 desktop-push-2 tablet-6 mobile-3" style="display:none;">
+                <div id="edit-address" class="customer_address edit_address desktop-8 desktop-push-2" style="display:none;">
                   <h4 id="add_address_title">{{ 'customer.addresses.edit_address' | t }}</h4>
                   {% form 'customer_address', address %}
                   <table class="customer_address_table">
@@ -205,7 +205,7 @@
               </div>
             {% endfor %}
 
-            <div class="desktop-12 tablet-6 mobile-3">
+            <div class="desktop-12">
               <button class="new-address" data-src="#add-address" data-fancybox>{{ 'customer.addresses.add_new' | t }}</button>
               <div id="address_pagination">{{ paginate | default_pagination }}</div>
             </div>

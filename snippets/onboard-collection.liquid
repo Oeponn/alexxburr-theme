@@ -12,7 +12,7 @@
   {% capture current %}{{ forloop.index }}{% endcapture %}
   {%- assign placeholder = 'collection-' | append: current -%}
   
-  <div class="desktop-4 tablet-2 mobile-half" data-alpha="{{ collection.title }}" {{ block.shopify_attributes }}>
+  <div class="desktop-4 mobile-half" data-alpha="{{ collection.title }}" {{ block.shopify_attributes }}>
     {%- assign image_size = '500x' -%}
     <div class="collection-image ci onboard">
       <a href="{{ collection.url }}" title="{{ collection_title }}">

@@ -1,4 +1,4 @@
-<div id="shopping-cart" class="desktop-12 tablet-6 mobile-3">
+<div id="shopping-cart" class="desktop-12">
 
   <h2>{{ 'cart.general.title' | t }}</h2>
   {% if cart.item_count == 0 %}
@@ -177,15 +177,15 @@
       </tbody>
     </table>
     {% if settings.cart_notes_enable %}
-    <div id="cart-notes" class="desktop-9 tablet-6 mobile-3">
+    <div id="cart-notes" class="desktop-9">
       <label for="note"><strong>{{ 'cart.general.note' | t }}</strong></label>
       <textarea name="note" id="note" rows="5" cols="60">{{cart.note}}</textarea>
     </div>
     {% endif %}
-    <div id="continue-shopping" class="desktop-3 tablet-6 mobile-3">
+    <div id="continue-shopping" class="desktop-3">
       <a href="{{ routes.account_collections_url }}">{{ 'cart.general.continue' | t }}</a>
     </div>
-    <div id="basket-right" class="desktop-3 tablet-6 mobile-3">
+    <div id="basket-right" class="desktop-3">
       <div class="subtotal">
         <p class="title">{{ 'cart.general.subtotal' | t }}</p>
         <p class="subtotal-price"><span class="cart-original-total money">{{ cart.items_subtotal_price | money }}</span></p>
@@ -233,7 +233,7 @@
   </form>
   {% endif %}
 
-  <div id="looked-at" class="desktop-12 tablet-6 mobile-3">
+  <div id="looked-at" class="desktop-12">
     {% render 'recently-viewed', cart: cart %}
   </div>
 

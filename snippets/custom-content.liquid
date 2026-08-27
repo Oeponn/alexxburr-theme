@@ -13,7 +13,7 @@
 
           {% when 'page_title' %}
             <div class="container-{{ block.id }}">
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h1>{{ page.title }}</h1>
               </div>
             </div>
@@ -30,7 +30,7 @@
 
           {% when 'page_content' %}
             <div class="container-{{ block.id }}">
-              <div class="rte desktop-12 tablet-6 mobile-3">
+              <div class="rte desktop-12">
                 {{ page.content }}
               </div>
             </div>
@@ -44,7 +44,7 @@
           {% when 'page_contact_form' %}
             <div class="container-{{ block.id }}">
               {% if block.settings.heading != blank %}
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h3>{{ block.settings.heading | escape }}</h3>
               </div>
               {% endif %}
@@ -54,11 +54,11 @@
           {% when 'accordion' %}
             <div class="container-{{ block.id }}">
               {% if block.settings.heading != blank %}
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h3>{{ block.settings.heading }}</h3>
               </div>
               {% endif %}
-                <div class="rte-accordion desktop-12 tablet-6 mobile-3">
+                <div class="rte-accordion desktop-12">
                    {% for n in (1..10) %}
                      {% assign heading = "ac_heading_" | append: n %}
                      {% assign heading = block.settings[heading] | default: false %}
@@ -82,11 +82,11 @@
             {% when 'rich_text' %}
               <div class="container-{{ block.id }}">
                 {% if block.settings.rt_heading != blank %}
-                <div class="section-title desktop-12 tablet-6 mobile-3">
+                <div class="section-title desktop-12">
                   <h3>{{ block.settings.rt_heading }}</h3>
                 </div>
                 {% endif %}
-                <div class="rte desktop-12 tablet-6 mobile-3">
+                <div class="rte desktop-12">
                   {{ block.settings.rt_text }}
                 </div>
               </div>
@@ -123,7 +123,7 @@
                {% assign c_button = "button_" | append: n %}
                {% assign c_button = block.settings[c_button] | default: false %}
 
-               <div class="homepage-promo desktop-4 tablet-2 mobile-3 promo-{{ n }}">
+               <div class="homepage-promo desktop-4 promo-{{ n }}">
                  <div class="promo-inner">
                      {% if c_image != blank %}
                      <a href="{{ c_link }}">
@@ -233,7 +233,7 @@
             <div class="container-{{ block.id }}">
 
               {% if block.settings.link != blank and block.settings.button_text == blank %}<a class="section-promo-link" href="{{ block.settings.link }}">{% endif %}
-                <div class="image-with-text-overlay centered contained desktop-12 tablet-6 mobile-3">
+                <div class="image-with-text-overlay centered contained desktop-12">
                   {% if block.settings.image %}
                     <div class="background-image lazyload"
                     data-bgset="{% render 'bgset', image: block.settings.image %}"
@@ -311,18 +311,18 @@
           {% when 'collection_list' %}
             <div class="container-{{ block.id }}">
               {% if block.settings.heading != blank %}
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h3>{{ block.settings.heading | escape }}</h3>
               </div>
               {% endif %}
 
               {%- case block.settings.cl_collections_per_row -%}
               {%- when 2 -%}
-              {% assign column_width = 'desktop-6 tablet-6 mobile-half span-6' %}
+              {% assign column_width = 'desktop-6 mobile-half span-6' %}
               {%- when 3 -%}
-              {% assign column_width = 'desktop-4 tablet-6 mobile-half span-4' %}
+              {% assign column_width = 'desktop-4 mobile-half span-4' %}
               {%- when 4 -%}
-              {% assign column_width = 'desktop-3 tablet-6 mobile-half span-3' %}
+              {% assign column_width = 'desktop-3 mobile-half span-3' %}
               {%- endcase -%}
 
               {% for n in (1..4) %}
@@ -356,7 +356,7 @@
             <div class="container-{{ block.id }}">
 
               {% if block.settings.heading != blank %}
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h3>{{ block.settings.heading }}</h3>
               </div>
               {% endif %}
@@ -427,11 +427,11 @@
             <div class="container-{{ block.id }}">
 
               {% if block.settings.heading != blank %}
-              <div class="section-title desktop-12 tablet-6 mobile-3">
+              <div class="section-title desktop-12">
                 <h3>{{ block.settings.heading }}</h3>
               </div>
               {% endif %}
-              <div class="videoWrapper desktop-12 tablet-6 mobile-3 contained">
+              <div class="videoWrapper desktop-12 contained">
                 {% if block.settings.video_url == blank %}
                   <iframe src="//www.youtube.com/embed/_9VUPq3SxOc?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
                 {% else %}
@@ -451,7 +451,7 @@
           <div class="container-{{ block.id }}">
 
             {% if block.settings.heading != blank %}
-            <div class="section-title desktop-12 tablet-6 mobile-3">
+            <div class="section-title desktop-12">
               <h3>{{ block.settings.heading }}</h3>
             </div>
             {% endif %}
@@ -459,7 +459,7 @@
             {%- assign collection = collections[block.settings.collection] -%}
             {%- assign prod_limit = block.settings.limit -%}
 
-            <div class="collection-carousel desktop-12 tablet-6 mobile-3" id="carousel-{{ block.id }}" data-slideout-ignore>
+            <div class="collection-carousel desktop-12" id="carousel-{{ block.id }}" data-slideout-ignore>
               {% for product in collection.products limit: prod_limit %}
                 <div class="lazyOwl" id="product-listing-{{ product.id }}" data-alpha="{{ product.title }}" data-price="{{ product.price }}">
                   {% render 'product-listing', product: product, collection: collection %}

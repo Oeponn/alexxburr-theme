@@ -1,13 +1,13 @@
 <section class="index-section homepage-section animate wow fadeIn no-fouc" data-section-id="{{ section.id }}" data-section-type="homepage-products" >
   <div class="row">
     {% if section.settings.title != blank %}
-      <div class="section-title lines desktop-12 tablet-6 mobile-3"><h2>{{ section.settings.title | escape }}</h2></div>
+      <div class="section-title lines desktop-12"><h2>{{ section.settings.title | escape }}</h2></div>
     {% endif %}
 
     {%- assign collection = collections[section.settings.collection] -%}
     {%- assign prod_limit = section.settings.limit -%}
 
-    <div class="collection-carousel desktop-12 tablet-6 mobile-3" id="carousel-{{ section.id }}" data-slideout-ignore>
+    <div class="collection-carousel desktop-12" id="carousel-{{ section.id }}" data-slideout-ignore>
       {% for product in collection.products limit: prod_limit %}
         <div class="lazyOwl" id="product-listing-{{ product.id }}" data-product-id="{{ product.id }}" data-alpha="{{ product.title }}" data-price="{{ product.price }}">
           {% render 'product-listing', product: product, collection: collection %}

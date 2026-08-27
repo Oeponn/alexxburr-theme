@@ -3,20 +3,20 @@
   <div class="row">
 
       {% if section.settings.title != blank %}
-      <div class="section-title desktop-12 tablet-6 mobile-3 lines"><h2>{{ section.settings.title | escape }}</h2></div>
+      <div class="section-title desktop-12 lines"><h2>{{ section.settings.title | escape }}</h2></div>
       {% endif %}
 
     <div class="clear"></div>
     {% case section.blocks.size %}
     {% when 1 %}
     {%- assign image_size = '900x' -%}
-    {%- assign column_width = 'desktop-8 desktop-push-2 tablet-4 tablet-push-1' -%}
+    {%- assign column_width = 'desktop-8 desktop-push-2' -%}
     {% when 2 %}
     {%- assign image_size = '800x' -%}
-    {%- assign column_width = 'desktop-6 tablet-3' -%}
+    {%- assign column_width = 'desktop-6' -%}
     {% when 3 %}
     {%- assign image_size = '500x' -%}
-    {%- assign column_width = 'desktop-4 tablet-2' -%}
+    {%- assign column_width = 'desktop-4' -%}
     {% endcase %}
 
     {% for block in section.blocks %}

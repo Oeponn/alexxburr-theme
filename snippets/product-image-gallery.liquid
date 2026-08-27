@@ -8,7 +8,7 @@
      {% assign width = 'desktop-2' %}
     {% endif %}
 
-    <div id="thumbnails" class="thumb-slider thumbnail-slider custom {{ style }} {{ width }} tablet-1 mobile-hide"
+    <div id="thumbnails" class="thumb-slider thumbnail-slider custom {{ style }} {{ width }} mobile-hide"
     data-thumbnail-position="{{ thumbnail_position }}">
       <div class="thumb-slider-wrapper" id="thumb-slider-wrapper">
         <ul class="carousel-nav thumb-slider-slides slides product-single__thumbnails-{{ section.id }}">
@@ -48,9 +48,9 @@
 {% capture slider %}
   {% assign grid_width = "" %}
   {% if product.media.size > 1 and thumbnail_position != 'bottom' %}
-   {% assign grid_width = "desktop-10 tablet-5 mobile-3" %}
+   {% assign grid_width = "desktop-10" %}
   {% else %}
-   {% assign grid_width = "desktop-12 tablet-6 mobile-3" %}
+   {% assign grid_width = "desktop-12" %}
   {% endif %}
   <div id="slider" class=" {{ grid_width }}">
     <ul class="slides product-image-container carousel carousel-main">

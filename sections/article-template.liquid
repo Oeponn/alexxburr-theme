@@ -3,7 +3,7 @@
   {% assign number_of_comments = article.comments_count | plus: 1 %}
 {% endif %}
 
-<div id="page" class="desktop-12 tablet-6 mobile-3" data-section-id="{{ section.id }}" data-section-type="article-section">
+<div id="page" class="desktop-12" data-section-id="{{ section.id }}" data-section-type="article-section">
   {% paginate article.comments by 20 %}
 
   <div id="blog-article" class="desktop-push-2 desktop-8">
@@ -27,7 +27,7 @@
       <div class="rte">{{ article.content }}</div>
       {% render 'social' with article %}
 
-      <div id="product-navigation" class="desktop-12 tablet-6 mobile-3">
+      <div id="product-navigation" class="desktop-12">
         <div class="section-title lines"><h2>{{ 'blogs.article.more_posts' | t }}</h2></div>
         <div id="back-forth">
           {% if blog.previous_article %}
@@ -57,10 +57,10 @@
               <div class="comment-details">
                 {{ comment.author }}: {{ comment.created_at | date: "%B %d, %Y" }}
               </div>
-              <div class="gravatar desktop-1 tablet-1 mobile-1">
+              <div class="gravatar desktop-1 mobile-1">
                 <img src="//www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}" />
               </div>
-              <div class="comment desktop-11 tablet-5 mobile-2">
+              <div class="comment desktop-11 mobile-2">
                 {{ comment.content }}
               </div>
             </li>
