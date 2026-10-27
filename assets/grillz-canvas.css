@@ -17,11 +17,16 @@ body.index .content-wrapper {
 
 .grillz-stage__canvas {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
   z-index: -1;
   display: block;
   width: 100%;
-  height: 100%;
+  /* iOS Safari's toolbars grow and shrink while scrolling, which changes the
+     viewport height. Sizing to the largest viewport keeps the canvas (and the
+     drawing buffer) the same size throughout; it just runs under the bars. */
+  height: 100vh;
+  height: 100lvh;
   background: #0b0b0c;
   /* Vertical swipes still scroll the page; horizontal ones spin the model. */
   touch-action: pan-y;
@@ -32,8 +37,14 @@ body.index .content-wrapper {
    below the label. It fades once the stage has scrolled away. */
 .grillz-stage__hud {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 2;
+  /* The smallest viewport, so the cells the models are framed in don't
+     change size with the toolbars and the controls are never under them. */
+  height: 100vh;
+  height: 100svh;
   display: grid;
   grid-template-rows: 1fr 1fr;
   /* Room for the control bar so neither model sits under it. */

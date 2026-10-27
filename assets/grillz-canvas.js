@@ -16,6 +16,7 @@ if (root) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x0b0b0c);
   renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMappingExposure = 0.75;
   renderer.setScissorTest(true);
 
   // The classic chrome look: a bright sky, a hard dark band at the horizon
