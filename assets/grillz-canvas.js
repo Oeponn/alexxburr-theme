@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const root = document.querySelector('[data-grillz-canvas]');
 
@@ -16,17 +15,38 @@ if (root) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x0b0b0c);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.setScissorTest(true);
 
-  const environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  // A black studio with a few bright softboxes. Chrome only shows what it
+  // reflects, so the dark surroundings give the hard black/white contrast.
+  function studioEnvironment() {
+    const studio = new THREE.Scene();
+    studio.background = new THREE.Color(0x000000);
+    const panel = (width, height, intensity, position) => {
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        new THREE.MeshBasicMaterial({ color: new THREE.Color(intensity, intensity, intensity), side: THREE.DoubleSide }),
+      );
+      mesh.position.set(...position);
+      mesh.lookAt(0, 0, 0);
+      studio.add(mesh);
+    };
+    panel(6, 1.2, 6, [0, 5, 2]);      // overhead strip
+    panel(1, 6, 4, [-5, 0.5, 1.5]);   // left strip
+    panel(1, 6, 4, [5, 0.5, -1.5]);   // right strip
+    panel(4, 2.5, 2, [0, 1, -5]);     // back fill
+    panel(3, 0.4, 3, [0, -4, 3]);     // low kicker for the undersides
+    return new THREE.PMREMGenerator(renderer).fromScene(studio, 0.01).texture;
+  }
+  const environment = studioEnvironment();
 
-  // The exported material is flat white plastic; polished metal shows faceting
+  // The exported material is flat white plastic; mirror chrome shows faceting
   // far better, which is the point of this comparison. Both sides share it.
   const material = new THREE.MeshStandardMaterial({
-    color: 0xe4e5e9,
+    color: 0xffffff,
     metalness: 1,
-    roughness: 0.16,
+    roughness: 0.04,
     side: THREE.DoubleSide,
   });
 
@@ -51,8 +71,50 @@ if (root) {
     return { scene: gltf.scene, bytes: buffer.byteLength };
   }
 
-  // Top and bottom rows share a coordinate space, so they're centred and
-  // scaled together to keep the bite intact.
+  // World-space bounds and vertex centroid of everything under object.
+  function measure(object) {
+    object.updateWorldMatrix(true, true);
+    const box = new THREE.Box3().setFromObject(object);
+    const mean = new THREE.Vector3();
+    const vertex = new THREE.Vector3();
+    let count = 0;
+    object.traverse((node) => {
+      if (!node.isMesh) return;
+      const position = node.geometry.attributes.position;
+      for (let i = 0; i < position.count; i++) {
+        mean.add(vertex.fromBufferAttribute(position, i).applyMatrix4(node.matrixWorld));
+      }
+      count += position.count;
+    });
+    return { box, mean: mean.divideScalar(count), center: box.getCenter(new THREE.Vector3()) };
+  }
+
+  // Both rows are exported teeth-up, so the top row gets turned over and
+  // seated on the bottom one. The arch sits diagonally in the files, so its
+  // front-to-back direction is found from the geometry: a horseshoe's centroid
+  // leans towards the closed front end. Turning over around that axis keeps
+  // the front teeth facing forward.
+  function seatUpperRow(upper, lower) {
+    const pivot = new THREE.Group();
+    pivot.add(upper);
+
+    const before = measure(upper);
+    const frontBack = new THREE.Vector3(before.mean.x - before.center.x, 0, before.mean.z - before.center.z).normalize();
+    upper.position.sub(before.center);
+    pivot.position.copy(before.center);
+    pivot.quaternion.setFromAxisAngle(frontBack, Math.PI);
+
+    const flipped = measure(pivot);
+    const base = measure(lower);
+    const gap = (base.box.max.y - base.box.min.y) * 0.03;
+    pivot.position.x += base.mean.x - flipped.mean.x;
+    pivot.position.z += base.mean.z - flipped.mean.z;
+    pivot.position.y += base.box.max.y - flipped.box.min.y + gap;
+    return pivot;
+  }
+
+  // Files are [top, bottom]; they're centred and scaled as one so the bite
+  // stays intact.
   async function loadPair(urls) {
     const files = await Promise.all(urls.map(loadFile));
     const group = new THREE.Group();
@@ -64,8 +126,9 @@ if (root) {
         const geometry = node.geometry;
         triangles += (geometry.index ? geometry.index.count : geometry.attributes.position.count) / 3;
       });
-      group.add(scene);
     });
+    const [upper, lower] = files.map((file) => file.scene);
+    group.add(lower, seatUpperRow(upper, lower));
 
     const sphere = new THREE.Box3().setFromObject(group).getBoundingSphere(new THREE.Sphere());
     group.scale.setScalar(1 / sphere.radius);
@@ -161,7 +224,17 @@ if (root) {
       renderer.setSize(width, height, false);
       measureHeader();
     }
-    return { width, height };
+    return height;
+  }
+
+  // Each model is framed in the part of its HUD cell below the label, so it
+  // clears the header, the labels and the control bar.
+  const cells = [...root.querySelectorAll('.grillz-stage__cell')];
+  function viewport(cell) {
+    const outer = cell.getBoundingClientRect();
+    const label = cell.querySelector('.grillz-stage__label').getBoundingClientRect();
+    const top = label.bottom + 8;
+    return { left: outer.left, top, width: outer.width, height: Math.max(outer.bottom - top, 1) };
   }
 
   const clock = new THREE.Clock();
@@ -170,25 +243,24 @@ if (root) {
     const delta = clock.getDelta();
     if (spinning && !drag) yaw += delta * 0.4;
 
-    const { width, height } = resize();
-    const portrait = height > width;
-    const viewWidth = portrait ? width : width / 2;
-    const viewHeight = portrait ? height / 2 : height;
-
-    camera.aspect = viewWidth / viewHeight;
-    const verticalFov = THREE.MathUtils.degToRad(camera.fov);
-    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
-    const distance = 1.08 / Math.sin(Math.min(verticalFov, horizontalFov) / 2) / (zoomed ? 2.5 : 1);
-    camera.position.set(0, 0, distance);
-    camera.updateProjectionMatrix();
+    const height = resize();
+    renderer.setScissor(0, 0, canvas.clientWidth, height);
+    renderer.clear();
 
     sides.forEach((side, index) => {
+      const view = viewport(cells[index]);
+      camera.aspect = view.width / view.height;
+      const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+      const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+      const distance = 1.08 / Math.sin(Math.min(verticalFov, horizontalFov) / 2) / (zoomed ? 2.5 : 1);
+      camera.position.set(0, 0, distance);
+      camera.updateProjectionMatrix();
+
       side.pivot.rotation.set(pitch, yaw, 0);
-      // WebGL's origin is bottom-left; lite goes top (portrait) or left.
-      const x = portrait ? 0 : index * viewWidth;
-      const y = portrait ? (1 - index) * viewHeight : 0;
-      renderer.setViewport(x, y, viewWidth, viewHeight);
-      renderer.setScissor(x, y, viewWidth, viewHeight);
+      // WebGL's origin is bottom-left.
+      const y = height - view.top - view.height;
+      renderer.setViewport(view.left, y, view.width, view.height);
+      renderer.setScissor(view.left, y, view.width, view.height);
       renderer.render(side.scene, camera);
     });
   });

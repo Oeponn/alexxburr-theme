@@ -20,23 +20,24 @@ body.index .content-wrapper {
   inset: 0;
   z-index: -1;
   display: block;
-  width: 100vw;
-  height: 100vh;
-  height: 100lvh;
+  width: 100%;
+  height: 100%;
   background: #0b0b0c;
   /* Vertical swipes still scroll the page; horizontal ones spin the model. */
   touch-action: pan-y;
 }
 
 /* Overlay -------------------------------------------------------------------
-   Fixed so its halves line up with the canvas viewports, which are split from
-   the whole window. It fades once the stage has scrolled away. */
+   Fixed over the canvas; grillz-canvas.js frames each model inside its cell,
+   below the label. It fades once the stage has scrolled away. */
 .grillz-stage__hud {
   position: fixed;
   inset: 0;
   z-index: 2;
   display: grid;
   grid-template-rows: 1fr 1fr;
+  /* Room for the control bar so neither model sits under it. */
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   color: #f2f2f2;
   font: 500 12px/1.3 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0.02em;
