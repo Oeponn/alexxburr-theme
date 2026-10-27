@@ -18,11 +18,33 @@ if (root) {
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.setScissorTest(true);
 
-  // A black studio with a few bright softboxes. Chrome only shows what it
-  // reflects, so the dark surroundings give the hard black/white contrast.
+  // The classic chrome look: a bright sky, a hard dark band at the horizon
+  // and a mid-grey floor, plus a few softboxes for crisp highlights. Mostly
+  // bright surroundings keep it silver; the band gives the black streaks.
   function studioEnvironment() {
     const studio = new THREE.Scene();
-    studio.background = new THREE.Color(0x000000);
+
+    // Colour stops by height on a unit sphere, from floor (-1) to sky (1).
+    const stops = [[-1, 0.32], [-0.35, 0.22], [-0.06, 0.04], [0.04, 0.02], [0.14, 0.75], [0.5, 1.1], [1, 1.5]];
+    const shade = (y) => {
+      for (let i = 1; i < stops.length; i++) {
+        if (y <= stops[i][0]) {
+          const [y0, v0] = stops[i - 1];
+          const [y1, v1] = stops[i];
+          return v0 + (v1 - v0) * (y - y0) / (y1 - y0);
+        }
+      }
+      return stops[stops.length - 1][1];
+    };
+    const dome = new THREE.SphereGeometry(10, 64, 64);
+    const position = dome.attributes.position;
+    const colors = new Float32Array(position.count * 3);
+    for (let i = 0; i < position.count; i++) {
+      colors.fill(shade(position.getY(i) / 10), i * 3, i * 3 + 3);
+    }
+    dome.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    studio.add(new THREE.Mesh(dome, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
+
     const panel = (width, height, intensity, position) => {
       const mesh = new THREE.Mesh(
         new THREE.PlaneGeometry(width, height),
@@ -32,10 +54,9 @@ if (root) {
       mesh.lookAt(0, 0, 0);
       studio.add(mesh);
     };
-    panel(6, 1.2, 6, [0, 5, 2]);      // overhead strip
+    panel(6, 1.2, 5, [0, 5, 2]);      // overhead strip
     panel(1, 6, 4, [-5, 0.5, 1.5]);   // left strip
     panel(1, 6, 4, [5, 0.5, -1.5]);   // right strip
-    panel(4, 2.5, 2, [0, 1, -5]);     // back fill
     panel(3, 0.4, 3, [0, -4, 3]);     // low kicker for the undersides
     return new THREE.PMREMGenerator(renderer).fromScene(studio, 0.01).texture;
   }
@@ -46,7 +67,7 @@ if (root) {
   const material = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     metalness: 1,
-    roughness: 0.04,
+    roughness: 0.06,
     side: THREE.DoubleSide,
   });
 
@@ -252,7 +273,7 @@ if (root) {
       camera.aspect = view.width / view.height;
       const verticalFov = THREE.MathUtils.degToRad(camera.fov);
       const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
-      const distance = 1.08 / Math.sin(Math.min(verticalFov, horizontalFov) / 2) / (zoomed ? 2.5 : 1);
+      const distance = 0.85 / Math.sin(Math.min(verticalFov, horizontalFov) / 2) / (zoomed ? 2.5 : 1);
       camera.position.set(0, 0, distance);
       camera.updateProjectionMatrix();
 
