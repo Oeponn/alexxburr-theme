@@ -1,0 +1,137 @@
+/* Homepage canvas background ------------------------------------------------
+   The canvas sits at z-index -1 inside the slideout panel's stacking context,
+   so it paints over the panel's own background but under everything in flow.
+   The wrappers between it and the window have to be see-through for it to
+   show, which is only done on the homepage. */
+body.index .content-wrapper {
+  background: transparent;
+}
+
+.grillz-stage {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  /* Let touches fall through to the canvas behind. */
+  pointer-events: none;
+}
+
+.grillz-stage__canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  background: #0b0b0c;
+  /* Vertical swipes still scroll the page; horizontal ones spin the model. */
+  touch-action: pan-y;
+}
+
+/* Overlay -------------------------------------------------------------------
+   Fixed so its halves line up with the canvas viewports, which are split from
+   the whole window. It fades once the stage has scrolled away. */
+.grillz-stage__hud {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  color: #f2f2f2;
+  font: 500 12px/1.3 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.02em;
+  transition: opacity 0.25s ease;
+}
+
+.grillz-stage.is-scrolled-away .grillz-stage__hud {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.grillz-stage__cell {
+  position: relative;
+  padding: 16px;
+}
+
+.grillz-stage__cell:first-child {
+  /* Clear the sticky header pill, measured from grillz-canvas.js. */
+  padding-top: calc(var(--grillz-header-height, 72px) + 8px);
+}
+
+.grillz-stage__cell + .grillz-stage__cell {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.grillz-stage__label {
+  margin: 0;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.grillz-stage__label strong {
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.grillz-stage__label span {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+.grillz-stage__controls {
+  position: absolute;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.grillz-stage__segment {
+  display: flex;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.grillz-stage__controls button {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.grillz-stage__segment button {
+  background: transparent;
+}
+
+.grillz-stage__controls button[aria-pressed="true"] {
+  background: #f2f2f2;
+  color: #0b0b0c;
+}
+
+/* Landscape: side by side instead of stacked. */
+@media (orientation: landscape) {
+  .grillz-stage__hud {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grillz-stage__cell + .grillz-stage__cell {
+    border-top: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+    padding-top: calc(var(--grillz-header-height, 72px) + 8px);
+  }
+}

@@ -1,0 +1,60 @@
+{%- comment -%}
+  Full-page WebGL background for the homepage. For now it renders the reduced
+  (-lite) and full-resolution grillz next to each other so the simplification
+  can be judged on a phone: stacked in portrait, side by side in landscape.
+  The canvas is fixed behind the page; this section only reserves the first
+  screen so the rest of the homepage scrolls up over it.
+{%- endcomment -%}
+
+{{ 'grillz-canvas.css' | asset_url | stylesheet_tag }}
+
+<section class="grillz-stage" data-grillz-canvas>
+  <canvas class="grillz-stage__canvas" aria-hidden="true"></canvas>
+
+  <div class="grillz-stage__hud">
+    <div class="grillz-stage__cell">
+      <p class="grillz-stage__label"><strong>Lite</strong> <span data-grillz-stats="lite">loading…</span></p>
+    </div>
+    <div class="grillz-stage__cell">
+      <p class="grillz-stage__label"><strong>Full</strong> <span data-grillz-stats="full">loading…</span></p>
+    </div>
+
+    <div class="grillz-stage__controls">
+      <div class="grillz-stage__segment" role="group" aria-label="Style">
+        <button type="button" data-grillz-style="plain" aria-pressed="true">Plain</button>
+        <button type="button" data-grillz-style="abstract" aria-pressed="false">Abstract</button>
+      </div>
+      <button type="button" data-grillz-zoom aria-pressed="false">Zoom</button>
+      <button type="button" data-grillz-spin aria-pressed="true">Spin</button>
+    </div>
+  </div>
+
+  <script type="application/json" data-grillz-models>
+    {
+      "plain": {
+        "lite": [{{ 'grillz-plain-top-lite.glb' | asset_url | json }}, {{ 'grillz-plain-bottom-lite.glb' | asset_url | json }}],
+        "full": [{{ 'grillz-plain-top.glb' | asset_url | json }}, {{ 'grillz-plain-bottom.glb' | asset_url | json }}]
+      },
+      "abstract": {
+        "lite": [{{ 'grillz-abstract-top-lite.glb' | asset_url | json }}, {{ 'grillz-abstract-bottom-lite.glb' | asset_url | json }}],
+        "full": [{{ 'grillz-abstract-top.glb' | asset_url | json }}, {{ 'grillz-abstract-bottom.glb' | asset_url | json }}]
+      }
+    }
+  </script>
+</section>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module" src="{{ 'grillz-canvas.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Grillz canvas"
+}
+{% endschema %}
