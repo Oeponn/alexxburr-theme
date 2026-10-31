@@ -127,7 +127,7 @@
                  <div class="promo-inner">
                      {% if c_image != blank %}
                      <a href="{{ c_link }}">
-                       {% render 'basic-responsive-image' | type: c_image %}
+                       {% render 'basic-responsive-image', type: c_image %}
                        <noscript>
                          <img src="{{ c_image | img_url: '800x' }}" alt="{{ c_image.alt }}">
                        </noscript>
@@ -545,3 +545,13 @@
 </style>
 
 </div>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'basic-responsive-image' | type: c_image %}"
+  to: "{% render 'basic-responsive-image', type: c_image %}"
+  position: 5310..5362
+{% endcomment %}
