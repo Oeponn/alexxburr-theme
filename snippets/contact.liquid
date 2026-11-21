@@ -47,3 +47,14 @@
 {% endform %}
 
 <div class="clear"></div>
+
+{%- comment -%} Prefill the message when coming from a piece's "Inquire" link (?piece=Name). {%- endcomment -%}
+<script>
+  (function () {
+    var piece = new URLSearchParams(window.location.search).get('piece');
+    var message = document.getElementById('contactFormMessage');
+    if (piece && message && !message.value) {
+      message.value = 'Hi, I\'m interested in a piece like the ' + piece.slice(0, 120) + '. ';
+    }
+  })();
+</script>

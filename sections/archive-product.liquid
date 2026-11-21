@@ -1,0 +1,62 @@
+{%- comment -%}
+  Product page for past work (template suffix "archive"). Shows the piece's
+  photos and videos with no price or buy button, just a link to inquire.
+{%- endcomment -%}
+
+{{ 'archive-product.css' | asset_url | stylesheet_tag }}
+
+{%- assign contact_url = section.settings.inquire_url | default: '/pages/contact' -%}
+
+<div class="archive-product">
+  <div class="archive-product__media">
+    {%- for media in product.media -%}
+      {%- case media.media_type -%}
+        {%- when 'image' -%}
+          {%- if forloop.first -%}{%- assign loading = 'eager' -%}{%- else -%}{%- assign loading = 'lazy' -%}{%- endif -%}
+          {{ media | image_url: width: 1600 | image_tag:
+            widths: '600, 900, 1200, 1600',
+            sizes: '(min-width: 990px) 55vw, 100vw',
+            loading: loading,
+            class: 'archive-product__slide',
+            alt: media.alt | default: product.title }}
+        {%- when 'video' -%}
+          {{ media | video_tag:
+            class: 'archive-product__slide',
+            controls: true,
+            autoplay: false,
+            loop: true,
+            muted: true,
+            playsinline: true,
+            preload: 'metadata',
+            image_size: '1200x' }}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="archive-product__info">
+    <h1 class="archive-product__title">{{ product.title }}</h1>
+    {%- if product.type != blank -%}
+      <p class="archive-product__meta">
+        {{ product.type }}
+        {%- if product.metafields.custom.made_on != blank %} &middot; {{ product.metafields.custom.made_on.value | date: '%B %Y' }}{% endif -%}
+      </p>
+    {%- endif -%}
+    <div class="archive-product__description rte">{{ product.description }}</div>
+    <p class="archive-product__note">One-off custom piece. Not available to buy directly.</p>
+    <a class="archive-product__inquire" href="{{ contact_url }}?piece={{ product.title | url_encode }}">Inquire about a piece like this</a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Archive product",
+  "settings": [
+    {
+      "type": "url",
+      "id": "inquire_url",
+      "label": "Inquiry page",
+      "info": "The piece name is passed along and prefilled in the contact form."
+    }
+  ]
+}
+{% endschema %}

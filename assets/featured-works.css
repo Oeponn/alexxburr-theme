@@ -1,0 +1,201 @@
+/* Featured works grid + piece sheet ------------------------------------------
+   Mobile first: two tiles per row on phones, three on tablets, four on
+   desktop. Basic look for now; the Frutiger Aero styling comes later. */
+
+.featured-works {
+  padding: 24px 12px 48px;
+}
+
+.featured-works__heading {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.featured-works__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.featured-works__item {
+  margin: 0;
+}
+
+.featured-works__tile {
+  /* Undo the theme's global button styles (fixed 50px height, margins). */
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  letter-spacing: normal;
+  border-radius: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.featured-works__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f2f6fa;
+  transition: transform 0.2s ease;
+}
+
+.featured-works__tile:active .featured-works__image {
+  transform: scale(0.97);
+}
+
+.featured-works__title {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+@media (min-width: 750px) {
+  .featured-works { padding: 40px 24px 64px; }
+  .featured-works__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
+
+@media (min-width: 1100px) {
+  .featured-works__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 1400px; margin: 0 auto; }
+}
+
+/* Sheet: slides up from the bottom on phones, centered card on wider screens. */
+.work-sheet {
+  width: 100%;
+  max-width: 100%;
+  max-height: 92vh;
+  max-height: 92dvh;
+  margin: auto 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 20px 20px 0 0;
+  background: #fff;
+  color: inherit;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.work-sheet::backdrop {
+  background: rgba(10, 20, 30, 0.45);
+}
+
+.work-sheet[open] {
+  animation: work-sheet-up 0.25s ease-out;
+}
+
+@keyframes work-sheet-up {
+  from { transform: translateY(40px); opacity: 0; }
+}
+
+.work-sheet__close {
+  position: sticky;
+  top: 8px;
+  z-index: 2;
+  float: right;
+  width: 36px;
+  max-width: 36px;
+  height: 36px;
+  margin: 8px 8px -44px 0;
+  padding: 0;
+  color: #111;
+  letter-spacing: normal;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 24px;
+  line-height: 36px;
+  cursor: pointer;
+}
+
+.work-sheet__media {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.work-sheet__media::-webkit-scrollbar { display: none; }
+
+.work-sheet__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  scroll-snap-align: center;
+  background: #f2f6fa;
+}
+
+.work-sheet__body {
+  padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+}
+
+.work-sheet__title {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.work-sheet__text {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.work-sheet__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.work-sheet__inquire,
+.work-sheet__details {
+  display: block;
+  padding: 14px 16px;
+  border-radius: 999px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.work-sheet__inquire {
+  background: #2b8fd6;
+  color: #fff;
+}
+
+.work-sheet__details {
+  border: 1px solid #c9d6e2;
+  color: inherit;
+}
+
+@media (min-width: 750px) {
+  .work-sheet {
+    width: 560px;
+    margin: auto;
+    border-radius: 20px;
+  }
+  .work-sheet__actions { flex-direction: row; }
+  .work-sheet__actions a { flex: 1; }
+}
+
+/* The theme colors headings from a setting that's currently white. */
+.featured-works__heading,
+.work-sheet__title {
+  color: #111;
+}

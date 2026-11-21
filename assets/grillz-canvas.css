@@ -1,9 +1,10 @@
-/* Homepage canvas background ------------------------------------------------
+/* Test page canvas background -----------------------------------------------
    The canvas sits at z-index -1 inside the slideout panel's stacking context,
    so it paints over the panel's own background but under everything in flow.
    The wrappers between it and the window have to be see-through for it to
-   show, which is only done on the homepage. */
-body.index .content-wrapper {
+   show, which is only done on the test page (body class from the
+   page.test template). */
+body.page-test .content-wrapper {
   background: transparent;
 }
 

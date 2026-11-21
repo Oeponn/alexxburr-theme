@@ -1,9 +1,10 @@
 {%- comment -%}
-  Full-page WebGL background for the homepage. For now it renders the reduced
+  Full-page WebGL background, currently only on the /pages/test page
+  (templates/page.test.liquid). For now it renders the reduced
   (-lite) and full-resolution grillz next to each other so the simplification
   can be judged on a phone: stacked in portrait, side by side in landscape.
   The canvas is fixed behind the page; this section only reserves the first
-  screen so the rest of the homepage scrolls up over it.
+  screen so the rest of the page scrolls up over it.
 {%- endcomment -%}
 
 {{ 'grillz-canvas.css' | asset_url | stylesheet_tag }}
