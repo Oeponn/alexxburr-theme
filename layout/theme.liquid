@@ -75,7 +75,7 @@
     {% endif %}
 
     <div class="content-wrapper">
-      {% if template == 'index' or template contains 'blog' or template contains 'list-collections' or template.suffix contains 'custom' or template.suffix == 'test' %}
+      {% if template == 'index' or template contains 'blog' or template contains 'list-collections' or template.suffix contains 'custom' or template.suffix == 'test' or template.suffix == 'builder' %}
         {{ content_for_layout }}
       {% else %}
         <div id="content" class="row">

@@ -40,6 +40,12 @@ New UI should follow this style rather than the stock Testament look.
 
 ## Pages
 
+- Header menu (`main-menu`) splits around the logo: WORK, BUILDER | INSTAGRAM,
+  CONTACT. `sections/header.liquid` puts half the links on each side.
+- `/pages/builder`: `templates/page.builder.liquid`
+  (`sections/builder-coming-soon.liquid`), a coming-soon placeholder for the
+  future 3D grillz builder.
+
 - `/pages/test` (redirect from `/test`): `templates/page.test.liquid`, the
   spinning grillz WebGL canvas (`sections/grillz-canvas.liquid`,
   `assets/grillz-canvas.*`). Moved off the homepage; it's a test bed, not
