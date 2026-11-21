@@ -7,6 +7,7 @@
 {%- endcomment -%}
 
 {{ 'featured-works.css' | asset_url | stylesheet_tag }}
+{{ 'carousel.css' | asset_url | stylesheet_tag }}
 
 {%- assign works_handle = section.settings.collection | default: 'featured-works' -%}
 {%- assign works = collections[works_handle] -%}
@@ -34,7 +35,7 @@
         </button>
 
         <template data-work-sheet>
-          <div class="work-sheet__media">
+          <div class="work-sheet__media" data-carousel>
             {%- for media in product.media -%}
               {%- case media.media_type -%}
                 {%- when 'image' -%}
@@ -78,6 +79,7 @@
   </dialog>
 </section>
 
+<script src="{{ 'carousel.js' | asset_url }}" defer></script>
 <script src="{{ 'featured-works.js' | asset_url }}" defer></script>
 
 {% schema %}

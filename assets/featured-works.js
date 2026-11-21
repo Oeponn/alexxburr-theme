@@ -16,11 +16,8 @@
         content.replaceChildren(template.content.cloneNode(true));
         dialog.showModal();
         dialog.scrollTop = 0;
-        // Videos autoplay muted once the sheet is open.
-        content.querySelectorAll('video').forEach(function (video) {
-          video.muted = true;
-          video.play().catch(function () {});
-        });
+        // Arrows/dots; also plays the video on the current slide only.
+        if (window.Carousel) window.Carousel.init(content.querySelector('[data-carousel]'));
       });
     });
 

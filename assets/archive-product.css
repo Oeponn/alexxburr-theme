@@ -58,6 +58,11 @@
     gap: 12px;
     overflow: visible;
   }
+  /* No swiping on desktop, so no arrows or dots. */
+  .archive-product .carousel__arrow,
+  .archive-product .carousel__dots {
+    display: none;
+  }
   .archive-product__info {
     position: sticky;
     top: 120px;

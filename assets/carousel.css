@@ -1,0 +1,88 @@
+/* Swipe carousel controls (assets/carousel.js). */
+.carousel {
+  position: relative;
+}
+
+.carousel__arrow {
+  /* Undo the theme's global button styles. */
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  max-width: 40px;
+  height: 40px;
+  margin: -20px 0 0;
+  padding: 0 0 4px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  color: #111;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: normal;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.carousel__arrow:hover {
+  background: #fff;
+  color: #111;
+}
+
+.carousel__arrow--prev { left: 10px; }
+.carousel__arrow--next { right: 10px; }
+
+.carousel__arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carousel__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.carousel__dot {
+  /* 24px tap target around an 8px dot. */
+  width: 24px;
+  max-width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.carousel__dot::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 8px;
+  border-radius: 50%;
+  /* White with a faint outline so the dots read on light and dark photos. */
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel__dot:hover {
+  background: none;
+}
+
+.carousel__dot[aria-current='true']::before {
+  background: #2b8fd6;
+  transform: scale(1.25);
+}

@@ -125,7 +125,7 @@
       "linklist_2_title": "SHOP BY XXX",
       "linklist_3_title": "SHOP BY XXX",
       "linklist_4_title": "SHOP BY XXX",
-      "designers": "EXHIBIT Y"
+      "designers": "ALEXX BURR"
     },
     "sorting": {
       "title": "",
@@ -163,7 +163,7 @@
   },
   "customer": {
     "account": {
-      "title": "MY EXHIBIT Y",
+      "title": "MY ACCOUNT",
       "link": "BACK",
       "details": "ACCOUNT DETAILS",
       "returns_content": "RETURNS/EXCHANGES",
@@ -319,7 +319,7 @@
       "popup_question": "For questions regarding sizing, returns, and other inquiries, submit via contact tab on our site",
       "add_to_cart_success_link": "View bag and checkout",
       "add_to_cart_success_html": "Item added to bag {{ link }}",
-      "brand": "EXHIBIT Y",
+      "brand": "ALEXX BURR",
       "product_type": "Product type",
       "product_sku": "SKU",
       "view_in_space": "View in your space",

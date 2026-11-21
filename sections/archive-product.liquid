@@ -4,11 +4,13 @@
 {%- endcomment -%}
 
 {{ 'archive-product.css' | asset_url | stylesheet_tag }}
+{{ 'carousel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'carousel.js' | asset_url }}" defer></script>
 
 {%- assign contact_url = section.settings.inquire_url | default: '/pages/contact' -%}
 
 <div class="archive-product">
-  <div class="archive-product__media">
+  <div class="archive-product__media" data-carousel>
     {%- for media in product.media -%}
       {%- case media.media_type -%}
         {%- when 'image' -%}

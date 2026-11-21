@@ -31,6 +31,13 @@ New UI should follow this style rather than the stock Testament look.
 - `config/settings_data.json` is rewritten by the theme editor; keep edits to it
   small.
 
+## Contact
+
+- Instagram https://www.instagram.com/alexxburrrr/ or call/text
+  (248) 228-5162. The site's old name was Exhibit Y (exhibity.co); don't
+  reintroduce it. The only remaining trace is the permanent
+  `exhibit-y-online.myshopify.com` store address, which can't change.
+
 ## Pages
 
 - `/pages/test` (redirect from `/test`): `templates/page.test.liquid`, the
@@ -51,6 +58,15 @@ New UI should follow this style rather than the stock Testament look.
 - Homepage: `sections/featured-works.liquid` (static, top of
   `templates/index.liquid`). Two per row on phones; tapping a tile opens a
   sheet with the media and an inquire link.
+- Swipe galleries (homepage sheet, product page on phones) use
+  `assets/carousel.js` / `carousel.css`: mark the scroll-snap strip with
+  `data-carousel` and it gets arrows, dots, and play-current-video-only.
+- Product photos were background-matched to Open Monogram Tooth Caps photo 1
+  (top-edge background ~RGB 250). New photos should match that.
+- Files (Content → Files) holds only the current pieces' media and
+  `alexxburr_logo.png`, which is the header logo, favicon and default share
+  image (`images['alexxburr_logo.png']` in `snippets/social-meta-tags.liquid`).
+  Reuse that file rather than uploading the logo again.
 - Inquire links go to `/pages/contact?piece=<title>`; `snippets/contact.liquid`
   prefills the message from `piece`.
 - The theme's global `button` rule sets `height: 50px` and margins; reset them
