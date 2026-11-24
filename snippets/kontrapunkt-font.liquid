@@ -1,0 +1,29 @@
+{%- comment -%}
+  Kontrapunkt display face (Bold 700, Light 300), rendered in <head>.
+  Kontrapunkt by Kontrapunkt A/S, CC BY-SA 3.0 (kontrapunkt.com/type).
+  The woff2 files are straight format conversions of the original OTFs,
+  with the glyphs unchanged.
+  Use var(--font-display) for key display type: the footer wordmark, header
+  menu, section headings and piece titles. Labels stay on the mono stack.
+{%- endcomment -%}
+<link rel="preload" href="{{ 'kontrapunkt-bold.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face {
+    font-family: 'Kontrapunkt';
+    src: url('{{ 'kontrapunkt-bold.woff2' | asset_url }}') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Kontrapunkt';
+    src: url('{{ 'kontrapunkt-light.woff2' | asset_url }}') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --font-display: 'Kontrapunkt', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  }
+</style>

@@ -1,6 +1,7 @@
 // Swipe carousel controls: prev/next arrows and dots for a horizontal
 // scroll-snap strip marked [data-carousel]. Plays the video on the current
-// slide and pauses the rest. Only adds controls when there's more than one slide.
+// slide and pauses the rest. Only adds controls when there's more than one slide;
+// both arrows always show and the one at either end is disabled.
 (function () {
   function init(scroller) {
     if (!scroller || scroller.dataset.carouselReady) return;

@@ -1,0 +1,134 @@
+{%- comment -%}
+  Site footer: contemporary industrial / light brutalist. White ground, black
+  and dark gray type, hard rules between cells, mono index labels.
+  Layout: a ruled grid of three cells (studio, contact, index), a full-width
+  wordmark, then a bottom bar with copyright and back-to-top.
+  Stacked on phones, three columns from 750px.
+{%- endcomment -%}
+
+{{ 'site-footer.css' | asset_url | stylesheet_tag }}
+
+{%- assign footer_menu = linklists.footer -%}
+{%- if section.settings.menu != blank -%}
+  {%- assign footer_menu = linklists[section.settings.menu] -%}
+{%- endif -%}
+{%- assign ig_url = section.settings.instagram_url | default: 'https://www.instagram.com/alexxburrrr/' -%}
+{%- assign wordmark = section.settings.wordmark | default: shop.name -%}
+
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__grid">
+    <div class="site-footer__cell">
+      <p class="site-footer__label"><span>01</span> Studio</p>
+      {%- if section.settings.tagline != blank -%}
+        <p class="site-footer__tagline">{{ section.settings.tagline | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.note != blank -%}
+        <p class="site-footer__note">{{ section.settings.note | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="site-footer__cell">
+      <p class="site-footer__label"><span>02</span> Contact</p>
+      <ul class="site-footer__list" role="list">
+        <li>
+          <a class="site-footer__row" href="{{ ig_url }}" target="_blank" rel="noopener">
+            <span class="site-footer__key">Instagram</span>
+            <span class="site-footer__value">{{ section.settings.instagram_handle | default: '@alexxburrrr' | escape }}</span>
+            <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+          </a>
+        </li>
+        {%- if section.settings.phone != blank -%}
+          {%- assign tel = section.settings.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' | remove: '.' -%}
+          <li>
+            <a class="site-footer__row" href="sms:+1{{ tel }}">
+              <span class="site-footer__key">Text</span>
+              <span class="site-footer__value">{{ section.settings.phone | escape }}</span>
+              <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__row" href="tel:+1{{ tel }}">
+              <span class="site-footer__key">Call</span>
+              <span class="site-footer__value">{{ section.settings.phone | escape }}</span>
+              <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    {%- if footer_menu.links.size > 0 -%}
+      <nav class="site-footer__cell" aria-label="Footer">
+        <p class="site-footer__label"><span>03</span> Index</p>
+        <ul class="site-footer__list" role="list">
+          {%- for link in footer_menu.links -%}
+            <li>
+              <a class="site-footer__row" href="{{ link.url }}">
+                <span class="site-footer__key">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="site-footer__value">{{ link.title | escape }}</span>
+                <span class="site-footer__arrow" aria-hidden="true">&#8594;</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  <p class="site-footer__wordmark" aria-hidden="true">{{ wordmark | escape }}</p>
+
+  <div class="site-footer__bottom">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}</p>
+    <a class="site-footer__top" href="#">Back to top &#8593;</a>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Custom grillz, tooth caps & jewelry. One-off pieces, made to order."
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Small note",
+      "default": "Inquiries by DM or text."
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Wordmark",
+      "info": "Large name across the footer. Defaults to the store name."
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram link",
+      "info": "Defaults to instagram.com/alexxburrrr"
+    },
+    {
+      "type": "text",
+      "id": "instagram_handle",
+      "label": "Instagram handle",
+      "default": "@alexxburrrr"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone (call / text)",
+      "default": "(248) 228-5162"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Defaults to the Footer menu."
+    }
+  ]
+}
+{% endschema %}

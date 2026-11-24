@@ -1,6 +1,6 @@
 /* Featured works grid + piece sheet ------------------------------------------
    Mobile first: two tiles per row on phones, three on tablets, four on
-   desktop. Basic look for now; the Frutiger Aero styling comes later. */
+   desktop. Contemporary industrial look (see the site-design skill). */
 
 .featured-works {
   padding: 24px 12px 48px;
@@ -8,6 +8,8 @@
 
 .featured-works__heading {
   margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-weight: 700;
   text-align: center;
   font-size: 18px;
   letter-spacing: 0.08em;
@@ -52,7 +54,7 @@
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 14px;
-  background: #f2f6fa;
+  background: #fafafa;
   transition: transform 0.2s ease;
 }
 
@@ -76,7 +78,9 @@
   .featured-works__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 1400px; margin: 0 auto; }
 }
 
-/* Sheet: slides up from the bottom on phones, centered card on wider screens. */
+/* Sheet: slides up from the bottom on phones, centered panel on wider screens.
+   Industrial look: white panel, hard black rules, square corners, black
+   primary action. */
 .work-sheet {
   width: 100%;
   max-width: 100%;
@@ -85,23 +89,24 @@
   margin: auto 0 0;
   padding: 0;
   border: 0;
-  border-radius: 20px 20px 0 0;
+  border-top: 2px solid #111;
+  border-radius: 0;
   background: #fff;
-  color: inherit;
+  color: #111;
   overflow: auto;
   overscroll-behavior: contain;
 }
 
 .work-sheet::backdrop {
-  background: rgba(10, 20, 30, 0.45);
+  background: rgba(17, 17, 17, 0.6);
 }
 
 .work-sheet[open] {
-  animation: work-sheet-up 0.25s ease-out;
+  animation: work-sheet-up 0.2s ease-out;
 }
 
 @keyframes work-sheet-up {
-  from { transform: translateY(40px); opacity: 0; }
+  from { transform: translateY(32px); opacity: 0; }
 }
 
 .work-sheet__close {
@@ -116,12 +121,17 @@
   padding: 0;
   color: #111;
   letter-spacing: normal;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  font-size: 24px;
-  line-height: 36px;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  font-size: 22px;
+  line-height: 34px;
   cursor: pointer;
+}
+
+.work-sheet__close:hover {
+  background: #111;
+  color: #fff;
 }
 
 .work-sheet__media {
@@ -129,6 +139,7 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  border-bottom: 1px solid #111;
 }
 
 .work-sheet__media::-webkit-scrollbar { display: none; }
@@ -140,58 +151,86 @@
   aspect-ratio: 1;
   object-fit: cover;
   scroll-snap-align: center;
-  background: #f2f6fa;
+  background: #fafafa;
 }
 
 .work-sheet__body {
-  padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom));
 }
 
 .work-sheet__title {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  font-family: var(--font-display);
   font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 
 .work-sheet__text {
   margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.5;
+  color: #444;
 }
 
 .work-sheet__actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .work-sheet__inquire,
 .work-sheet__details {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   padding: 14px 16px;
-  border-radius: 999px;
-  text-align: center;
+  border: 1px solid #111;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
-  font-size: 14px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
+.work-sheet__inquire::after { content: '\2192'; }
+.work-sheet__details::after { content: '\2197'; }
+
 .work-sheet__inquire {
-  background: #2b8fd6;
+  background: #111;
+  color: #fff;
+}
+
+.work-sheet__inquire:hover {
+  background: #333;
   color: #fff;
 }
 
 .work-sheet__details {
-  border: 1px solid #c9d6e2;
-  color: inherit;
+  background: #fff;
+  color: #111;
+}
+
+.work-sheet__details:hover {
+  background: #111;
+  color: #fff;
 }
 
 @media (min-width: 750px) {
   .work-sheet {
     width: 560px;
     margin: auto;
-    border-radius: 20px;
+    border: 2px solid #111;
   }
+  .work-sheet__body { padding: 20px 20px 24px; }
   .work-sheet__actions { flex-direction: row; }
   .work-sheet__actions a { flex: 1; }
+  .work-sheet__actions .work-sheet__inquire { flex: 1.6; }
 }
 
 /* The theme colors headings from a setting that's currently white. */

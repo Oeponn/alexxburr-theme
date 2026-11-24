@@ -24,6 +24,7 @@
 
   {{ 'stylesheet.css' | asset_url | stylesheet_tag }}
   {{ 'queries.css' | asset_url | stylesheet_tag }}
+  {% render 'kontrapunkt-font' %}
 
   <!-- JS
 ================================================== -->
@@ -89,7 +90,7 @@
       {% endif %}
     </div>
   </div>
-  {% section 'footer' %}
+  {% section 'site-footer' %}
   {% if settings.popup %}
     {% render 'popup' %}
   {% endif %}

@@ -5,17 +5,15 @@ theme (Liquid templates in `templates/*.liquid`, not JSON templates).
 
 ## Design direction
 
-The site is being redesigned as a **chrome, white and light blue** website
-drawing on two design languages:
-
-- **Frutiger Aero**: glossy chrome and glass surfaces, white backgrounds,
-  sky / light blue accents, soft gradients and highlights, bubbly rounded
-  shapes.
-- **Y2K Cyber Glacier**: icy, frosted translucency, cool silver-to-ice-blue
-  gradients, crisp liquid-chrome highlights and a futuristic late-90s/2000s
-  tech feel.
-
-New UI should follow this style rather than the stock Testament look.
+**Contemporary industrial, a little brutalist**: white ground, black and dark
+gray type and rules, square corners, mono index labels, no gradients, gloss or
+blue accents. Display type is Kontrapunkt (`var(--font-display)`, loaded by
+`snippets/kontrapunkt-font.liquid`); labels use a mono stack
+(`var(--font-mono)`). The full rules (palette, type, components, do / don't)
+are in the `site-design` skill (`.claude/skills/site-design/SKILL.md`); load
+it before building or restyling UI. New UI should follow it rather than the
+stock Testament look. (An earlier Frutiger Aero / chrome-and-blue direction
+was dropped; don't bring it back.)
 
 ## Deploying
 
@@ -42,9 +40,14 @@ New UI should follow this style rather than the stock Testament look.
 
 - Header menu (`main-menu`) splits around the logo: WORK, BUILDER | INSTAGRAM,
   CONTACT. `sections/header.liquid` puts half the links on each side.
+- Footer: `sections/site-footer.liquid` + `assets/site-footer.css`. Ruled
+  three-cell grid (studio tagline, contact rows for Instagram / text / call,
+  `footer` menu as an index), full-width wordmark, black bottom bar. Contact
+  details are section settings. The old Testament `footer` section is gone.
 - `/pages/builder`: `templates/page.builder.liquid`
   (`sections/builder-coming-soon.liquid`), a coming-soon placeholder for the
-  future 3D grillz builder.
+  future 3D grillz builder. Its CSS still has the old glossy blue look and
+  should be restyled to the current direction.
 
 - `/pages/test` (redirect from `/test`): `templates/page.test.liquid`, the
   spinning grillz WebGL canvas (`sections/grillz-canvas.liquid`,
@@ -66,7 +69,8 @@ New UI should follow this style rather than the stock Testament look.
   sheet with the media and an inquire link.
 - Swipe galleries (homepage sheet, product page on phones) use
   `assets/carousel.js` / `carousel.css`: mark the scroll-snap strip with
-  `data-carousel` and it gets arrows, dots, and play-current-video-only.
+  `data-carousel` and it gets arrows, dots, and play-current-video-only. Both
+  arrows always show; the one at either end is disabled (dimmed), not hidden.
 - Product photos were background-matched to Open Monogram Tooth Caps photo 1
   (top-edge background ~RGB 250). New photos should match that.
 - Files (Content → Files) holds only the current pieces' media and

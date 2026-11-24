@@ -1810,40 +1810,6 @@
           "show_currency_selector": false
         }
       },
-      "footer": {
-        "type": "footer",
-        "blocks": {
-          "1601518740144": {
-            "type": "newsletter",
-            "settings": {
-              "title": "",
-              "mailing_subheading": ""
-            }
-          },
-          "1480352627697": {
-            "type": "menu",
-            "settings": {
-              "footer_nav": "footer",
-              "title": ""
-            }
-          }
-        },
-        "block_order": [
-          "1601518740144",
-          "1480352627697"
-        ],
-        "settings": {
-          "footer_text_align": "center",
-          "footer_title_transform": "uppercase",
-          "footer_title_size": 12,
-          "show_credit_cards": false,
-          "payment_icon_color": true,
-          "show_social_icons": false,
-          "show_copyright": true,
-          "show_locale_selector": true,
-          "show_currency_selector": true
-        }
-      },
       "collection-template": {
         "type": "collection-template",
         "blocks": {

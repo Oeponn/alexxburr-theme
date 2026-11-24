@@ -4,7 +4,7 @@
 }
 
 .carousel__arrow {
-  /* Undo the theme's global button styles. */
+  /* Undo the theme's global button styles. Square, hard-edged. */
   position: absolute;
   top: 50%;
   z-index: 1;
@@ -15,30 +15,34 @@
   max-width: 40px;
   height: 40px;
   margin: -20px 0 0;
-  padding: 0 0 4px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  padding: 0 0 3px;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
   color: #111;
-  font-size: 30px;
+  font-size: 26px;
   line-height: 1;
   letter-spacing: normal;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
 .carousel__arrow:hover {
-  background: #fff;
-  color: #111;
+  background: #111;
+  color: #fff;
 }
 
 .carousel__arrow--prev { left: 10px; }
 .carousel__arrow--next { right: 10px; }
 
-.carousel__arrow:disabled {
-  opacity: 0;
-  pointer-events: none;
+/* Both arrows always show; at either end the one with nowhere to go is
+   disabled and dimmed rather than hidden. */
+.carousel__arrow:disabled,
+.carousel__arrow:disabled:hover {
+  border-color: #bbb;
+  background: rgba(255, 255, 255, 0.85);
+  color: #bbb;
+  cursor: default;
 }
 
 .carousel__dots {
@@ -71,7 +75,6 @@
   width: 8px;
   height: 8px;
   margin: 8px;
-  border-radius: 50%;
   /* White with a faint outline so the dots read on light and dark photos. */
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
@@ -83,6 +86,7 @@
 }
 
 .carousel__dot[aria-current='true']::before {
-  background: #2b8fd6;
+  background: #111;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
   transform: scale(1.25);
 }
