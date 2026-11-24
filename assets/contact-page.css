@@ -1,0 +1,252 @@
+/* Contact page (sections/contact-page-template.liquid, snippets/contact.liquid).
+   Title on a heavy rule, then two ruled cells: intro and form.
+   Mobile first: stacked; side by side from 990px. */
+
+.contact-page {
+  --ct-ink: #111;
+  --ct-gray: #555;
+  --ct-hair: #d9d9d9;
+  color: var(--ct-ink);
+}
+
+.contact-page p {
+  margin: 0;
+}
+
+/* Head ---------------------------------------------------------------------- */
+
+.contact-page__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 28px 16px 12px;
+  border-bottom: 2px solid var(--ct-ink);
+}
+
+.contact-page__title {
+  margin: 0;
+  color: var(--ct-ink);
+  font-family: var(--font-display);
+  font-size: clamp(40px, 11vw, 120px);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.contact-page__meta,
+.contact-page__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ct-gray);
+}
+
+.contact-page__meta {
+  flex: none;
+}
+
+/* Cells --------------------------------------------------------------------- */
+
+.contact-page__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.contact-page__cell {
+  padding: 24px 16px 32px;
+}
+
+.contact-page__cell + .contact-page__cell {
+  border-top: 1px solid var(--ct-ink);
+}
+
+.contact-page__label {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px !important;
+}
+
+.contact-page__label span {
+  color: var(--ct-ink);
+}
+
+/* Intro: the page's own content, set in Kontrapunkt Light; links become bold
+   ruled lines. */
+.contact-page__intro {
+  max-width: 36ch;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.35;
+}
+
+.contact-page__intro p {
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.contact-page__intro p + p {
+  margin-top: 14px;
+}
+
+.contact-page__intro a,
+.contact-page__intro a:visited {
+  display: inline-block;
+  color: var(--ct-ink);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border-bottom: 2px solid var(--ct-ink);
+}
+
+.contact-page__intro a:hover {
+  background: var(--ct-ink);
+  color: #fff;
+  border-bottom-color: var(--ct-ink);
+}
+
+/* Form ---------------------------------------------------------------------- */
+
+.contact-form {
+  margin: 0;
+}
+
+.contact-form__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.contact-form__field label {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ct-gray);
+}
+
+.contact-form__field label span,
+.contact-page__label span {
+  color: var(--ct-ink);
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+/* Square, hard-ruled inputs. Every theme input default is reset here. */
+.contact-form__field input,
+.contact-form__field textarea {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--ct-ink);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ct-ink);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  box-shadow: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.contact-form__field textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.contact-form__field input:focus,
+.contact-form__field textarea:focus {
+  border-color: var(--ct-ink);
+  box-shadow: inset 0 0 0 1px var(--ct-ink);
+}
+
+.contact-form__send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--ct-ink);
+  border-radius: 0;
+  background: var(--ct-ink);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.contact-form__send::after {
+  content: '\2192';
+}
+
+.contact-form__send:hover,
+.contact-form__send:focus-visible {
+  background: #333;
+  color: #fff;
+}
+
+.contact-form__notice {
+  margin: 0 0 18px !important;
+  padding: 14px 16px;
+  border: 1px solid var(--ct-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contact-form__notice--ok {
+  background: var(--ct-ink);
+  color: #fff;
+}
+
+.contact-form__notice--ok::before {
+  content: '\25A0\00a0\00a0';
+}
+
+.contact-form__notice--error ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (min-width: 750px) {
+  .contact-page__head { padding: 40px 24px 14px; }
+  .contact-page__cell { padding: 32px 24px 40px; }
+  .contact-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-form__field--wide { grid-column: 1 / -1; }
+}
+
+@media (min-width: 990px) {
+  .contact-page__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  }
+  .contact-page__cell + .contact-page__cell {
+    border-top: 0;
+    border-left: 1px solid var(--ct-ink);
+  }
+}

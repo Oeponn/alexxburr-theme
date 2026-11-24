@@ -75,11 +75,12 @@ way.
   `1px` rules. It stays the same height at every scroll position, and
   nothing in it moves. Cells invert to black on hover. Icons are inline SVG
   line icons (1.75 stroke, square caps, mitred joins); don't use Font
-  Awesome in new UI. The logo is the black silhouette mark
+  Awesome in new UI. Bodies are squared off: the bag is a square sack and
+  the account icon has a round head on fully square shoulders. The logo is the black silhouette mark
   (`assets/alexxburr-mark.png`), with no circle or badge around it.
 - **Door menu** (phones): heavy black doors (`#111`) that shut from both
-  sides, accelerating in with a short jolt on impact. They leave a window
-  over the header logo cell, then the X draws in stroke by stroke over the
+  sides, accelerating in with a short jolt on impact. They leave a round
+  window around the header logo, then the X draws in stroke by stroke over the
   menu button. The content on the doors is white Kontrapunkt rows with
   `#333` rules and mono keys.
 - **Catalog grid** (homepage pieces): edge to edge, 1px black lines drawn by

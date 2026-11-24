@@ -1,52 +1,42 @@
-{% form 'contact' %}
-<div id="contactFormWrapper">
-  <div class="desktop-12">
-    <p>
-      <label>{{ 'contact.form.name' | t }}</label>
-      <input type="text" id="contactFormName" name="contact[name]" placeholder="{{ 'contact.form.name' | t }}" />
-    </p>
+{%- comment -%}
+  Contact form (rendered by sections/contact-page-template.liquid).
+  Ruled fields with mono index labels and a black send button.
+  Coming from a piece's "Inquire" link (?piece=Name) prefills the message.
+  The theme's name / message strings start with an invisible left-to-right
+  mark, so labels strip it.
+{%- endcomment -%}
+{% form 'contact', class: 'contact-form' %}
+  {%- if form.posted_successfully? -%}
+    <p class="contact-form__notice contact-form__notice--ok" role="status">{{ 'contact.form.post_success' | t }}</p>
+  {%- endif -%}
+  {%- if form.errors -%}
+    <div class="contact-form__notice contact-form__notice--error" role="alert">
+      <p>{{ 'general.forms.post_error' | t }}</p>
+      {{ form.errors | default_errors }}
+    </div>
+  {%- endif -%}
+
+  <div class="contact-form__fields">
+    <div class="contact-form__field">
+      <label for="contactFormName"><span>01</span> {{ 'contact.form.name' | t | remove: '‎' | strip }}</label>
+      <input type="text" id="contactFormName" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+    </div>
+    <div class="contact-form__field">
+      <label for="contactFormEmail"><span>02</span> {{ 'contact.form.email' | t | remove: '‎' | strip }}</label>
+      <input type="email" id="contactFormEmail" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+    </div>
+    <div class="contact-form__field contact-form__field--wide">
+      <label for="contactFormTelephone"><span>03</span> {{ 'contact.form.phone' | t | remove: '‎' | strip }}</label>
+      <input type="tel" id="contactFormTelephone" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+    </div>
+    <div class="contact-form__field contact-form__field--wide">
+      <label for="contactFormMessage"><span>04</span> {{ 'contact.form.message' | t | remove: '‎' | strip }}</label>
+      <textarea id="contactFormMessage" name="contact[body]" rows="8">{{ form.body }}</textarea>
+    </div>
   </div>
-  <div class="desktop-12">
-    <p>
-      <label>{{ 'contact.form.email' | t }}</label>
-      <input type="email" id="contactFormEmail" name="contact[email]" placeholder="{{ 'contact.form.email' | t }}" />
-    </p>
-  </div>
-  <div class="desktop-12">
-    <p>
-      <label>{{ 'contact.form.phone' | t }}</label>
-      <input type="text" id="contactFormTelephone" name="contact[phone]" placeholder="{{ 'contact.form.phone' | t }}" />
-    </p>
-  </div>
-  <div class="desktop-12">
-    <p>
-      <label>{{ 'contact.form.message' | t }}</label>
-      <textarea rows="15" cols="90" id="contactFormMessage" name="contact[body]" placeholder="{{ 'contact.form.message' | t }}"></textarea>
-    </p>
-    <p>
-      <input type="submit" id="contactFormSubmit" class="secondary button" value="{{ 'contact.form.send' | t }}" />
-    </p>
-  </div>
-</div>
 
-<div class="clear"></div>
-
-
-{% if form.posted_successfully? %}
-<div class="successForm feedback">
-  <p>{{ 'contact.form.post_success' | t }}</p>
-</div>
-{% endif %}
-
-{% if form.errors %}
-<div class="errorForm feedback">
-  <p>{{ 'general.forms.post_error' | t }}</p>
-</div>
-{% endif %}
-
+  <button type="submit" id="contactFormSubmit" class="contact-form__send">{{ 'contact.form.send' | t }}</button>
 {% endform %}
-
-<div class="clear"></div>
 
 {%- comment -%} Prefill the message when coming from a piece's "Inquire" link (?piece=Name). {%- endcomment -%}
 <script>

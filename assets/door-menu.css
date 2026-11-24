@@ -1,9 +1,9 @@
 /* Door menu (sections/mobile-navigation.liquid, assets/door-menu.js).
-   Two heavy black doors shut from each side, leaving a window over the
-   header's logo cell. Then the X draws in over the menu button and the index
+   Two heavy black doors shut from each side, leaving a round window around
+   the header logo. Then the X draws in over the menu button and the index
    fades up. Geometry comes from door-menu.js as custom properties:
      --win-top / --win-bottom   logo cell top and bottom (viewport px)
-     --win-half                 half the logo cell width
+     --win-cy / --win-r         the round window's centre height and radius
      --x-top / --x-left / --x-size   the menu button's cell
 */
 
@@ -15,7 +15,8 @@
   --door-dim: #8a8a8a;
   --win-top: 0px;
   --win-bottom: 56px;
-  --win-half: 42px;
+  --win-cy: 28px;
+  --win-r: 26px;
   --x-top: 0px;
   --x-left: 0px;
   --x-size: 56px;
@@ -43,26 +44,29 @@
   will-change: transform;
 }
 
+.door-menu__door--left,
+.door-menu__door--right {
+  /* Each door carries half of a round window: a hard-edged hole (a mask,
+     not a visible gradient) centred on the seam at the logo's height. */
+  --win-mask: radial-gradient(
+    circle var(--win-r) at var(--win-x) var(--win-cy),
+    transparent calc(var(--win-r) - 0.5px),
+    #000 calc(var(--win-r) + 0.5px)
+  );
+  -webkit-mask: var(--win-mask);
+  mask: var(--win-mask);
+}
+
 .door-menu__door--left {
+  --win-x: 100%;
   left: 0;
   transform: translateX(-101%);
-  /* Notch out half the logo cell on the inner edge. */
-  clip-path: polygon(
-    0 0, 100% 0,
-    100% var(--win-top), calc(100% - var(--win-half)) var(--win-top),
-    calc(100% - var(--win-half)) var(--win-bottom), 100% var(--win-bottom),
-    100% 100%, 0 100%
-  );
 }
 
 .door-menu__door--right {
+  --win-x: 0%;
   right: 0;
   transform: translateX(101%);
-  clip-path: polygon(
-    0 0, 100% 0, 100% 100%, 0 100%,
-    0 var(--win-bottom), var(--win-half) var(--win-bottom),
-    var(--win-half) var(--win-top), 0 var(--win-top)
-  );
 }
 
 /* Seam: a hairline down each inner edge, below the window. */

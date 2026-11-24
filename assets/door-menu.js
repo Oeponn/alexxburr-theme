@@ -1,5 +1,5 @@
 // Door menu: shuts two black doors over the page from each side, with a
-// window over the header's logo cell, then draws the X over the menu button.
+// round window around the header logo, then draws the X over the menu button.
 // See sections/mobile-navigation.liquid and assets/door-menu.css.
 //
 // States on .door-menu:
@@ -30,11 +30,13 @@
       var s = menu.style;
       if (logo) {
         var r = logo.getBoundingClientRect();
-        // The doors meet at the viewport centre; the logo cell is centred in
-        // the header, so half its width either side of the seam.
+        // The doors meet at the viewport centre and the logo cell is centred
+        // in the header, so the round window sits on the seam at the cell's
+        // mid height, a touch inside the cell so a black rim shows.
         s.setProperty('--win-top', Math.max(0, r.top) + 'px');
         s.setProperty('--win-bottom', Math.max(0, r.bottom) + 'px');
-        s.setProperty('--win-half', (r.width / 2) + 'px');
+        s.setProperty('--win-cy', ((r.top + r.bottom) / 2) + 'px');
+        s.setProperty('--win-r', Math.max(12, Math.min(r.width, r.height) / 2 - 3) + 'px');
       }
       if (opener) {
         var o = opener.getBoundingClientRect();

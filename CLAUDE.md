@@ -48,8 +48,8 @@ was dropped; don't bring it back.)
   silhouette of `alexxburr_logo.png` (which stays the favicon / share image).
 - Phone menu: `sections/mobile-navigation.liquid` (still that name, but it's
   the door menu now) + `assets/door-menu.{css,js}`. The menu button
-  (`[data-door-open]`) shuts two black doors from the sides, with a window
-  cut over the header logo cell. The X draws in stroke by stroke where the
+  (`[data-door-open]`) shuts two black doors from the sides, with a round
+  window (a hard-edged mask hole, half on each door) around the header logo. The X draws in stroke by stroke where the
   menu button was, and the index fades up. Its section type is `door-menu`,
   so theme.js's Testament slide-out (which pushed `#panel` sideways) never
   starts.
@@ -99,6 +99,9 @@ was dropped; don't bring it back.)
   image (`images['alexxburr_logo.png']` in `snippets/social-meta-tags.liquid`).
   Reuse that file rather than uploading the logo again.
 - Inquire links go to `/pages/contact?piece=<title>`; `snippets/contact.liquid`
-  prefills the message from `piece`.
+  prefills the message from `piece`. The contact page
+  (`sections/contact-page-template.liquid` + `assets/contact-page.css`) is a
+  big title on a heavy rule with two ruled cells: the page's own content on
+  the left, square-ruled form fields with mono index labels on the right.
 - The theme's global `button` rule sets `height: 50px` and margins; reset them
   on any custom button.

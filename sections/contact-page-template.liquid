@@ -1,21 +1,29 @@
-<div id="page" class="{% if section.settings.show_narrow_page %}desktop-8 desktop-push-2{% else %}desktop-12{% endif %}" data-section-id="{{ section.id }}" data-section-type="page-section">
-  <div id="page-content"{% if linklists[section.settings.pagelist] != blank %} class="desktop-9 mobile-3{% endif %}">
-    <h1 class="page-title">{{ page.title }}</h1>
-    <div class="rte">{{ page.content }}</div>
-    {% render 'contact' %}
+{%- comment -%}
+  Contact page: big title on a heavy rule, then two ruled cells: the page's
+  own content (Online Store → Pages → Contact) on the left, the form on the
+  right. Stacked on phones. Styles: assets/contact-page.css.
+{%- endcomment -%}
+
+{{ 'contact-page.css' | asset_url | stylesheet_tag }}
+
+<section class="contact-page" data-section-id="{{ section.id }}" data-section-type="page-section">
+  <div class="contact-page__head">
+    <h1 class="contact-page__title">{{ page.title }}</h1>
+    <p class="contact-page__meta">Inquiries</p>
   </div>
 
-  {% if linklists[section.settings.pagelist] != blank %}
-  <div id="page-sidebar" class="desktop-3">
-    <h2>{{ section.settings.page_sidebar_title | escape }}</h2>
-    <ul>
-      {% for link in linklists[section.settings.pagelist].links %}
-      <li>{{ link.title | link_to: link.url }}</li>
-      {% endfor %}
-    </ul>
+  <div class="contact-page__grid">
+    <div class="contact-page__cell contact-page__cell--intro">
+      <p class="contact-page__label"><span>00</span> Reach out</p>
+      <div class="contact-page__intro rte">{{ page.content }}</div>
+    </div>
+
+    <div class="contact-page__cell contact-page__cell--form">
+      <p class="contact-page__label"><span>01</span> Form</p>
+      {% render 'contact' %}
+    </div>
   </div>
-  {% endif %}
-</div>
+</section>
 
 {% schema %}
   {
