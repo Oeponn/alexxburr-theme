@@ -30,18 +30,22 @@ way.
 ## Type
 
 - **Display: Kontrapunkt** (Bold 700, Light 300; `var(--font-display)`), a
-  squared slab face loaded by `snippets/kontrapunkt-font.liquid` from
+  squared slab face loaded by `snippets/site-fonts.liquid` from
   `assets/kontrapunkt-*.woff2`. Use it for key type: the footer wordmark,
   header menu links, section headings, piece titles, footer row values
   (Bold) and short intro lines (Light). It's CC BY-SA 3.0 (Kontrapunkt A/S),
   so keep the credit comment in the snippet and don't edit the glyphs.
+- **Punch: Unsteady Oversteer** (`var(--font-punch)`, Ray Larabie, CC0),
+  a squared techno face. Use it only for the footer wordmark (and other
+  single big moments if asked). Always set it uppercase: its lowercase
+  glyphs are inverted white-on-black blocks.
 - Labels, keys, buttons and meta use the mono stack (`var(--font-mono)`) at
   11–12px, uppercase, `letter-spacing: 0.08em–0.12em`.
 - Body copy (descriptions, paragraphs) stays on the theme body font.
 - Index numbering (`01`, `02`, …) in labels and list keys is part of the
   look. Use it for sections and menus.
-- The oversized wordmark (Kontrapunkt Bold, `line-height: ~0.82`, sized from
-  the viewport width, clipped) is a single structural element in the footer.
+- The oversized wordmark (Unsteady Oversteer, sized from the viewport width,
+  standing in the footer's live-water bar) is a single structural element.
   Don't repeat it everywhere.
 
 ## Shape and structure
@@ -67,12 +71,23 @@ way.
 - **List rows** (contact, menus): grid of key (mono, gray) / value (bold,
   uppercase) / arrow, separated by hairlines. Hover inverts the row to
   black on white text.
+- **Header**: a white strip with a `2px` black base rule, split into cells by
+  `1px` rules. It stays the same height at every scroll position, and
+  nothing in it moves. Cells invert to black on hover. Icons are inline SVG
+  line icons (1.75 stroke, square caps, mitred joins); don't use Font
+  Awesome in new UI. The logo is the black silhouette mark
+  (`assets/alexxburr-mark.png`), with no circle or badge around it.
 - **Carousel** (`assets/carousel.js` / `carousel.css`): square white arrows
   with a 1px black border. Both always show, and the one with nowhere to go
   is `disabled` and dimmed (`#bbb`), never hidden. Square dots, black when
   current.
 - **Dialogs / sheets**: white, square, `2px solid #111` frame (top edge only
   on phones, where it slides up), square close button with a 1px border.
+- **Footer water** (`assets/site-footer.js`): the one place with
+  physics-driven motion. It's black water in the bar's own color, with no
+  highlights or gradients. A slightly lighter back wave (`#3a3a3a`) adds
+  depth, and spray is small square droplets. It pauses off screen and holds
+  still under reduced motion.
 - Motion: short (0.15–0.2s), plain ease. Use a small translate for entry, no
   bounces.
 

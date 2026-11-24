@@ -7,9 +7,10 @@ theme (Liquid templates in `templates/*.liquid`, not JSON templates).
 
 **Contemporary industrial, a little brutalist**: white ground, black and dark
 gray type and rules, square corners, mono index labels, no gradients, gloss or
-blue accents. Display type is Kontrapunkt (`var(--font-display)`, loaded by
-`snippets/kontrapunkt-font.liquid`); labels use a mono stack
-(`var(--font-mono)`). The full rules (palette, type, components, do / don't)
+blue accents. Fonts load from `snippets/site-fonts.liquid`: Kontrapunkt is the
+accent / display face (`var(--font-display)`), Unsteady Oversteer is the
+punch face for the footer wordmark only (`var(--font-punch)`, always
+uppercase), and labels use a mono stack (`var(--font-mono)`). The full rules (palette, type, components, do / don't)
 are in the `site-design` skill (`.claude/skills/site-design/SKILL.md`); load
 it before building or restyling UI. New UI should follow it rather than the
 stock Testament look. (An earlier Frutiger Aero / chrome-and-blue direction
@@ -39,11 +40,20 @@ was dropped; don't bring it back.)
 ## Pages
 
 - Header menu (`main-menu`) splits around the logo: WORK, BUILDER | INSTAGRAM,
-  CONTACT. `sections/header.liquid` puts half the links on each side.
+  CONTACT. `sections/header.liquid` + `assets/header.css`: one ruled white
+  strip, fixed height (nothing resizes on scroll), logo cell dead centre,
+  equal-width link cells, square icon cells on the outer edges (desktop:
+  Instagram + search left, account + bag right; phones: menu + search left).
+  Icons are inline SVG. The logo is `assets/alexxburr-mark.png`, a black
+  silhouette of `alexxburr_logo.png` (which stays the favicon / share image).
 - Footer: `sections/site-footer.liquid` + `assets/site-footer.css`. Ruled
   three-cell grid (studio tagline, contact rows for Instagram / text / call,
-  `footer` menu as an index), full-width wordmark, black bottom bar. Contact
-  details are section settings. The old Testament `footer` section is gone.
+  `footer` menu as an index), then the "shore": a full-width Unsteady
+  Oversteer wordmark standing in the black bottom bar, whose top edge is live
+  water (`assets/site-footer.js`: spring-column wave sim with swell, spray,
+  and pointer / tap / scroll disturbances; it runs only while visible and is
+  a still frame under reduced motion). Contact details are section settings.
+  The old Testament `footer` section is gone.
 - `/pages/builder`: `templates/page.builder.liquid`
   (`sections/builder-coming-soon.liquid`), a coming-soon placeholder for the
   future 3D grillz builder. Its CSS still has the old glossy blue look and

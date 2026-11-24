@@ -1,10 +1,17 @@
 {%- comment -%}
-  Kontrapunkt display face (Bold 700, Light 300), rendered in <head>.
+  Site fonts, rendered in <head>.
+
+  Kontrapunkt display face (Bold 700, Light 300).
   Kontrapunkt by Kontrapunkt A/S, CC BY-SA 3.0 (kontrapunkt.com/type).
   The woff2 files are straight format conversions of the original OTFs,
   with the glyphs unchanged.
   Use var(--font-display) for key display type: the footer wordmark, header
   menu, section headings and piece titles. Labels stay on the mono stack.
+
+  Unsteady Oversteer by Ray Larabie (CC0, public domain): the punch face,
+  var(--font-punch), used only for the footer wordmark. Always set it in
+  uppercase: its uppercase is a squared unicase, and its lowercase glyphs
+  are inverted white-on-black blocks.
 {%- endcomment -%}
 <link rel="preload" href="{{ 'kontrapunkt-bold.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
 <style>
@@ -22,7 +29,15 @@
     font-style: normal;
     font-display: swap;
   }
+  @font-face {
+    font-family: 'Unsteady Oversteer';
+    src: url('{{ 'unsteady-oversteer.woff2' | asset_url }}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
   :root {
+    --font-punch: 'Unsteady Oversteer', var(--font-display, sans-serif);
     --font-display: 'Kontrapunkt', 'Helvetica Neue', Arial, sans-serif;
     --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
   }

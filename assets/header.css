@@ -1,66 +1,33 @@
-/* Header.
-   Dynamic values come from the custom properties emitted by sections/header.liquid.
+/* Header (sections/header.liquid) --------------------------------------------
+   Contemporary industrial: one white strip with a 2px black base rule,
+   divided into cells by 1px rules. A fixed-width logo cell sits dead centre
+   between two equal halves. Each half has square icon cells on the outer edge
+   and menu links filling the rest, with every link the same width.
 
-   One row on every screen. A rounded pill holds the menu, with a circular logo
-   breaking out of its centre. At the top of the page the bar has a solid
-   background and the side rails are visible; on scroll the background fades,
-   the rails slide off each edge, and the pill floats over the content.
+   The strip is the same height at every scroll position. Nothing shrinks,
+   fades or slides on scroll, so the controls never move under the pointer.
 
-   Mobile first - the base rules are the small screen floating bar, the 980px
-   block builds the desktop row on top. */
+   Mobile first: phones get [menu][search] [logo] [account][bag]; from 990px
+   the menu button gives way to the Instagram icon and the link cells. */
 
 .row {
   padding: 0 1rem;
 }
 
-/* Shading ------------------------------------------------------------------ */
-
-/* A very shallow top-to-bottom shade so the pill and the logo read as raised off
-   the page: a light wash across the top half, a slightly darker one across the
-   bottom. It rides on top of the configured background colour as a
-   background-image, so the colour setting still controls the actual tint.
-   --header-shade (0-1, from the Shading setting) scales the whole effect. */
-:root {
-  --header-sheen: linear-gradient(
-    to bottom,
-    rgb(255 255 255 / calc(0.55 * var(--header-shade, 0.4))) 0%,
-    rgb(255 255 255 / calc(0.14 * var(--header-shade, 0.4))) 44%,
-    rgb(0 0 0 / calc(0.030 * var(--header-shade, 0.4))) 62%,
-    rgb(0 0 0 / calc(0.065 * var(--header-shade, 0.4))) 100%
-  );
-  --header-emboss:
-    inset 0 1px 0 rgb(255 255 255 / calc(0.7 * var(--header-shade, 0.4))),
-    inset 0 -1px 1px rgb(0 0 0 / calc(0.10 * var(--header-shade, 0.4))),
-    0 1px 2px rgb(0 0 0 / calc(0.10 * var(--header-shade, 0.4)));
-}
-
 /* Sticky shell -------------------------------------------------------------- */
 
-/* The sticky element has to be the section wrapper. position: sticky is bounded
-   by its parent's box, and .site-header's own parents are exactly as tall as the
-   header, which leaves it no travel at all. The negative offset - the measured
-   announcement height, set from header.js - lets the announcement scroll out of
-   view before the header itself pins to the top of the window. */
+/* The sticky element has to be the section wrapper: position: sticky is
+   bounded by its parent's box, and .site-header's own parents are exactly as
+   tall as the header. The negative offset (the announcement height, measured
+   in header.js) lets the announcement scroll away before the header pins. */
 #shopify-section-header {
   position: sticky;
   top: calc(-1 * var(--header-announcement-height, 0px));
   z-index: 60;
-  /* See-through once scrolled and taller than the pill, so let clicks through
-     everywhere except the real controls. */
-  pointer-events: none;
 }
 
-.announcement-bar,
-.site-header__nav,
-.site-header__rail,
-.search-overlay {
-  pointer-events: auto;
-}
+/* Announcement -------------------------------------------------------------- */
 
-/* Announcement ------------------------------------------------------------- */
-
-/* Deliberately outside the sticky header so it scrolls away on its own and the
-   header's height never changes (a changing sticky height makes the page jump). */
 .announcement-bar {
   background: var(--header-announcement-bg);
   color: var(--header-announcement-color);
@@ -68,8 +35,11 @@
 }
 
 .announcement-bar__inner {
-  padding: 7px 16px;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
   font-size: var(--header-announcement-text-size);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   line-height: 1.4;
 }
 
@@ -79,392 +49,296 @@
   color: inherit;
 }
 
-/* Shell -------------------------------------------------------------------- */
+.announcement-bar__inner a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Strip --------------------------------------------------------------------- */
 
 .site-header {
-  --header-logo-current: var(--header-logo-mobile);
-  --header-nav-font-current: var(--header-nav-font-top);
-  --header-pill-bg-current: var(--header-pill-bg);
+  --hd-ink: #111;
+  --hd-h: var(--header-height-mobile, 56px);
+  --hd-logo-w: calc(var(--hd-h) * 1.5);
 
   position: relative;
-  background: transparent;
+  background: #fff;
+  color: var(--hd-ink);
+  border-bottom: 2px solid var(--hd-ink);
   line-height: normal;
-  transition: background-color 0.35s ease;
 }
 
+/* The theme styles every <nav> with a background and a z-index; reset it. */
 .site-header__bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Constant: sized off the at-rest logo, never the current one, so shrinking
-     the circle on scroll cannot change the header's height. */
-  height: calc(var(--header-logo-mobile) + 20px);
-  padding: 0 var(--header-mobile-inset);
-  margin: 0 auto;
-}
-
-/* Side rails --------------------------------------------------------------- */
-
-.site-header__rail {
-  display: none;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-}
-
-.site-header__social,
-.site-header__actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Beats ul#cart in stylesheet.css, which floats this list right. */
-ul#cart.site-header__actions {
-  float: none;
-  width: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--hd-logo-w) minmax(0, 1fr);
+  height: var(--hd-h);
+  width: 100%;
   margin: 0;
   padding: 0;
   background: none;
-  text-align: left;
 }
 
-ul#cart.site-header__actions li {
-  padding: 0;
-  vertical-align: middle;
-}
-
-.site-header__social a,
-.site-header__actions a,
-.site-header__icon-btn {
-  color: var(--header-color);
-  font-size: 17px;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.site-header__social a:hover,
-.site-header__actions a:hover,
-.site-header__icon-btn:hover {
-  opacity: 0.6;
-}
-
-.my-cart-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.my-cart-text {
-  font-size: 13px;
-}
-
-/* Pill --------------------------------------------------------------------- */
-
-/* Two equal 1fr tracks either side of an auto sized logo track. Under intrinsic
-   sizing equal fr tracks both take the width of the wider one, so the logo sits
-   dead centre of the pill no matter how uneven the two halves of the menu are. */
-.site-header__nav {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  /* Definite row height. Without it the row sizes to the logo, which is taller
-     than the pill, and the menu halves get pushed below the outline. */
-  grid-template-rows: var(--header-row-height);
-  align-items: center;
-  height: var(--header-row-height);
-  width: auto;
-  margin: 0;
-  padding: 0 22px;
-  background-color: var(--header-pill-bg-current);
-  background-image: var(--header-sheen);
-  border: var(--header-pill-border-width) solid var(--header-pill-border-color);
-  border-radius: 999px;
-  box-shadow: var(--header-emboss);
-  overflow: visible;
-  transition: background-color 0.35s ease, backdrop-filter 0.35s ease;
-}
-
-.site-header__nav-half {
+.site-header__half {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   min-width: 0;
 }
 
-.site-header__nav-half--start {
+.site-header__half--end {
   justify-content: flex-end;
 }
 
-.site-header__nav-half--end {
-  justify-content: flex-start;
-}
+/* Cells --------------------------------------------------------------------- */
 
-.site-header__nav-list {
-  display: none;
-  align-items: center;
-  gap: 26px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Logo --------------------------------------------------------------------- */
-
-/* Taller than the row it lives in, so it overflows the pill rather than
-   stretching it. The bar's height never changes, only the circle's. */
-.site-header__logo {
+/* Shared by icon buttons and icon links. The theme's global button rule
+   (full width, 50px tall, margins, letter-spacing) is undone here. */
+.site-header__cell {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
   flex: 0 0 auto;
-  width: var(--header-logo-current);
-  height: var(--header-logo-current);
-  margin: 0 18px;
-  padding: 9px;
-  background-color: var(--header-pill-bg);
-  background-image: var(--header-sheen);
-  border: var(--header-pill-border-width) solid var(--header-pill-border-color);
-  border-radius: 50%;
-  box-shadow: var(--header-emboss);
-  box-sizing: border-box;
-  overflow: hidden;
-  text-decoration: none;
-  transition: width 0.35s ease, height 0.35s ease;
-}
-
-.site-header__logo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.site-header__logo-text {
-  font-size: var(--header-logo-font-size);
-  text-transform: var(--header-logo-text-transform);
-  color: var(--header-color);
-  text-align: center;
-  line-height: 1.1;
-  word-break: break-word;
-}
-
-/* The theme's a:hover adds `border-bottom: 1px solid <link colour>`, which lit
-   up only the bottom edge of the circle. Take the whole rim instead. */
-.site-header__logo:hover {
-  border: var(--header-pill-border-width) solid var(--header-logo-hover-border);
-}
-
-/* Same rule would put a stray underline under the header's own links. */
-.site-header__social a:hover,
-.site-header__actions a:hover,
-.my-cart-link:hover {
-  border-bottom: 0;
-}
-
-/* Icon buttons ------------------------------------------------------------- */
-
-/* width/background are reset explicitly: the theme styles every <button> as a
-   full width filled button. */
-.site-header__icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: auto;
+  width: var(--hd-h);
   min-width: 0;
   max-width: none;
   height: auto;
   margin: 0;
   padding: 0;
   border: 0;
-  background: none;
+  border-radius: 0;
+  background: #fff;
+  color: var(--hd-ink);
+  font: inherit;
+  letter-spacing: normal;
+  text-decoration: none;
   cursor: pointer;
-  color: var(--header-mobile-icons-color);
-  font-size: 17px;
-  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.site-header__icon-btn i {
+.site-header__half--start > .site-header__cell {
+  border-right: 1px solid var(--hd-ink);
+}
+
+.site-header__half--end > .site-header__cell {
+  border-left: 1px solid var(--hd-ink);
+}
+
+.site-header__cell:hover,
+.site-header__cell:focus-visible,
+.site-header__cell[aria-expanded='true'] {
+  background: var(--hd-ink);
+  color: #fff;
+  border-bottom: 0;
+}
+
+/* Theme a:visited / a:hover add colours and underlines. */
+.site-header__cell:visited {
+  color: var(--hd-ink);
+  border-bottom: 0;
+}
+
+.site-header__svg {
   display: block;
-  line-height: 1;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
-.site-header__cart-count {
-  font-size: 12px;
+/* Bag count: a small black square badge, hidden while the bag is empty. */
+.site-header__count {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: var(--hd-ink);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
 }
 
-/* Small screens ------------------------------------------------------------ */
-
-/* The pill holds the hamburger, the logo and the cart, held in from the screen
-   edges so the whole thing reads as floating above the page. */
-.site-header__mm-trigger {
-  margin-right: auto;
+.site-header__count.is-empty {
+  display: none;
 }
 
-.site-header__mobile-cart {
-  margin-left: auto;
+.site-header__bag:hover .site-header__count {
+  background: #fff;
+  color: var(--hd-ink);
 }
 
-.site-header__bar > .site-header__nav {
-  flex: 1 1 auto;
+.site-header__desktop-only {
+  display: none;
+}
+
+/* Logo ---------------------------------------------------------------------- */
+
+.site-header__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--hd-h);
+  padding: 8px 0;
+  background: #fff;
+  border-bottom: 0;
+  text-decoration: none;
+}
+
+.site-header__logo:hover,
+.site-header__logo:visited {
+  border-bottom: 0;
+}
+
+.site-header__logo img {
+  display: block;
+  width: auto;
+  height: 100%;
   max-width: 100%;
-  padding: 0 18px;
+  object-fit: contain;
 }
 
-/* Desktop ------------------------------------------------------------------ */
+/* Menu links ---------------------------------------------------------------- */
 
-@media screen and (min-width: 980px) {
+/* Hidden on phones (they live in the drawer). Both halves carry .main-nav so
+   the theme's dropdown and mega menu rules still apply on either side. */
+ul.main-nav.site-header__links {
+  display: none;
+  float: none;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+/* Desktop ------------------------------------------------------------------- */
+
+@media screen and (min-width: 990px) {
   .site-header {
-    --header-logo-current: var(--header-logo-top);
-    background: var(--header-bg);
+    --hd-h: var(--header-height, 64px);
+    --hd-logo-w: calc(var(--hd-h) * 1.75);
   }
 
-  .site-header.is-scrolled {
-    --header-logo-current: var(--header-logo-scrolled);
-    --header-nav-font-current: var(--header-nav-font-scrolled);
-    --header-pill-bg-current: var(--header-pill-bg-scrolled);
-    background: transparent;
-  }
-
-  .site-header.is-scrolled .site-header__nav {
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-  }
-
-  .site-header__bar {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 20px;
-    height: calc(var(--header-logo-top) + 20px);
-    padding: 0 24px;
-  }
-
-  .site-header__bar--contained {
-    max-width: 1200px;
-  }
-
-  .site-header__rail {
-    display: flex;
-    align-items: center;
-  }
-
-  .site-header__rail--start {
-    justify-content: flex-start;
-  }
-
-  .site-header__rail--end {
-    justify-content: flex-end;
-  }
-
-  .site-header.is-scrolled .site-header__rail--start {
-    transform: translateX(-140%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .site-header.is-scrolled .site-header__rail--end {
-    transform: translateX(140%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .site-header__bar > .site-header__nav {
-    flex: none;
-    padding: 0 26px;
-  }
-
-  .site-header__nav-list {
-    display: flex;
-  }
-
-  .site-header__mm-trigger,
-  .site-header__mobile-cart {
+  .site-header__menu-btn {
     display: none;
   }
-}
 
-/* Ultra wide --------------------------------------------------------------- */
+  .site-header__desktop-only {
+    display: flex;
+  }
 
-@media screen and (min-width: 1600px) {
-  .site-header__bar--contained {
-    max-width: 1440px;
+  /* The logo cell gets rules on both sides; the halves' links carry their
+     own dividers. */
+  .site-header__logo {
+    border-left: 1px solid var(--hd-ink);
+    border-right: 1px solid var(--hd-ink);
+  }
+
+  ul.main-nav.site-header__links {
+    display: flex;
+    align-items: stretch;
+  }
+
+  ul.main-nav.site-header__links > li,
+  ul.main-nav.site-header__links > li:hover {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    line-height: normal;
+    background: none;
+  }
+
+  .site-header__half--start ul.main-nav.site-header__links > li + li,
+  .site-header__half--end ul.main-nav.site-header__links > li + li {
+    border-left: 1px solid var(--hd-ink);
+  }
+
+  ul.main-nav.site-header__links > li > a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    padding: 0 12px;
+    color: var(--hd-ink);
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  ul.main-nav.site-header__links > li > a:hover,
+  ul.main-nav.site-header__links > li > a:focus-visible {
+    background: var(--hd-ink);
+    color: #fff;
+    border-bottom: 0;
+  }
+
+  /* Current page: a 4px black bar along the base of its cell. */
+  ul.main-nav.site-header__links > li > a[aria-current='page'] {
+    box-shadow: inset 0 -4px 0 var(--hd-ink);
+  }
+
+  ul.main-nav li ul.submenu,
+  ul.megamenu {
+    top: 100%;
   }
 }
 
-/* Menu links --------------------------------------------------------------- */
-
-/* Both halves of the split menu carry .main-nav, so the dropdown and mega menu
-   rules in stylesheet.css still apply to either side. */
-ul.main-nav {
-  float: none;
-  width: auto;
-  text-align: left;
+@media screen and (min-width: 1400px) {
+  ul.main-nav.site-header__links > li > a {
+    font-size: 16px;
+  }
 }
 
-ul.main-nav > li {
-  line-height: var(--header-row-height);
-}
-
-ul.main-nav > li > a {
-  font-size: var(--header-nav-font-current);
-  transition: font-size 0.35s ease;
-}
-
-ul.main-nav li ul.submenu,
-ul.megamenu {
-  top: var(--header-row-height);
-}
-
-/* Search overlay ----------------------------------------------------------- */
+/* Search overlay ------------------------------------------------------------ */
 
 .search-overlay[hidden] {
   display: none;
 }
 
-/* Centred like Spotlight - a floating rounded box that scales up, rather than a
-   panel dropping in from the top edge. */
+/* A square panel with a heavy frame, dropping in from just under the header. */
 .search-overlay {
   position: fixed;
   inset: 0;
   z-index: 200;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
-  /* sits a little above true centre, which reads better than dead middle */
-  padding-bottom: 18vh;
+  padding: 72px 12px 24px;
 }
 
 .search-overlay__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(20, 20, 20, 0.55);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(17, 17, 17, 0.6);
   opacity: 0;
-  transition: opacity 0.28s ease;
+  transition: opacity 0.2s ease;
 }
 
 .search-overlay__panel {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  width: min(640px, 100%);
-  padding: 12px 12px 12px 22px;
-  background-color: #fff;
-  background-image: var(--header-sheen);
-  border: 1px solid var(--header-pill-border-color);
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgb(0 0 0 / 0.3), 0 2px 10px rgb(0 0 0 / 0.14);
+  align-items: stretch;
+  width: min(720px, 100%);
+  background: #fff;
+  border: 2px solid #111;
   opacity: 0;
-  transform: scale(0.96);
-  transition: opacity 0.22s ease, transform 0.24s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transform: translateY(-12px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .search-overlay.is-open .search-overlay__backdrop {
@@ -473,7 +347,7 @@ ul.megamenu {
 
 .search-overlay.is-open .search-overlay__panel {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
 }
 
 .search-overlay__form {
@@ -483,27 +357,43 @@ ul.megamenu {
   flex: 1 1 auto;
   min-width: 0;
   margin: 0;
+  padding: 0 16px;
 }
 
 .search-overlay__icon {
-  font-size: 18px;
-  color: var(--header-color);
   flex: none;
+  color: #111;
 }
 
 .search-overlay__input {
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
+  height: auto;
   margin: 0;
-  padding: 10px 0;
+  padding: 16px 0;
   border: 0;
+  border-radius: 0;
   background: none;
+  font-family: var(--font-display);
   font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   line-height: 1.3;
-  color: var(--header-color);
+  color: #111;
   outline: none;
   box-shadow: none;
+}
+
+.search-overlay__input::-webkit-search-cancel-button,
+.search-overlay__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-overlay__input::placeholder {
+  color: #999;
 }
 
 .search-overlay__input:focus {
@@ -512,43 +402,51 @@ ul.megamenu {
   outline: none;
 }
 
-/* width: auto beats the theme's full width button rule, which otherwise makes
-   this button 100% wide and squeezes the field out of the row. */
 .search-overlay__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  width: auto;
+  width: 60px;
   min-width: 0;
-  padding: 6px;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
   border: 0;
-  background: none;
+  border-left: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  letter-spacing: normal;
   cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  color: var(--header-color);
 }
 
 .search-overlay__close:hover {
-  opacity: 0.6;
+  background: #111;
+  color: #fff;
 }
 
-@media screen and (min-width: 980px) {
-  .search-overlay__panel {
-    padding: 14px 14px 14px 26px;
+@media screen and (min-width: 990px) {
+  .search-overlay {
+    padding-top: 96px;
   }
 
   .search-overlay__input {
-    font-size: 22px;
+    font-size: 24px;
+    padding: 20px 0;
+  }
+
+  .search-overlay__close {
+    width: 72px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-header,
-  .site-header__nav,
-  .site-header__logo,
-  .site-header__rail,
+  .site-header__cell,
   .search-overlay__panel,
   .search-overlay__backdrop,
-  ul.main-nav > li > a {
+  ul.main-nav.site-header__links > li > a {
     transition: none;
   }
 }

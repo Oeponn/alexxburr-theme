@@ -71,5 +71,5 @@
   </ul>
 </li>
 {% else %}
-<li>{{ link.title | link_to: link.url }}</li>
+<li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
 {% endif %}

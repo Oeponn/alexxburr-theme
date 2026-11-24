@@ -2,11 +2,13 @@
   Site footer: contemporary industrial / light brutalist. White ground, black
   and dark gray type, hard rules between cells, mono index labels.
   Layout: a ruled grid of three cells (studio, contact, index), a full-width
-  wordmark, then a bottom bar with copyright and back-to-top.
+  wordmark in the punch face, then a black bottom bar with live ocean water
+  along its top edge, plus copyright and back-to-top.
   Stacked on phones, three columns from 750px.
 {%- endcomment -%}
 
 {{ 'site-footer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'site-footer.js' | asset_url }}" defer></script>
 
 {%- assign footer_menu = linklists.footer -%}
 {%- if section.settings.menu != blank -%}
@@ -75,11 +77,21 @@
     {%- endif -%}
   </div>
 
-  <p class="site-footer__wordmark" aria-hidden="true">{{ wordmark | escape }}</p>
+  {%- comment -%}
+    The shore: the wordmark sits on the black bar, and the bar's top edge is
+    live water (assets/site-footer.js). The canvas rises out of the bar over
+    the base of the letters, so they look half sunk. Pointer moves, taps and
+    page scrolling all make waves. Without JS, or with reduced motion, the bar
+    is a flat black edge.
+  {%- endcomment -%}
+  <div class="site-footer__shore" data-sea>
+    <p class="site-footer__wordmark" aria-hidden="true">{{ wordmark | escape }}</p>
 
-  <div class="site-footer__bottom">
-    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}</p>
-    <a class="site-footer__top" href="#">Back to top &#8593;</a>
+    <div class="site-footer__bottom">
+      <canvas class="site-footer__sea" data-sea-canvas aria-hidden="true"></canvas>
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}</p>
+      <a class="site-footer__top" href="#">Back to top &#8593;</a>
+    </div>
   </div>
 </footer>
 

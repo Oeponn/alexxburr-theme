@@ -1,14 +1,3 @@
-{%- assign hd_locale_selector = false -%}
-{%- assign hd_currency_selector = false -%}
-
-{%- if section.settings.show_currency_selector and shop.enabled_currencies.size > 1 -%}
-  {%- assign hd_currency_selector = true -%}
-{%- endif -%}
-
-{%- if section.settings.show_locale_selector and shop.published_locales.size > 1 -%}
-  {%- assign hd_locale_selector = true -%}
-{%- endif -%}
-
 {%- assign menu = linklists[section.settings.main_nav] -%}
 {%- assign link_count = menu.links.size -%}
 
@@ -26,17 +15,40 @@
   {%- assign split_at = link_count -%}
 {%- endif -%}
 
-{%- capture logo_mark -%}
-  {%- if section.settings.logo != blank -%}
-    <img
-      src="{{ section.settings.logo | image_url: width: 400 }}"
-      alt="{{ section.settings.logo.alt | default: shop.name }}"
-      itemprop="logo"
-      width="{{ section.settings.logo.width }}"
-      height="{{ section.settings.logo.height }}">
-  {%- else -%}
-    <span class="site-header__logo-text">{{ shop.name }}</span>
+{%- comment -%}
+  Line icons: 1.75 stroke, square caps and mitred joins to match the ruled,
+  hard-edged header. Inline so they inherit currentColor.
+{%- endcomment -%}
+{%- capture icon_menu -%}<svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18"/></svg>{%- endcapture -%}
+{%- capture icon_search -%}<svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>{%- endcapture -%}
+{%- capture icon_account -%}<svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg>{%- endcapture -%}
+{%- capture icon_bag -%}<svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16v13H4z"/><path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2"/></svg>{%- endcapture -%}
+{%- capture icon_instagram -%}<svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 3.5h17v17h-17z"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></svg>{%- endcapture -%}
+
+{%- assign ig_url = section.settings.instagram_url -%}
+{%- if ig_url == blank and settings.instagram_id != blank -%}
+  {%- assign ig_url = 'https://www.instagram.com/' | append: settings.instagram_id | append: '/' -%}
+{%- endif -%}
+
+{%- capture account_cell -%}
+  {%- if shop.customer_accounts_enabled -%}
+    {%- if customer -%}
+      <a class="site-header__cell site-header__cell--icon" href="{{ routes.account_url }}" aria-label="{{ 'layout.mobile_nav.account' | t }}">{{ icon_account }}</a>
+    {%- else -%}
+      <a class="site-header__cell site-header__cell--icon" href="{{ routes.account_login_url }}" aria-label="{{ 'layout.mobile_nav.login' | t }}">{{ icon_account }}</a>
+    {%- endif -%}
   {%- endif -%}
+{%- endcapture -%}
+
+{%- capture bag_cell -%}
+  <a class="site-header__cell site-header__cell--icon site-header__bag" href="{{ routes.cart_url }}" aria-label="{{ 'layout.header.my_cart' | t }}">
+    {{ icon_bag }}
+    <span class="site-header__count{% if cart.item_count == 0 %} is-empty{% endif %}" id="item_count" data-cart-count>{{ cart.item_count }}</span>
+  </a>
+{%- endcapture -%}
+
+{%- capture search_cell -%}
+  <button type="button" class="site-header__cell site-header__cell--icon" data-search-open aria-label="{{ 'general.search.placeholder' | t }}" aria-expanded="false" aria-controls="SearchOverlay">{{ icon_search }}</button>
 {%- endcapture -%}
 
 {{ 'header.css' | asset_url | stylesheet_tag }}
@@ -46,157 +58,56 @@
 
   {%- if section.settings.show_announcement_text and section.settings.announcement_text != blank -%}
     {%- comment -%}
-      Sits above the sticky header in normal flow, so it simply scrolls away
-      rather than needing to be collapsed on scroll.
+      Sits above the sticky header in normal flow, so it simply scrolls away.
     {%- endcomment -%}
     <div class="announcement-bar">
       <div class="announcement-bar__inner">{{ section.settings.announcement_text }}</div>
     </div>
   {%- endif -%}
 
+  {%- comment -%}
+    One ruled strip, fixed height at every scroll position (nothing resizes
+    or slides on scroll, so the controls never move).
+    Grid: two equal 1fr halves either side of a fixed logo cell, so the logo
+    is dead centre. Each half is a row of cells divided by 1px rules: square
+    utility cells on the outer edges, menu links filling the rest.
+      desktop:  [IG][search][WORK][BUILDER] [logo] [INSTAGRAM][CONTACT][account][bag]
+      phones:   [menu][search]     [logo]     [account][bag]
+  {%- endcomment -%}
   <header class="site-header" data-site-header>
-    <div class="site-header__bar{% unless section.settings.full_width_header %} site-header__bar--contained{% endunless %}">
+    <nav class="site-header__bar" aria-label="{{ 'layout.header.menu' | t }}">
 
-      {%- comment -%} Left rail - socials. Slides out of frame on scroll. {%- endcomment -%}
-      <div class="site-header__rail site-header__rail--start">
-        <ul class="site-header__social">
-          {% if settings.facebook_url != blank %}<li><a href="{{ settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.instagram_id != blank %}<li><a href="//instagram.com/{{ settings.instagram_id }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.twitter_url != blank %}<li><a href="{{ settings.twitter_url }}" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.pinterest_url != blank %}<li><a href="{{ settings.pinterest_url }}" target="_blank" rel="noopener" aria-label="Pinterest"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.tumblr_url != blank %}<li><a href="{{ settings.tumblr_url }}" target="_blank" rel="noopener" aria-label="Tumblr"><i class="fa fa-tumblr" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.youtube_url != blank %}<li><a href="{{ settings.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.snapchat_id != blank %}<li><a href="//snapchat.com/add/{{ settings.snapchat_id }}" target="_blank" rel="noopener" aria-label="Snapchat"><i class="fa fa-snapchat-ghost" aria-hidden="true"></i></a></li>{% endif %}
-          {% if settings.weibo_id != blank %}<li><a href="//weibo.com/{{ settings.weibo_id }}" target="_blank" rel="noopener" aria-label="Weibo"><i class="fa fa-weibo" aria-hidden="true"></i></a></li>{% endif %}
+      <div class="site-header__half site-header__half--start">
+        <button type="button" class="site-header__cell site-header__cell--icon site-header__menu-btn mm-trigger" aria-label="{{ 'layout.header.menu' | t }}">{{ icon_menu }}</button>
+        {%- if ig_url != blank -%}
+          <a class="site-header__cell site-header__cell--icon site-header__desktop-only" href="{{ ig_url }}" target="_blank" rel="noopener" aria-label="Instagram">{{ icon_instagram }}</a>
+        {%- endif -%}
+        {{ search_cell }}
+        <ul id="main-nav" class="main-nav site-header__links">
+          {%- for link in menu.links -%}
+            {%- if forloop.index0 < split_at -%}
+              {% render 'navigation', link: link, menu: menu %}
+            {%- endif -%}
+          {%- endfor -%}
         </ul>
       </div>
 
-      {%- comment -%}
-        The pill. A three column grid - two equal flexible tracks either side of
-        an auto sized logo track. Equal 1fr tracks under intrinsic sizing means
-        both halves take the width of the wider one, so the logo lands dead
-        centre of the pill however uneven the two halves' text is.
-      {%- endcomment -%}
-      <nav class="site-header__nav" aria-label="{{ 'layout.header.menu' | t }}">
+      <a class="site-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        <img src="{{ 'alexxburr-mark.png' | asset_url }}" alt="{{ shop.name }}" width="557" height="641" itemprop="logo">
+      </a>
 
-        <div class="site-header__nav-half site-header__nav-half--start">
-          <button type="button" class="site-header__icon-btn site-header__mm-trigger mm-trigger" aria-label="{{ 'layout.header.menu' | t }}">
-            <i class="fa fa-bars" aria-hidden="true"></i>
-          </button>
-          <ul id="main-nav" class="main-nav site-header__nav-list">
-            {%- for link in menu.links -%}
-              {%- if forloop.index0 < split_at -%}
-                {% render 'navigation', link: link, menu: menu %}
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-        </div>
-
-        <a class="site-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
-          {{ logo_mark }}
-        </a>
-
-        <div class="site-header__nav-half site-header__nav-half--end">
-          <ul class="main-nav site-header__nav-list">
-            {%- for link in menu.links -%}
-              {%- if forloop.index0 >= split_at -%}
-                {% render 'navigation', link: link, menu: menu %}
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-          <a class="site-header__icon-btn site-header__mobile-cart" href="{{ routes.cart_url }}" aria-label="{{ 'layout.header.my_cart' | t }}">
-            {% if section.settings.cart_icon == 'cart' %}
-              <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-            {% else %}
-              <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-            {% endif %}
-            <span class="site-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
-          </a>
-        </div>
-      </nav>
-
-      {%- comment -%} Right rail - search, account, selectors, cart. Slides out of frame on scroll. {%- endcomment -%}
-      <div class="site-header__rail site-header__rail--end">
-        <ul id="cart" class="site-header__actions">
-          <li class="seeks">
-            <button type="button" class="site-header__icon-btn" data-search-open aria-label="{{ 'general.search.placeholder' | t }}" aria-expanded="false" aria-controls="SearchOverlay">
-              <i class="fa fa-search" aria-hidden="true"></i>
-            </button>
-          </li>
-
-          {% if shop.customer_accounts_enabled %}
-            {% if customer %}
-              <li class="cust"><a href="{{ routes.account_url }}" aria-label="{{ 'layout.mobile_nav.account' | t }}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-              <li class="cust"><a href="{{ routes.account_logout_url }}" aria-label="{{ 'layout.mobile_nav.logout' | t }}"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
-            {% else %}
-              <li class="cust"><a href="{{ routes.account_login_url }}" aria-label="{{ 'layout.mobile_nav.login' | t }}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-            {% endif %}
-          {% endif %}
-
-          {%- if hd_locale_selector -%}
-            <li class="lang-selector">
-              {%- form 'localization', class: 'selectors-form' -%}
-                <div class="selectors-form__item">
-                  <h2 class="visually-hidden" id="lang-heading">{{ 'general.language.dropdown_label' | t }}</h2>
-                  <div class="disclosure" data-disclosure-locale>
-                    <button type="button" class="disclosure__toggle" aria-expanded="false" aria-controls="lang-list" aria-describedby="lang-heading" data-disclosure-toggle>
-                      {{ form.current_locale.iso_code }}
-                    </button>
-                    <ul id="lang-list" class="disclosure-list" data-disclosure-list>
-                      {% for locale in form.available_locales %}
-                        <li class="disclosure-list__item {% if locale.iso_code == form.current_locale.iso_code %}disclosure-list__item--current{% endif %}">
-                          <a class="disclosure-list__option" href="#" lang="{{ locale.iso_code }}" {% if locale.iso_code == form.current_locale.iso_code %}aria-current="true"{% endif %} data-value="{{ locale.iso_code }}" data-disclosure-option>
-                            {{ locale.endonym_name }}
-                          </a>
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                    <input type="hidden" name="locale_code" id="LocaleSelector" value="{{ form.current_locale.iso_code }}" data-disclosure-input/>
-                  </div>
-                </div>
-              {%- endform -%}
-            </li>
-          {%- endif -%}
-
-          {%- if hd_currency_selector -%}
-            <li class="curr-selector">
-              {%- form 'localization', class: 'selectors-form' -%}
-                <div class="selectors-form__item">
-                  <h2 class="visually-hidden" id="currency-heading">{{ 'general.currency.dropdown_label' | t }}</h2>
-                  <div class="disclosure" data-disclosure-currency>
-                    <button type="button" class="disclosure__toggle" aria-expanded="false" aria-controls="currency-list" aria-describedby="currency-heading" data-disclosure-toggle>
-                      {{ form.current_currency.iso_code }}{%- if form.current_currency.symbol -%}{{ form.current_currency.symbol }}{%- endif -%}
-                    </button>
-                    <ul id="currency-list" class="disclosure-list" data-disclosure-list>
-                      {% for currency in form.available_currencies %}
-                        <li class="disclosure-list__item {% if currency.iso_code == form.current_currency.iso_code %}disclosure-list__item--current{% endif %}">
-                          <a class="disclosure-list__option" href="#" {% if currency.iso_code == form.current_currency.iso_code %}aria-current="true"{% endif %} data-value="{{ currency.iso_code }}" data-disclosure-option>
-                            {{ currency.iso_code }}{%- if currency.symbol -%}{{ currency.symbol }}{%- endif -%}
-                          </a>
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                    <input type="hidden" name="currency_code" id="CurrencySelector" value="{{ form.current_currency.iso_code }}" data-disclosure-input/>
-                  </div>
-                </div>
-              {%- endform -%}
-            </li>
-          {%- endif -%}
-
-          <li>
-            <a class="my-cart-link" href="{{ routes.cart_url }}">
-              <span class="my-cart-text">{{ 'layout.header.my_cart' | t }}</span>
-              {% if section.settings.cart_icon == 'cart' %}
-                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-              {% else %}
-                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-              {% endif %}
-              <span id="item_count" data-cart-count>{{ cart.item_count }}</span>
-            </a>
-          </li>
+      <div class="site-header__half site-header__half--end">
+        <ul class="main-nav site-header__links">
+          {%- for link in menu.links -%}
+            {%- if forloop.index0 >= split_at -%}
+              {% render 'navigation', link: link, menu: menu %}
+            {%- endif -%}
+          {%- endfor -%}
         </ul>
+        {{ account_cell }}
+        {{ bag_cell }}
       </div>
-    </div>
+    </nav>
   </header>
 
   {%- comment -%} Full screen search, replaces the old inline #searchbox. {%- endcomment -%}
@@ -204,7 +115,7 @@
     <div class="search-overlay__backdrop" data-search-close></div>
     <div class="search-overlay__panel" role="dialog" aria-modal="true" aria-label="{{ 'general.search.placeholder' | t }}">
       <form action="{{ routes.search_url }}" method="get" class="search-overlay__form" role="search">
-        <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
+        <span class="search-overlay__icon">{{ icon_search }}</span>
         <input
           type="search"
           name="q"
@@ -215,40 +126,18 @@
         {% if settings.search_products %}<input type="hidden" name="type" value="product">{% endif %}
       </form>
       <button type="button" class="search-overlay__close" data-search-close aria-label="{{ 'general.search.title' | t }}">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg>
       </button>
     </div>
   </div>
 
   <style>
     #shopify-section-{{ section.id }} {
-      --header-row-height: {{ section.settings.nav_height }}px;
-
-      --header-logo-top: {{ section.settings.logo_size_top }}px;
-      --header-logo-scrolled: {{ section.settings.logo_size_scrolled }}px;
-      --header-logo-mobile: {{ section.settings.logo_size_mobile }}px;
-
-      --header-nav-font-top: {{ section.settings.nav_font_size_top }}px;
-      --header-nav-font-scrolled: {{ section.settings.nav_font_size_scrolled }}px;
-
-      --header-logo-font-size: {{ section.settings.logo_size }}px;
-      --header-logo-text-transform: {{ section.settings.logo_transform }};
-
+      --header-height: {{ section.settings.bar_height }}px;
+      --header-height-mobile: {{ section.settings.bar_height_mobile }}px;
       --header-announcement-text-size: {{ section.settings.announcement_text_size }}px;
       --header-announcement-bg: {{ section.settings.announcement_background }};
       --header-announcement-color: {{ section.settings.announcement_color }};
-
-      --header-pill-border-width: {{ section.settings.pill_border_width }}px;
-      --header-shade: {{ section.settings.shading_strength | divided_by: 100.0 }};
-      --header-pill-border-color: {{ section.settings.pill_border_color }};
-      --header-logo-hover-border: {{ section.settings.logo_hover_border_color }};
-      --header-pill-bg: {{ section.settings.pill_background }};
-      --header-pill-bg-scrolled: {{ section.settings.pill_background_scrolled }};
-
-      --header-bg: {{ section.settings.header_background }};
-      --header-color: {{ settings.header_icons }};
-      --header-mobile-icons-color: {{ settings.mobile_header_icons }};
-      --header-mobile-inset: {{ section.settings.mobile_inset }}px;
     }
   </style>
 </div>
@@ -257,21 +146,6 @@
 {
   "name": "Header",
   "settings": [
-    {
-      "type": "checkbox",
-      "id": "full_width_header",
-      "label": "Enable full width",
-      "default": false,
-      "info": "Spans the header rails edge to edge instead of holding them to the page container."
-    },
-    {
-      "type": "color",
-      "id": "header_background",
-      "label": "Background at top of page",
-      "default": "#ffffff",
-      "info": "Fades out as the page scrolls so the menu floats over the content."
-    },
-
     { "type": "header", "content": "Announcement Bar" },
     {
       "type": "checkbox",
@@ -292,50 +166,29 @@
       "label": "Text size",
       "default": 12
     },
-    { "type": "color", "id": "announcement_background", "label": "Background", "default": "#f5f5f5" },
-    { "type": "color", "id": "announcement_color", "label": "Text", "default": "#262525" },
+    { "type": "color", "id": "announcement_background", "label": "Background", "default": "#111111" },
+    { "type": "color", "id": "announcement_color", "label": "Text", "default": "#ffffff" },
 
-    { "type": "header", "content": "Logo" },
-    { "type": "image_picker", "id": "logo", "label": "Logo image" },
+    { "type": "header", "content": "Bar" },
     {
       "type": "range",
-      "id": "logo_size_top",
-      "min": 56, "max": 180, "step": 4, "unit": "px",
-      "label": "Logo size at top of page",
-      "default": 104
-    },
-    {
-      "type": "range",
-      "id": "logo_size_scrolled",
-      "min": 36, "max": 110, "step": 2, "unit": "px",
-      "label": "Logo size once scrolled",
-      "default": 62,
-      "info": "Keep this a little larger than the navigation height so the circle still breaks out of the pill."
-    },
-    {
-      "type": "range",
-      "id": "logo_size_mobile",
-      "min": 40, "max": 110, "step": 2, "unit": "px",
-      "label": "Logo size on mobile",
+      "id": "bar_height",
+      "min": 44, "max": 88, "step": 2, "unit": "px",
+      "label": "Height on desktop",
       "default": 64
     },
     {
       "type": "range",
-      "id": "logo_size",
-      "min": 12, "max": 36, "step": 1, "unit": "px",
-      "label": "Logo text size",
-      "default": 18,
-      "info": "Used only when no logo image is set."
+      "id": "bar_height_mobile",
+      "min": 40, "max": 72, "step": 2, "unit": "px",
+      "label": "Height on phones",
+      "default": 56
     },
     {
-      "type": "select",
-      "id": "logo_transform",
-      "label": "Logo text case",
-      "default": "uppercase",
-      "options": [
-        { "value": "uppercase", "label": "Uppercase" },
-        { "value": "none", "label": "Normal" }
-      ]
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram link",
+      "info": "Defaults to the Instagram handle in theme settings. Shown as an icon on desktop."
     },
 
     { "type": "header", "content": "Navigation" },
@@ -352,97 +205,7 @@
       "label": "Links left of the logo",
       "default": 0,
       "info": "0 splits the menu down the middle automatically. Raise it to move the break point."
-    },
-    {
-      "type": "range",
-      "id": "nav_height",
-      "min": 30, "max": 80, "step": 2, "unit": "px",
-      "label": "Navigation height",
-      "default": 48
-    },
-    {
-      "type": "range",
-      "id": "nav_font_size_top",
-      "min": 9, "max": 22, "step": 1, "unit": "px",
-      "label": "Menu text size at top of page",
-      "default": 14
-    },
-    {
-      "type": "range",
-      "id": "nav_font_size_scrolled",
-      "min": 8, "max": 20, "step": 1, "unit": "px",
-      "label": "Menu text size once scrolled",
-      "default": 12
-    },
-    {
-      "type": "range",
-      "id": "pill_border_width",
-      "min": 0, "max": 4, "step": 1, "unit": "px",
-      "label": "Menu outline width",
-      "default": 1
-    },
-    {
-      "type": "color",
-      "id": "pill_border_color",
-      "label": "Menu outline",
-      "default": "rgba(38,37,37,0.16)",
-      "info": "A low opacity tint of the text colour reads far softer than a solid line."
-    },
-    {
-      "type": "color",
-      "id": "logo_hover_border_color",
-      "label": "Logo outline on hover",
-      "default": "#ffffff",
-      "info": "The whole rim takes this colour when the logo is hovered."
-    },
-    {
-      "type": "range",
-      "id": "shading_strength",
-      "min": 0, "max": 100, "step": 5, "unit": "%",
-      "label": "Shading",
-      "default": 40,
-      "info": "Subtle top-to-bottom shading on the menu and logo so they sit off the page. 0 turns it off."
-    },
-    { "type": "color", "id": "pill_background", "label": "Menu background at top", "default": "#ffffff" },
-    {
-      "type": "color",
-      "id": "pill_background_scrolled",
-      "label": "Menu background once scrolled",
-      "default": "rgba(255,255,255,0.72)",
-      "info": "Sits behind a blur so the menu stays readable over imagery."
-    },
-
-    { "type": "header", "content": "Mobile" },
-    {
-      "type": "range",
-      "id": "mobile_inset",
-      "min": 0, "max": 40, "step": 2, "unit": "px",
-      "label": "Gap from the screen edge",
-      "default": 16,
-      "info": "Holds the floating bar in from the sides of the screen."
-    },
-
-    { "type": "select", "id": "cart_icon", "label": "Cart icon", "default": "bag",
-      "options": [
-        { "value": "cart", "label": "Cart" },
-        { "value": "bag", "label": "Bag" }
-      ],
-      "info": "You can change the text in your edit language section"
-    },
-
-    {
-      "type": "header",
-      "content": "Language Selector",
-      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
-    },
-    { "type": "checkbox", "id": "show_locale_selector", "label": "Show language selector", "default": false },
-
-    {
-      "type": "header",
-      "content": "Currency Selector",
-      "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
-    },
-    { "type": "checkbox", "id": "show_currency_selector", "label": "Show currency selector", "default": false }
+    }
   ],
   "blocks": [
     {

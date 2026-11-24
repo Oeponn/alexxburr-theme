@@ -1,36 +1,8 @@
-/* Header behaviour: the scrolled state and the full screen search.
+/* Header behaviour: the announcement offset and the full screen search.
    Loaded with defer, and re-initialised on Shopify section load so the theme
    editor picks up changes without a reload. */
 (function () {
   'use strict';
-
-  var SCROLL_THRESHOLD = 12;
-
-  /* Scrolled state --------------------------------------------------------- */
-
-  function initScrollState(root) {
-    var header = root.querySelector('[data-site-header]');
-    if (!header || header.dataset.scrollBound === 'true') return;
-    header.dataset.scrollBound = 'true';
-
-    var ticking = false;
-
-    function apply() {
-      ticking = false;
-      var scrolled = window.pageYOffset > SCROLL_THRESHOLD;
-      header.classList.toggle('is-scrolled', scrolled);
-    }
-
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(apply);
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    apply();
-  }
 
   /* Announcement height ---------------------------------------------------- */
 
@@ -138,7 +110,6 @@
 
   function init(root) {
     var scope = root || document;
-    initScrollState(scope);
     initAnnouncementOffset(scope);
     initSearch(scope);
   }
