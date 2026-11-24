@@ -1,0 +1,71 @@
+{%- comment -%}
+  Coming-soon placeholder, shared by /pages/builder (future 3D grillz
+  builder) and /pages/shop. Industrial spec-sheet look: hazard tape, a big
+  Kontrapunkt title, a status table and the two usual actions.
+
+  The heading and text come from the page itself (title and content in
+  Online Store → Pages), so each page reads differently while sharing this
+  static section's settings. Content falls back to the text setting when
+  the page body is empty.
+{%- endcomment -%}
+
+{{ 'coming-soon.css' | asset_url | stylesheet_tag }}
+
+{%- assign heading = page.title | default: section.settings.heading -%}
+
+<section class="soon">
+  <div class="soon__tape" aria-hidden="true"></div>
+
+  <div class="soon__grid">
+    <div class="soon__main">
+      <p class="soon__label"><span>00</span> {{ section.settings.eyebrow | escape }}</p>
+      <h1 class="soon__title">{{ heading | escape }}</h1>
+      <div class="soon__text">
+        {%- if page.content != blank -%}
+          {{ page.content }}
+        {%- else -%}
+          <p>{{ section.settings.text | escape }}</p>
+        {%- endif -%}
+      </div>
+      <div class="soon__actions">
+        <a class="soon__button soon__button--primary" href="{{ section.settings.primary_url | default: '/pages/contact' }}">{{ section.settings.primary_label | escape }}</a>
+        <a class="soon__button" href="{{ section.settings.secondary_url | default: '/' }}">{{ section.settings.secondary_label | escape }}</a>
+      </div>
+    </div>
+
+    <div class="soon__spec">
+      <p class="soon__label"><span>01</span> Status</p>
+      <dl class="soon__rows">
+        <div class="soon__row"><dt>Status</dt><dd><span class="soon__blink" aria-hidden="true"></span>In development</dd></div>
+        <div class="soon__row"><dt>Page</dt><dd>/{{ page.handle | escape }}</dd></div>
+        <div class="soon__row"><dt>Opens</dt><dd>{{ section.settings.opens | escape }}</dd></div>
+        <div class="soon__row"><dt>Meanwhile</dt><dd>{{ section.settings.meanwhile | escape }}</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="soon__tape" aria-hidden="true"></div>
+</section>
+
+{% schema %}
+{
+  "name": "Coming soon",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Label", "default": "Coming soon" },
+    { "type": "text", "id": "heading", "label": "Fallback heading", "default": "Coming soon", "info": "Used only if the page has no title." },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Fallback text",
+      "default": "This part of the site is still being built. In the meantime, reach out to start a custom piece.",
+      "info": "Each page's own content is shown instead when it has any."
+    },
+    { "type": "text", "id": "opens", "label": "Opens", "default": "TBA" },
+    { "type": "text", "id": "meanwhile", "label": "Meanwhile", "default": "Custom orders open" },
+    { "type": "text", "id": "primary_label", "label": "Primary button", "default": "Start a custom piece" },
+    { "type": "url", "id": "primary_url", "label": "Primary button link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary button", "default": "See past work" },
+    { "type": "url", "id": "secondary_url", "label": "Secondary button link" }
+  ]
+}
+{% endschema %}

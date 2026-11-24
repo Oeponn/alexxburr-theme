@@ -14,9 +14,14 @@
 {%- assign contact_url = section.settings.inquire_url | default: '/pages/contact' -%}
 
 <section class="featured-works" data-featured-works>
-  {%- if section.settings.heading != blank -%}
-    <h2 class="featured-works__heading">{{ section.settings.heading | escape }}</h2>
-  {%- endif -%}
+  <div class="featured-works__head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="featured-works__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- assign shown = works.products_count -%}
+    {%- if shown > section.settings.limit -%}{%- assign shown = section.settings.limit -%}{%- endif -%}
+    <p class="featured-works__count">{{ shown | prepend: '00' | slice: -3, 3 }} pieces</p>
+  </div>
 
   <ul class="featured-works__grid" role="list">
     {%- for product in works.products limit: section.settings.limit -%}
@@ -31,7 +36,12 @@
               class: 'featured-works__image',
               alt: cover.alt | default: product.title }}
           {%- endif -%}
-          <span class="featured-works__title">{{ product.title }}</span>
+          {%- assign made_on = product.metafields.custom.made_on.value -%}
+          <span class="featured-works__caption">
+            <span class="featured-works__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="featured-works__title">{{ product.title }}</span>
+            {%- if made_on -%}<span class="featured-works__date">{{ made_on | date: '%m.%y' }}</span>{%- endif -%}
+          </span>
         </button>
 
         <template data-work-sheet>

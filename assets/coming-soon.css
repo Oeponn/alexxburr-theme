@@ -1,0 +1,218 @@
+/* Coming-soon page (sections/coming-soon.liquid): industrial spec sheet.
+   Hazard tape top and bottom, a big Kontrapunkt title, a ruled status table.
+   Mobile first: stacked; title and table side by side from 990px. */
+
+.soon {
+  --soon-ink: #111;
+  --soon-gray: #555;
+  --soon-hair: #d9d9d9;
+
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - 58px);
+  color: var(--soon-ink);
+  background: #fff;
+}
+
+.soon p,
+.soon dl,
+.soon dd {
+  margin: 0;
+  padding: 0;
+}
+
+/* Hazard tape: hard-stop stripes, not a gradient fade. */
+.soon__tape {
+  flex: none;
+  height: 14px;
+  border-top: 1px solid var(--soon-ink);
+  border-bottom: 1px solid var(--soon-ink);
+  background: repeating-linear-gradient(-45deg, var(--soon-ink) 0 10px, #fff 10px 20px);
+}
+
+.soon__grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.soon__main,
+.soon__spec {
+  padding: 24px 16px 32px;
+}
+
+.soon__spec {
+  border-top: 1px solid var(--soon-ink);
+}
+
+.soon__label {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px !important;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--soon-gray);
+}
+
+.soon__label span {
+  color: var(--soon-ink);
+}
+
+.soon__title {
+  margin: 0 0 20px;
+  color: var(--soon-ink);
+  font-family: var(--font-display);
+  font-size: clamp(56px, 16vw, 168px);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.soon__text {
+  max-width: 34ch;
+  margin-bottom: 28px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.35;
+}
+
+.soon__text p + p {
+  margin-top: 12px;
+}
+
+.soon__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.soon__button,
+.soon__button:visited {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 16px;
+  border: 1px solid var(--soon-ink);
+  border-radius: 0;
+  background: #fff;
+  color: var(--soon-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.soon__button::after {
+  content: '\2192';
+}
+
+.soon__button:hover {
+  background: var(--soon-ink);
+  color: #fff;
+  border-bottom: 1px solid var(--soon-ink);
+}
+
+.soon__button--primary,
+.soon__button--primary:visited {
+  background: var(--soon-ink);
+  color: #fff;
+}
+
+.soon__button--primary:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* Status table */
+.soon__rows {
+  border-top: 1px solid var(--soon-hair);
+}
+
+.soon__row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--soon-hair);
+}
+
+.soon__row dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soon-gray);
+}
+
+.soon__row dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* A square status light that blinks like a machine indicator. */
+.soon__blink {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  background: var(--soon-ink);
+  animation: soon-blink 1.2s steps(1, end) infinite;
+}
+
+@keyframes soon-blink {
+  50% { opacity: 0; }
+}
+
+@media (min-width: 750px) {
+  .soon__main,
+  .soon__spec {
+    padding: 36px 24px 44px;
+  }
+  .soon__actions {
+    flex-direction: row;
+  }
+  .soon__actions .soon__button {
+    flex: 1;
+  }
+}
+
+@media (min-width: 990px) {
+  .soon {
+    min-height: calc(100svh - 66px);
+  }
+  .soon__grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+  .soon__spec {
+    border-top: 0;
+    border-left: 1px solid var(--soon-ink);
+  }
+  .soon__main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soon__blink {
+    animation: none;
+  }
+}

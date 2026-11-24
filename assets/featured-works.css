@@ -3,43 +3,75 @@
    desktop. Contemporary industrial look (see the site-design skill). */
 
 .featured-works {
-  padding: 24px 12px 48px;
+  --fw-ink: #111;
+  --fw-gray: #555;
+  padding: 0 0 48px;
+  color: var(--fw-ink);
+}
+
+/* Section head: big title on a heavy rule, piece count in mono. */
+.featured-works__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 28px 12px 12px;
+  border-bottom: 2px solid var(--fw-ink);
 }
 
 .featured-works__heading {
-  margin: 0 0 16px;
+  margin: 0;
+  color: var(--fw-ink);
   font-family: var(--font-display);
+  font-size: clamp(30px, 8vw, 72px);
   font-weight: 700;
-  text-align: center;
-  font-size: 18px;
-  letter-spacing: 0.08em;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
+.featured-works__count {
+  flex: none;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fw-gray);
+}
+
+/* Ruled catalog grid: each tile draws a 1px black line on its right and
+   bottom edges into the 1px gaps, so a short last row leaves clean white
+   space instead of a black hole. */
 .featured-works__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 1px;
   margin: 0;
   padding: 0;
   list-style: none;
+  background: #fff;
 }
 
 .featured-works__item {
   margin: 0;
+  background: #fff;
+  box-shadow: 1px 0 0 var(--fw-ink), 0 1px 0 var(--fw-ink), 1px 1px 0 var(--fw-ink);
 }
 
 .featured-works__tile {
   /* Undo the theme's global button styles (fixed 50px height, margins). */
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: auto;
+  max-width: none;
+  height: 100%;
   margin: 0;
   padding: 0;
   letter-spacing: normal;
   border-radius: 0;
   border: 0;
-  background: none;
+  background: #fff;
   color: inherit;
   font: inherit;
   text-align: left;
@@ -53,29 +85,72 @@
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 0;
   background: #fafafa;
-  transition: transform 0.2s ease;
 }
 
-.featured-works__tile:active .featured-works__image {
-  transform: scale(0.97);
+/* Caption strip: index, title, date, on a rule under the photo. */
+.featured-works__caption {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border-top: 1px solid var(--fw-ink);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.featured-works__index,
+.featured-works__date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--fw-gray);
 }
 
 .featured-works__title {
-  display: block;
-  margin-top: 6px;
+  font-family: var(--font-display);
   font-size: 13px;
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.featured-works__tile:active .featured-works__caption {
+  background: var(--fw-ink);
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .featured-works__tile:hover .featured-works__caption {
+    background: var(--fw-ink);
+    color: #fff;
+  }
+  .featured-works__tile:hover .featured-works__index,
+  .featured-works__tile:hover .featured-works__date {
+    color: #bbb;
+  }
+}
+
+.featured-works__tile:focus-visible {
+  outline: 2px solid var(--fw-ink);
+  outline-offset: -2px;
 }
 
 @media (min-width: 750px) {
-  .featured-works { padding: 40px 24px 64px; }
-  .featured-works__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .featured-works { padding: 0 0 64px; }
+  .featured-works__head { padding: 40px 24px 14px; }
+  .featured-works__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .featured-works__caption { padding: 12px 14px 14px; }
+  .featured-works__title { font-size: 15px; }
+  .featured-works__index,
+  .featured-works__date { font-size: 11px; }
 }
 
 @media (min-width: 1100px) {
-  .featured-works__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 1400px; margin: 0 auto; }
+  .featured-works__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 /* Sheet: slides up from the bottom on phones, centered panel on wider screens.
@@ -234,7 +309,6 @@
 }
 
 /* The theme colors headings from a setting that's currently white. */
-.featured-works__heading,
 .work-sheet__title {
   color: #111;
 }

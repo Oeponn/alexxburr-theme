@@ -39,13 +39,20 @@ was dropped; don't bring it back.)
 
 ## Pages
 
-- Header menu (`main-menu`) splits around the logo: WORK, BUILDER | INSTAGRAM,
-  CONTACT. `sections/header.liquid` + `assets/header.css`: one ruled white
+- Header menu (`main-menu`) splits around the logo: WORK, BUILDER | SHOP,
+  CONTACT (Instagram is the header icon, not a menu item). `sections/header.liquid` + `assets/header.css`: one ruled white
   strip, fixed height (nothing resizes on scroll), logo cell dead centre,
   equal-width link cells, square icon cells on the outer edges (desktop:
   Instagram + search left, account + bag right; phones: menu + search left).
   Icons are inline SVG. The logo is `assets/alexxburr-mark.png`, a black
   silhouette of `alexxburr_logo.png` (which stays the favicon / share image).
+- Phone menu: `sections/mobile-navigation.liquid` (still that name, but it's
+  the door menu now) + `assets/door-menu.{css,js}`. The menu button
+  (`[data-door-open]`) shuts two black doors from the sides, with a window
+  cut over the header logo cell. The X draws in stroke by stroke where the
+  menu button was, and the index fades up. Its section type is `door-menu`,
+  so theme.js's Testament slide-out (which pushed `#panel` sideways) never
+  starts.
 - Footer: `sections/site-footer.liquid` + `assets/site-footer.css`. Ruled
   three-cell grid (studio tagline, contact rows for Instagram / text / call,
   `footer` menu as an index), then the "shore": a full-width Unsteady
@@ -54,10 +61,12 @@ was dropped; don't bring it back.)
   and pointer / tap / scroll disturbances; it runs only while visible and is
   a still frame under reduced motion). Contact details are section settings.
   The old Testament `footer` section is gone.
-- `/pages/builder`: `templates/page.builder.liquid`
-  (`sections/builder-coming-soon.liquid`), a coming-soon placeholder for the
-  future 3D grillz builder. Its CSS still has the old glossy blue look and
-  should be restyled to the current direction.
+- `/pages/builder` and `/pages/shop`: `templates/page.builder.liquid` /
+  `page.shop.liquid`, both rendering `sections/coming-soon.liquid`
+  (+ `assets/coming-soon.css`), an industrial spec-sheet placeholder.
+  Heading and text come from each page's own title and content in the
+  admin, so edit those rather than the section. Builder is the future 3D
+  grillz builder.
 
 - `/pages/test` (redirect from `/test`): `templates/page.test.liquid`, the
   spinning grillz WebGL canvas (`sections/grillz-canvas.liquid`,
@@ -75,8 +84,10 @@ was dropped; don't bring it back.)
   inventory at 0 and overselling off, so they can't be bought.
 - `custom.made_on` (date) holds when the piece was posted.
 - Homepage: `sections/featured-works.liquid` (static, top of
-  `templates/index.liquid`). Two per row on phones; tapping a tile opens a
-  sheet with the media and an inquire link.
+  `templates/index.liquid`). Ruled catalog grid, edge to edge: square tiles,
+  caption strip with index, title and `custom.made_on` as MM.YY. Two per row
+  on phones, three on tablets, four on desktop. Tapping a tile opens a sheet
+  with the media and an inquire link.
 - Swipe galleries (homepage sheet, product page on phones) use
   `assets/carousel.js` / `carousel.css`: mark the scroll-snap strip with
   `data-carousel` and it gets arrows, dots, and play-current-video-only. Both

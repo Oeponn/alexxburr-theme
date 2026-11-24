@@ -78,7 +78,7 @@
     <nav class="site-header__bar" aria-label="{{ 'layout.header.menu' | t }}">
 
       <div class="site-header__half site-header__half--start">
-        <button type="button" class="site-header__cell site-header__cell--icon site-header__menu-btn mm-trigger" aria-label="{{ 'layout.header.menu' | t }}">{{ icon_menu }}</button>
+        <button type="button" class="site-header__cell site-header__cell--icon site-header__menu-btn" data-door-open aria-controls="DoorMenu" aria-expanded="false" aria-label="{{ 'layout.header.menu' | t }}">{{ icon_menu }}</button>
         {%- if ig_url != blank -%}
           <a class="site-header__cell site-header__cell--icon site-header__desktop-only" href="{{ ig_url }}" target="_blank" rel="noopener" aria-label="Instagram">{{ icon_instagram }}</a>
         {%- endif -%}

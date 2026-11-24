@@ -77,6 +77,18 @@ way.
   line icons (1.75 stroke, square caps, mitred joins); don't use Font
   Awesome in new UI. The logo is the black silhouette mark
   (`assets/alexxburr-mark.png`), with no circle or badge around it.
+- **Door menu** (phones): heavy black doors (`#111`) that shut from both
+  sides, accelerating in with a short jolt on impact. They leave a window
+  over the header logo cell, then the X draws in stroke by stroke over the
+  menu button. The content on the doors is white Kontrapunkt rows with
+  `#333` rules and mono keys.
+- **Catalog grid** (homepage pieces): edge to edge, 1px black lines drawn by
+  each tile, square photos on `#fafafa`, and a caption strip (mono index,
+  Kontrapunkt title, mono date) that inverts on hover.
+- **Hazard tape**: hard-stop diagonal black/white stripes
+  (`repeating-linear-gradient` with no blending) for under-construction
+  states such as the coming-soon pages. It's a pattern, not a gradient, so
+  it's allowed.
 - **Carousel** (`assets/carousel.js` / `carousel.css`): square white arrows
   with a 1px black border. Both always show, and the one with nowhere to go
   is `disabled` and dimmed (`#bbb`), never hidden. Square dots, black when

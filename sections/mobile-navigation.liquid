@@ -1,90 +1,114 @@
-<div id="menu" data-section-id="{{ section.id }}" data-section-type="mobile-navigation">
-  <div class="mobile-search-form">
-  <form action="/search" method="get">
-    <input type="text" name="q" id="q" placeholder="{{ 'general.search.placeholder' | t }}" />
-    {% if settings.search_products %}
-    <input type="hidden" name="type" value="product">
-    {% endif %}
-  </form>
-</div>
-  <ul id="accordion">
-    {% assign menu = linklists[section.settings.main_nav] %}
-    {% for link in menu.links %}
-    {% if link.links != blank %}
-    <li class="accordion-toggle" aria-haspopup="true" aria-expanded="false"><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
-    <div class="accordion-content">
-      <ul class="sub">
-        {% for sub_link in link.links %}
-        {% if sub_link.links != blank %}
-        <div class="accordion-toggle2" aria-haspopup="true" aria-expanded="false"><a href="{{ sub_link.url }}">{{ sub_link.title | escape }}</a></div>
-        <div class="accordion-content2">
-          <ul class="sub">
-            {% for sub_sub_link in sub_link.links %}
-            <li><a href="{{ sub_sub_link.url }}">{{ sub_sub_link.title }}</a></li>
-            {% endfor %}
-          </ul>
+{%- comment -%}
+  Door menu (replaces the Testament slide-out drawer).
+
+  The header's menu button ([data-door-open]) shuts two heavy black doors
+  from each side of the screen. They leave a window cut out exactly over the
+  header's logo cell, so the logo stays visible through the closed doors.
+  Once they shut, an X draws in one stroke at a time where the menu button
+  was. Tapping it (or Escape) opens the doors again.
+  Behaviour: assets/door-menu.js. Look: assets/door-menu.css.
+
+  The section type deliberately isn't "mobile-navigation", so theme.js
+  doesn't attach its slide-out (which pushed the whole page sideways).
+{%- endcomment -%}
+
+{{ 'door-menu.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'door-menu.js' | asset_url }}" defer></script>
+
+{%- assign menu = linklists[section.settings.main_nav] -%}
+{%- assign ig_url = section.settings.instagram_url -%}
+{%- if ig_url == blank and settings.instagram_id != blank -%}
+  {%- assign ig_url = 'https://www.instagram.com/' | append: settings.instagram_id | append: '/' -%}
+{%- endif -%}
+
+<div class="door-menu" id="DoorMenu" data-door-menu data-section-id="{{ section.id }}" data-section-type="door-menu" hidden>
+  <div class="door-menu__door door-menu__door--left" aria-hidden="true"></div>
+  <div class="door-menu__door door-menu__door--right" aria-hidden="true"></div>
+
+  <div class="door-menu__panel" role="dialog" aria-modal="true" aria-label="{{ 'layout.header.menu' | t }}">
+    <span class="door-menu__rule" aria-hidden="true"></span>
+
+    <button type="button" class="door-menu__close" data-door-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path class="door-menu__x door-menu__x--1" d="M5 5L19 19" pathLength="1"/>
+        <path class="door-menu__x door-menu__x--2" d="M19 5L5 19" pathLength="1"/>
+      </svg>
+    </button>
+
+    <div class="door-menu__content">
+      <p class="door-menu__label"><span>00</span> Index</p>
+      <ul class="door-menu__links" role="list">
+        {%- for link in menu.links -%}
+          {%- assign external = false -%}
+          {%- if link.type == 'http_link' and link.url contains '://' -%}{%- assign external = true -%}{%- endif -%}
+          <li>
+            <a class="door-menu__row" href="{{ link.url }}"{% if external %} target="_blank" rel="noopener"{% endif %}{% if link.current %} aria-current="page"{% endif %}>
+              <span class="door-menu__key">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+              <span class="door-menu__value">{{ link.title | escape }}</span>
+              <span class="door-menu__arrow" aria-hidden="true">{% if external %}&#8599;{% else %}&#8594;{% endif %}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <form class="door-menu__search" action="{{ routes.search_url }}" method="get" role="search">
+        <label class="door-menu__label" for="DoorMenuSearch"><span>{{ menu.links.size | plus: 1 | prepend: '0' | slice: -2, 2 }}</span> Search</label>
+        <div class="door-menu__search-row">
+          <input id="DoorMenuSearch" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t | upcase }}" autocomplete="off">
+          {%- if settings.search_products -%}<input type="hidden" name="type" value="product">{%- endif -%}
+          <button type="submit" aria-label="{{ 'general.search.submit' | t }}">&#8594;</button>
         </div>
-        {% else %}
-        <li><a href="{{ sub_link.url }}">{{ sub_link.title | escape }}</a></li>
-        {% endif %}
-        {% endfor %}
+      </form>
+
+      <ul class="door-menu__meta" role="list">
+        {%- if ig_url != blank -%}
+          <li><a href="{{ ig_url }}" target="_blank" rel="noopener"><span>Instagram</span> {{ section.settings.instagram_handle | escape }} &#8599;</a></li>
+        {%- endif -%}
+        {%- if section.settings.phone != blank -%}
+          {%- assign tel = section.settings.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' | remove: '.' -%}
+          <li><a href="sms:+1{{ tel }}"><span>Text</span> {{ section.settings.phone | escape }} &#8599;</a></li>
+          <li><a href="tel:+1{{ tel }}"><span>Call</span> {{ section.settings.phone | escape }} &#8599;</a></li>
+        {%- endif -%}
+        {%- if shop.customer_accounts_enabled -%}
+          {%- if customer -%}
+            <li><a href="{{ routes.account_url }}"><span>Account</span> {{ 'layout.mobile_nav.account' | t }} &#8594;</a></li>
+          {%- else -%}
+            <li><a href="{{ routes.account_login_url }}"><span>Account</span> {{ 'layout.mobile_nav.login' | t }} &#8594;</a></li>
+          {%- endif -%}
+        {%- endif -%}
       </ul>
     </div>
-    {% else %}
-    <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
-    {% endif %}
-    {% endfor %}
-    {% if shop.customer_accounts_enabled %}
-    {% if customer  %}
-      <li class="top-level-link">
-        <a href="{{ routes.account_url }}">
-          <i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;{{ 'layout.mobile_nav.account' | t }}
-        </a>&nbsp;&nbsp;<i class="fa fa-user-times" aria-hidden="true"></i>&nbsp;&nbsp;{{ 'layout.mobile_nav.logout' | t }}
-      </li>
-      {% else %}
-      <li class="top-level-link"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;<a href="{{ routes.account_login_url }}">{{ 'layout.mobile_nav.login' | t }}</a></li>
-      {% endif %}
-    {% endif %}
-  </ul>
+  </div>
 </div>
-
-<style>
-  .slideout-menu { background: {{ section.settings.background_color }}; }
-  .slideout-menu ul#accordion li, .slideout-menu .accordion-toggle, .slideout-menu .accordion-toggle2 {
-    color: {{ section.settings.link_color }};
-    border-bottom: 1px solid {{ section.settings.border_color }};
-  }
-  .slideout-menu ul#accordion li a, .slideout-menu ul#accordion a {
-    color: {{ section.settings.link_color }} !important;
-  }
-  .accordion-toggle:after, .accordion-toggle2:after { border-left: 1px solid {{ section.settings.border_color }}; }
-</style>
 
 {% schema %}
 {
-    "name": "Mobile navigation",
-    "settings": [
-      {
-        "type": "link_list",
-        "id": "main_nav",
-        "label": "Choose main menu",
-        "default": "main-menu"
-      },
-      {
-        "type": "color",
-        "id": "background_color",
-        "label": "Background color"
-      },
-      {
-        "type": "color",
-        "id": "link_color",
-        "label": "Link color"
-      },
-      {
-        "type": "color",
-        "id": "border_color",
-        "label": "Border color"
-      }
-    ]
-  }
+  "name": "Mobile navigation",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "main_nav",
+      "label": "Choose main menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram link",
+      "info": "Defaults to the Instagram handle in theme settings."
+    },
+    {
+      "type": "text",
+      "id": "instagram_handle",
+      "label": "Instagram handle",
+      "default": "@alexxburrrr"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone (call / text)",
+      "default": "(248) 228-5162"
+    }
+  ]
+}
 {% endschema %}

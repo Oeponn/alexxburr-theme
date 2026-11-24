@@ -1,0 +1,440 @@
+/* Door menu (sections/mobile-navigation.liquid, assets/door-menu.js).
+   Two heavy black doors shut from each side, leaving a window over the
+   header's logo cell. Then the X draws in over the menu button and the index
+   fades up. Geometry comes from door-menu.js as custom properties:
+     --win-top / --win-bottom   logo cell top and bottom (viewport px)
+     --win-half                 half the logo cell width
+     --x-top / --x-left / --x-size   the menu button's cell
+*/
+
+.door-menu {
+  --door: #111;
+  --door-rule: #333;
+  --door-seam: #262626;
+  --door-text: #fff;
+  --door-dim: #8a8a8a;
+  --win-top: 0px;
+  --win-bottom: 56px;
+  --win-half: 42px;
+  --x-top: 0px;
+  --x-left: 0px;
+  --x-size: 56px;
+
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+}
+
+.door-menu[hidden] {
+  display: none;
+}
+
+/* Doors --------------------------------------------------------------------- */
+
+.door-menu__door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--door);
+  /* Off: parked just past each edge. The transition here is the one used when
+     the doors open again (ease-out, they swing back light). */
+  transition: transform 0.46s cubic-bezier(0.2, 0.8, 0.25, 1);
+  will-change: transform;
+}
+
+.door-menu__door--left {
+  left: 0;
+  transform: translateX(-101%);
+  /* Notch out half the logo cell on the inner edge. */
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% var(--win-top), calc(100% - var(--win-half)) var(--win-top),
+    calc(100% - var(--win-half)) var(--win-bottom), 100% var(--win-bottom),
+    100% 100%, 0 100%
+  );
+}
+
+.door-menu__door--right {
+  right: 0;
+  transform: translateX(101%);
+  clip-path: polygon(
+    0 0, 100% 0, 100% 100%, 0 100%,
+    0 var(--win-bottom), var(--win-half) var(--win-bottom),
+    var(--win-half) var(--win-top), 0 var(--win-top)
+  );
+}
+
+/* Seam: a hairline down each inner edge, below the window. */
+.door-menu__door::after {
+  content: '';
+  position: absolute;
+  top: var(--win-bottom);
+  bottom: 0;
+  width: 1px;
+  background: var(--door-seam);
+}
+
+.door-menu__door--left::after { right: 0; }
+.door-menu__door--right::after { left: 0; }
+
+/* Closing: heavy. They start slow and accelerate into each other. */
+.door-menu.is-in .door-menu__door {
+  transform: none;
+  transition: transform 0.52s cubic-bezier(0.7, 0, 0.9, 0.4);
+}
+
+/* Impact: a short, hard jolt as they meet, with no bounce. */
+.door-menu.is-shut .door-menu__door--left {
+  animation: door-thud-left 0.18s linear;
+}
+
+.door-menu.is-shut .door-menu__door--right {
+  animation: door-thud-right 0.18s linear;
+}
+
+@keyframes door-thud-left {
+  0% { transform: translateX(3px); }
+  35% { transform: translateX(-2px); }
+  70% { transform: translateX(1px); }
+  100% { transform: none; }
+}
+
+@keyframes door-thud-right {
+  0% { transform: translateX(-3px); }
+  35% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  100% { transform: none; }
+}
+
+/* Panel: everything on the closed doors ------------------------------------ */
+
+.door-menu__panel {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.door-menu.is-shut .door-menu__panel {
+  pointer-events: auto;
+}
+
+/* The header's base rule, carried across the doors under the window. */
+.door-menu__rule {
+  position: absolute;
+  top: var(--win-bottom);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--door-rule);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+/* X: a cell exactly over the menu button. Each stroke draws in on its own. */
+.door-menu__close {
+  position: absolute;
+  top: var(--x-top);
+  left: var(--x-left);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--x-size);
+  min-width: 0;
+  max-width: none;
+  height: var(--win-bottom);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--door-text);
+  letter-spacing: normal;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.door-menu__close::after {
+  /* The cell's right rule, matching the header grid. */
+  content: '';
+  position: absolute;
+  top: var(--win-top);
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background: var(--door-rule);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+/* The theme's global button:hover paints a background; keep the cell clear. */
+.door-menu .door-menu__close:hover,
+.door-menu .door-menu__close:focus {
+  background: none;
+  color: var(--door-text);
+}
+
+/* Hover only on real pointers: right after a click the cursor is already
+   sitting on the X, and a hover fill would hide it drawing in. */
+@media (hover: hover) {
+  .door-menu.is-shut .door-menu__close:hover {
+    color: #bbb;
+  }
+}
+
+.door-menu__close:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: -6px;
+}
+
+.door-menu__close svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin-top: var(--win-top);
+  overflow: visible;
+}
+
+.door-menu__x {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: butt;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.door-menu.is-shut .door-menu__x--1 {
+  animation: door-x-draw 0.17s cubic-bezier(0.6, 0, 0.4, 1) 0.1s forwards;
+}
+
+.door-menu.is-shut .door-menu__x--2 {
+  animation: door-x-draw 0.17s cubic-bezier(0.6, 0, 0.4, 1) 0.32s forwards;
+}
+
+@keyframes door-x-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.door-menu.is-shut .door-menu__rule,
+.door-menu.is-shut .door-menu__close::after {
+  opacity: 1;
+}
+
+/* Index content ------------------------------------------------------------- */
+
+.door-menu__content {
+  position: absolute;
+  top: calc(var(--win-bottom) + 1px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px 16px calc(24px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--door-text);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.door-menu.is-shut .door-menu__content {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.22s ease 0.2s, transform 0.22s ease 0.2s;
+}
+
+.door-menu__content ul,
+.door-menu__content li,
+.door-menu__content p {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.door-menu__label {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 12px !important;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--door-dim);
+}
+
+.door-menu__label span {
+  color: var(--door-text);
+}
+
+.door-menu__links {
+  border-top: 1px solid var(--door-rule);
+}
+
+.door-menu__row,
+.door-menu__row:visited {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--door-rule);
+  color: var(--door-text);
+  text-decoration: none;
+}
+
+.door-menu__key {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--door-dim);
+}
+
+.door-menu__value {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 9vw, 44px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.door-menu__arrow {
+  font-size: 20px;
+  color: var(--door-dim);
+}
+
+.door-menu__row:hover,
+.door-menu__row:focus-visible {
+  background: #fff;
+  color: var(--door);
+  padding-left: 8px;
+  padding-right: 8px;
+  border-bottom-color: #fff;
+}
+
+.door-menu__row[aria-current='page'] .door-menu__key {
+  color: var(--door-text);
+}
+
+.door-menu__row[aria-current='page'] .door-menu__key::before {
+  content: '\25A0\00a0';
+}
+
+/* Search */
+.door-menu__search {
+  margin: 28px 0 0;
+}
+
+.door-menu__search-row {
+  display: flex;
+  border: 1px solid var(--door-rule);
+}
+
+.door-menu__search input[type='search'] {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 52px;
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--door-text);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.door-menu__search input::placeholder {
+  color: #666;
+}
+
+.door-menu__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.door-menu__search button {
+  flex: 0 0 auto;
+  width: 52px;
+  min-width: 0;
+  max-width: none;
+  height: 52px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--door-rule);
+  border-radius: 0;
+  background: none;
+  color: var(--door-text);
+  font-size: 20px;
+  letter-spacing: normal;
+  cursor: pointer;
+}
+
+.door-menu__search button:hover {
+  background: #fff;
+  color: var(--door);
+}
+
+/* Contact / account */
+.door-menu__meta {
+  margin-top: 28px !important;
+  border-top: 1px solid var(--door-rule);
+}
+
+.door-menu__meta a,
+.door-menu__meta a:visited {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--door-rule);
+  color: var(--door-text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.door-menu__meta a span {
+  flex: 0 0 84px;
+  color: var(--door-dim);
+}
+
+.door-menu__meta a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@media (min-width: 750px) {
+  .door-menu__content {
+    padding: 28px 24px 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door-menu__door,
+  .door-menu.is-in .door-menu__door,
+  .door-menu__content,
+  .door-menu.is-shut .door-menu__content {
+    transition: none;
+  }
+  .door-menu.is-shut .door-menu__door--left,
+  .door-menu.is-shut .door-menu__door--right {
+    animation: none;
+  }
+  .door-menu.is-shut .door-menu__x--1,
+  .door-menu.is-shut .door-menu__x--2 {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
