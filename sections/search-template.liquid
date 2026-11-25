@@ -1,57 +1,145 @@
-<div id="page" class="desktop-12">
-  <h2>{{ 'general.search.title' | t }}</h2>
+{%- comment -%}
+  Search results (templates/search.liquid), in the catalog look of the
+  homepage's featured works: a big title on a heavy rule, a ruled search
+  bar, then matching pieces as an edge-to-edge ruled grid of square tiles
+  with an index, title and date under each.
 
-  {% case section.settings.grid %}
-  {% when 2 %}
-  {%- assign grid_item_width = 'desktop-6 mobile-half' -%}
-  {% when 3 %}
-  {%- assign grid_item_width = 'desktop-4 mobile-half' -%}
-  {% when 4 %}
-  {%- assign grid_item_width = 'desktop-3 mobile-half' -%}
-  {% endcase %}
+  Archive pieces (tagged `archive`) are past work, not stock: they show their
+  MM.YY date and an "Archive" tag rather than "$0.00" and "Sold out". Other
+  products show their price, with the sold-out / sale tag when it applies.
+  Pages and articles (if search isn't limited to products) list as rows
+  under the grid.
+{%- endcomment -%}
 
-  {%- assign product_limit = section.settings.grid | times: section.settings.rows -%}
-  {% paginate search.results by product_limit %}
+{{ 'search-page.css' | asset_url | stylesheet_tag }}
 
-  <div id="search-bar">
-    <form action="/search" method="get">
-      {% if search.performed %}
-      {% if search.results_count == 0 %}
-      <p>{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
-      {% else %}
-      <p>{{ 'general.search.results_for_html' | t: terms: search.terms }}</p>
-      {% endif %}
-      {% endif %}
-      <input type="text" name="q" id="q" placeholder="{{ 'general.search.placeholder' | t }}"/>
-      {% if settings.search_products %}
-      <input type="hidden" name="type" value="product">
-      {% endif %}
+{%- assign per_page = section.settings.grid | times: section.settings.rows -%}
+
+<section class="search-page" style="--search-columns: {{ section.settings.grid }}">
+  {%- paginate search.results by per_page -%}
+    <div class="search-page__head">
+      <h1 class="search-page__title">{{ 'general.search.submit' | t }}</h1>
+      {%- if search.performed -%}
+        <p class="search-page__count">
+          {{- search.results_count | prepend: '00' | slice: -3, 3 }} {% if search.results_count == 1 %}result{% else %}results{% endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <form class="search-page__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="search-page__key" for="SearchPageInput"><span>01</span> Find</label>
+      <input
+        class="search-page__input"
+        id="SearchPageInput"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false">
+      {%- if settings.search_products -%}<input type="hidden" name="type" value="product">{%- endif -%}
+      <button class="search-page__submit" type="submit" aria-label="{{ 'general.search.submit' | t }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+      </button>
     </form>
-  </div>
-</div>
 
-{% if search.performed %}
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <div class="search-page__empty">
+          <p class="search-page__label"><span>02</span> No match</p>
+          <p class="search-page__note">Nothing matched &ldquo;{{ search.terms | escape }}&rdquo;. Try grillz, fangs or enamel, or design your own in the builder.</p>
+          <div class="search-page__actions">
+            <a class="search-page__button search-page__button--primary" href="/pages/builder">Open the builder</a>
+            <a class="search-page__button" href="/pages/contact">Get in touch</a>
+          </div>
+        </div>
+      {%- else -%}
+        <p class="search-page__label search-page__label--results"><span>02</span> Results for &ldquo;{{ search.terms | escape }}&rdquo;</p>
 
-<div class="desktop-12">
-  <div id="product-loop">
-    {% for item in search.results %}
-      {% assign products_per_row = section.settings.grid%}
-      <div id="product-listing-{{ item.id }}" class="product-index {% if products_per_row == 6 %}desktop-2{% cycle ' first', '', '', '', '', ' last' %}{% elsif products_per_row == 4 %}desktop-3{% cycle ' first', '', '', ' last' %}{% elsif products_per_row == 3 %}desktop-4{% cycle ' first', '', ' last' %}{% elsif products_per_row == 5 %}desktop-fifth{% cycle ' first', '', '', '', ' last' %}{% elsif products_per_row == 2 %}desktop-6{% cycle ' first', ' last' %}{% endif %} mobile-half" data-alpha="{{ item.title }}" data-price="{{ item.price }}"  data-product-id="{{ item.id }}">
-        {% render 'product-listing', product: item, collection: collection %}
-      </div>
-    {% endfor %}
-  </div>
+        {%- assign shown = paginate.current_offset -%}
+        <ul class="search-page__grid" role="list">
+          {%- for item in search.results -%}
+            {%- if item.object_type != 'product' -%}{%- continue -%}{%- endif -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {%- liquid
+              assign tag = ''
+              assign meta = ''
+              if item.tags contains 'archive'
+                assign tag = 'Archive'
+                assign made_on = item.metafields.custom.made_on.value
+                if made_on
+                  assign meta = made_on | date: '%m.%y'
+                endif
+              else
+                assign meta = item.price | money
+                if item.available == false
+                  assign tag = 'products.general.sold' | t
+                elsif item.compare_at_price > item.price
+                  assign tag = 'products.general.sale' | t
+                endif
+              endif
+            -%}
+            <li class="search-page__item">
+              <a class="search-page__tile" href="{{ item.url }}">
+                <span class="search-page__media">
+                  {%- if item.featured_image -%}
+                    {{ item.featured_image | image_url: width: 900 | image_tag:
+                      widths: '300, 450, 600, 900',
+                      sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw',
+                      loading: 'lazy',
+                      class: 'search-page__image',
+                      alt: item.featured_image.alt | default: item.title }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'search-page__image' }}
+                  {%- endif -%}
+                  {%- if tag != blank -%}<span class="icn{% if item.tags contains 'archive' %} archived{% elsif item.available == false %} so{% else %} sale-item{% endif %}">{{ tag }}</span>{%- endif -%}
+                </span>
+                <span class="search-page__caption">
+                  <span class="search-page__index">{{ shown | prepend: '0' | slice: -2, 2 }}</span>
+                  <span class="search-page__name">{{ item.title }}</span>
+                  {%- if meta != blank -%}<span class="search-page__meta">{{ meta }}</span>{%- endif -%}
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
 
-  {% render 'pagination', paginate: paginate %}
+        {%- capture rows -%}
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}{%- continue -%}{%- endif -%}
+            <li>
+              <a class="search-page__row" href="{{ item.url }}">
+                <span class="search-page__row-kind">{{ item.object_type }}</span>
+                <span class="search-page__row-title">{{ item.title }}</span>
+                <span class="search-page__row-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if rows != blank -%}
+          <ul class="search-page__rows" role="list">{{ rows }}</ul>
+        {%- endif -%}
 
-  {% endif %}
-
-  {% endpaginate %}
-
-</div>
-
-
-
+        {%- if paginate.pages > 1 -%}
+          <nav class="search-page__pages" aria-label="Result pages">
+            {%- if paginate.previous -%}
+              <a class="search-page__page" href="{{ paginate.previous.url }}">&larr; Prev</a>
+            {%- else -%}
+              <span class="search-page__page is-disabled">&larr; Prev</span>
+            {%- endif -%}
+            <span class="search-page__page-count">{{ paginate.current_page | prepend: '0' | slice: -2, 2 }} / {{ paginate.pages | prepend: '0' | slice: -2, 2 }}</span>
+            {%- if paginate.next -%}
+              <a class="search-page__page" href="{{ paginate.next.url }}">Next &rarr;</a>
+            {%- else -%}
+              <span class="search-page__page is-disabled">Next &rarr;</span>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
 
 {% schema %}
   {
@@ -63,7 +151,7 @@
         "min": 2,
         "max": 4,
         "step": 1,
-        "label": "Items per row",
+        "label": "Items per row on desktop",
         "default": 4
       },
       {

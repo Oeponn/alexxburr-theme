@@ -61,12 +61,25 @@ was dropped; don't bring it back.)
   and pointer / tap / scroll disturbances; it runs only while visible and is
   a still frame under reduced motion). Contact details are section settings.
   The old Testament `footer` section is gone.
-- `/pages/builder` and `/pages/shop`: `templates/page.builder.liquid` /
-  `page.shop.liquid`, both rendering `sections/coming-soon.liquid`
-  (+ `assets/coming-soon.css`), an industrial spec-sheet placeholder.
-  Heading and text come from each page's own title and content in the
-  admin, so edit those rather than the section. Builder is the future 3D
-  grillz builder.
+- `/pages/builder`: the 3D grillz builder. `templates/page.builder.liquid`
+  renders `sections/grillz-builder.liquid` + `assets/grillz-builder.{css,js}`
+  and `assets/grillz-builder-cast.js`. The cast (two plaster arches, ten
+  teeth each, US tooth numbers 4-13 / 20-29) is sculpted in code, not
+  loaded; caps are offset copies of each crown, and a shader on them cuts
+  the open-face / heart / star windows and diamond-cut facets. A design is
+  one metal plus a cut per tooth, kept in the URL hash (`#g=…`, so links
+  share it) and localStorage. The cut, metal and set lists live in the
+  section markup (the script reads them from the buttons); a metal's 3D
+  look is its `data-color` / `data-rough`. The stage is
+  `100svh - header` with a fixed-height dock, so nothing shifts; keep
+  `--gb-header` in step with the header's height settings. three.js comes
+  from jsDelivr through an import map (the cast module's URL is written
+  without `| json` so `shopify theme dev` can rewrite it). Submitting a
+  design for a quote is a later slice.
+- `/pages/shop`: `templates/page.shop.liquid`, rendering
+  `sections/coming-soon.liquid` (+ `assets/coming-soon.css`), an industrial
+  spec-sheet placeholder. Heading and text come from the page's own title
+  and content in the admin, so edit those rather than the section.
 
 - `/pages/test` (redirect from `/test`): `templates/page.test.liquid`, the
   spinning grillz WebGL canvas (`sections/grillz-canvas.liquid`,
@@ -94,6 +107,13 @@ was dropped; don't bring it back.)
   arrows always show; the one at either end is disabled (dimmed), not hidden.
 - Product photos were background-matched to Open Monogram Tooth Caps photo 1
   (top-edge background ~RGB 250). New photos should match that.
+- Search (`sections/search-template.liquid` + `assets/search-page.css`,
+  full width via `layout/theme.liquid`): the catalog look of the homepage
+  grid, with a ruled search bar, no-results actions (builder, contact) and
+  ruled pagination. Tile tags everywhere (`.icn` in `stylesheet.css.liquid`)
+  are square mono labels on the photo's corner. Archive pieces say
+  "Archive" and show their `made_on` date instead of "Sold out" / "$0.00",
+  in search and in `snippets/product-listing.liquid`.
 - Files (Content → Files) holds only the current pieces' media and
   `alexxburr_logo.png`, which is the header logo, favicon and default share
   image (`images['alexxburr_logo.png']` in `snippets/social-meta-tags.liquid`).

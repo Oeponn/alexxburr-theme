@@ -1,0 +1,772 @@
+/* Grillz builder (sections/grillz-builder.liquid) -----------------------------
+   A brutalist game screen: a 3D stage with a mono HUD in its corners and a
+   ruled dock of controls. Phones stack the stage over the dock; from 990px
+   (and phones on their side) the dock becomes a sidebar.
+
+   No layout shift: the whole builder is one screen tall less the header,
+   sized in small-viewport units so iOS toolbars don't resize it. The dock's
+   panels sit in one grid cell, so the tallest sets its height and switching
+   tabs never moves anything. Values that change live in fixed boxes. */
+
+.gb {
+  --gb-ink: #111;
+  --gb-gray: #555;
+  --gb-mid: #888;
+  --gb-hair: #d9d9d9;
+  --gb-paper: #fff;
+  --gb-void: #f3f3f1;
+  /* Matches the header strip: 56px + its 2px rule on phones, 64 + 2 from
+     990px (sections/header.liquid defaults). */
+  --gb-header: 58px;
+  --gb-tool: 40px;
+
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: calc(100vh - var(--gb-header));
+  height: calc(100svh - var(--gb-header));
+  min-height: 460px;
+  background: var(--gb-paper);
+  color: var(--gb-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Zero-specificity resets, so the component rules below win. */
+.gb :where(p, dl, dt, dd) {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.gb em {
+  font-style: normal;
+}
+
+/* Custom buttons: undo the theme's global button rule. */
+.gb button {
+  appearance: none;
+  -webkit-appearance: none;
+  width: auto;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.gb button:focus-visible {
+  outline: 2px solid var(--gb-ink);
+  outline-offset: -4px;
+}
+
+.gb svg {
+  display: block;
+}
+
+/* Stage ---------------------------------------------------------------------- */
+
+.gb__stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--gb-void);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.gb__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Drags orbit the cast and pinches zoom it; swipe the dock to scroll. */
+  touch-action: none;
+  outline: none;
+}
+
+.gb__stage.is-hovering .gb__canvas {
+  cursor: pointer;
+}
+
+.gb__stage.is-dragging .gb__canvas {
+  cursor: grabbing;
+}
+
+/* HUD: four corners over the canvas. */
+.gb__hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gb__hud > * {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.gb__title {
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: var(--gb-tool);
+  padding: 0 14px;
+  color: var(--gb-ink);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.gb__title span,
+.gb__label span,
+.gb .gb__tab span {
+  color: var(--gb-gray);
+}
+
+.gb__tools {
+  display: flex;
+}
+
+.gb__tools--top {
+  top: 0;
+  right: 0;
+}
+
+.gb__tools--bottom {
+  right: 0;
+  bottom: 0;
+}
+
+.gb .gb__tool {
+  display: grid;
+  place-items: center;
+  width: var(--gb-tool);
+  height: var(--gb-tool);
+  background: var(--gb-paper);
+  color: var(--gb-ink);
+  box-shadow: inset 0 0 0 1px var(--gb-ink);
+}
+
+.gb .gb__tool + .gb__tool {
+  margin-left: -1px;
+}
+
+.gb .gb__tool svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.gb .gb__tool:disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+.gb .gb__tool[aria-pressed='true'][data-gb-bite] {
+  background: var(--gb-ink);
+  color: var(--gb-paper);
+}
+
+.gb .gb__tool .gb__icon-off,
+.gb .gb__tool[aria-pressed='false'] .gb__icon-on {
+  display: none;
+}
+
+.gb .gb__tool[aria-pressed='false'] .gb__icon-off {
+  display: block;
+}
+
+@media (hover: hover) {
+  .gb .gb__tool:not(:disabled):hover {
+    background: var(--gb-ink);
+    color: var(--gb-paper);
+  }
+}
+
+.gb__readout {
+  left: 0;
+  bottom: 0;
+  right: calc(var(--gb-tool) * 2 + 8px);
+  height: var(--gb-tool);
+  padding: 0 14px;
+  line-height: var(--gb-tool);
+  color: var(--gb-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Target reticle: corner brackets around the tooth under the pointer, with
+   a tag. Placed by the script with transforms; never affects layout. */
+.gb__reticle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w, 40px);
+  height: var(--h, 40px);
+  transform: translate(var(--x, -100px), var(--y, -100px));
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(var(--gb-ink), var(--gb-ink)) top left / 9px 2px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) top left / 2px 9px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) top right / 9px 2px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) top right / 2px 9px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) bottom left / 9px 2px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) bottom left / 2px 9px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) bottom right / 9px 2px,
+    linear-gradient(var(--gb-ink), var(--gb-ink)) bottom right / 2px 9px;
+  background-repeat: no-repeat;
+  transition: opacity 0.15s ease;
+}
+
+.gb__reticle.is-on {
+  opacity: 1;
+}
+
+.gb__reticle-tag {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 4px);
+  padding: 3px 6px;
+  background: var(--gb-ink);
+  color: var(--gb-paper);
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.gb__reticle.is-below .gb__reticle-tag {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+
+/* Boot screen: rendered with the page, cleared by the script once the
+   first frame is drawn. A hard shutter, not a fade. */
+.gb__boot {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  background: var(--gb-void);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.42s cubic-bezier(0.7, 0, 0.25, 1), visibility 0s linear 0.42s;
+}
+
+.gb__boot.is-done {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+}
+
+.gb__boot-inner {
+  display: grid;
+  gap: 14px;
+  width: 216px;
+}
+
+.gb__boot-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  height: 2.1em;
+}
+
+.gb__boot-bar {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 3px;
+  height: 10px;
+}
+
+.gb__boot-bar i {
+  background: var(--gb-hair);
+}
+
+.gb__boot-bar i.on {
+  background: var(--gb-ink);
+}
+
+.gb__boot-step {
+  height: 1.25em;
+  color: var(--gb-gray);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.gb__boot-fail {
+  display: none;
+  line-height: 1.5;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.gb__boot-fail a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Failed to start: the boot screen stays, with the way out. */
+.gb--failed .gb__boot {
+  clip-path: none;
+  visibility: visible;
+}
+
+.gb--failed .gb__boot-bar,
+.gb--failed .gb__boot-step {
+  display: none;
+}
+
+.gb--failed .gb__boot-fail {
+  display: block;
+}
+
+.gb--failed .gb__hud,
+.gb--failed .gb__reticle {
+  display: none;
+}
+
+/* Dock ------------------------------------------------------------------------ */
+
+.gb__dock {
+  min-width: 0;
+  border-top: 2px solid var(--gb-ink);
+  background: var(--gb-paper);
+}
+
+.gb__spec {
+  display: grid;
+  grid-template-columns: 0.8fr 1.3fr 0.9fr;
+  height: 34px;
+  border-bottom: 1px solid var(--gb-ink);
+}
+
+.gb__spec-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.gb__spec-cell + .gb__spec-cell {
+  border-left: 1px solid var(--gb-ink);
+}
+
+.gb__spec dt {
+  color: var(--gb-gray);
+  flex: none;
+}
+
+.gb__spec dd {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.gb__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: 44px;
+  border-bottom: 1px solid var(--gb-ink);
+}
+
+.gb .gb__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.gb .gb__tab + .gb__tab {
+  border-left: 1px solid var(--gb-ink);
+}
+
+.gb .gb__tab[aria-selected='true'] {
+  background: var(--gb-ink);
+  color: var(--gb-paper);
+}
+
+.gb .gb__tab[aria-selected='true'] span {
+  color: var(--gb-mid);
+}
+
+@media (hover: hover) {
+  .gb .gb__tab[aria-selected='false']:hover {
+    background: #f1f1f1;
+  }
+}
+
+/* Every panel shares one cell; only the active one shows. */
+.gb__panels {
+  display: grid;
+}
+
+.gb__panel {
+  grid-area: 1 / 1;
+  min-width: 0;
+  visibility: hidden;
+}
+
+.gb__panel.is-active {
+  visibility: visible;
+}
+
+.gb__label {
+  display: none;
+}
+
+/* Options: a ruled grid. The container's background is the rule colour and
+   the 1px gaps let it through. */
+.gb__options {
+  display: grid;
+  gap: 1px;
+  background: var(--gb-ink);
+  border-bottom: 1px solid var(--gb-ink);
+}
+
+.gb__options--cut {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gb__options--metal,
+.gb__options--sets {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Seven metals in a grid of eight: fill the last cell with paper. */
+.gb__options--metal::after {
+  content: '';
+  background: var(--gb-paper);
+}
+
+.gb .gb__option {
+  --fg: var(--gb-ink);
+  --bg: var(--gb-paper);
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 8px;
+  background: var(--bg);
+  color: var(--fg);
+  text-align: left;
+}
+
+.gb .gb__option[aria-pressed='true'] {
+  --fg: var(--gb-paper);
+  --bg: var(--gb-ink);
+}
+
+@media (hover: hover) {
+  .gb .gb__option[aria-pressed='false']:hover {
+    --bg: #f1f1f1;
+  }
+}
+
+.gb .gb__option-label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gb__glyph {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.gb__glyph .fill {
+  fill: var(--fg);
+}
+
+.gb__glyph .line,
+.gb__glyph .dash {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5;
+}
+
+.gb__glyph .dash {
+  stroke-dasharray: 2.5 2;
+}
+
+.gb__glyph .cut {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 1.4;
+}
+
+.gb__glyph .dots {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 2.4;
+  stroke-linecap: square;
+}
+
+.gb__options--metal .gb__option,
+.gb__options--sets .gb__option {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 7px;
+  height: 56px;
+}
+
+.gb__swatch {
+  width: 18px;
+  height: 18px;
+  background: var(--swatch);
+  box-shadow: 0 0 0 1px var(--gb-ink);
+}
+
+.gb .gb__option[aria-pressed='true'] .gb__swatch {
+  box-shadow: 0 0 0 1px var(--gb-paper);
+}
+
+/* Set: a tiny map of the teeth it covers. */
+.gb__mini {
+  display: grid;
+  grid-template-columns: repeat(10, 4px);
+  grid-auto-rows: 5px;
+  gap: 1px;
+}
+
+.gb__mini i {
+  background: var(--gb-hair);
+}
+
+.gb__mini i.on {
+  background: var(--fg);
+}
+
+.gb .gb__option--set:active .gb__mini i.on,
+.gb .gb__option--set.is-fired {
+  --bg: var(--gb-ink);
+  --fg: var(--gb-paper);
+}
+
+/* Map: both rows of teeth as buttons, as you'd see them facing the wearer.
+   A capped tooth fills with its metal. */
+.gb__map {
+  display: grid;
+  gap: 1px;
+  background: var(--gb-ink);
+  border-bottom: 1px solid var(--gb-ink);
+}
+
+.gb__map-row {
+  display: grid;
+  grid-template-columns: 34px repeat(10, minmax(0, 1fr));
+  gap: 1px;
+}
+
+.gb__map-key {
+  display: grid;
+  place-items: center;
+  background: var(--gb-paper);
+  color: var(--gb-gray);
+  font-size: 10px;
+}
+
+.gb .gb__tooth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 56px;
+  background: var(--gb-paper);
+  color: var(--gb-ink);
+  font-size: 10px;
+}
+
+.gb .gb__tooth svg {
+  width: 14px;
+  height: 19px;
+  fill: var(--gb-paper);
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+}
+
+.gb .gb__tooth[aria-pressed='true'] svg {
+  fill: var(--cap, #e2b65c);
+}
+
+.gb .gb__tooth.is-target {
+  background: var(--gb-ink);
+  color: var(--gb-paper);
+}
+
+@media (hover: hover) {
+  .gb .gb__tooth:not(.is-target):hover {
+    background: #f1f1f1;
+  }
+}
+
+.gb__noscript {
+  padding: 16px;
+}
+
+.gb__noscript a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Phones on their side: the dock moves beside the stage. ------------------- */
+
+@media (orientation: landscape) and (max-height: 540px) and (max-width: 989px) {
+  .gb {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) min(360px, 46vw);
+    min-height: 0;
+  }
+
+  .gb__dock {
+    border-top: 0;
+    border-left: 2px solid var(--gb-ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Desktop: a ruled sidebar with every section open. ----------------------- */
+
+@media screen and (min-width: 990px) {
+  .gb {
+    --gb-header: 66px;
+    --gb-tool: 44px;
+
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 400px;
+    min-height: 600px;
+    font-size: 12px;
+  }
+
+  .gb__title,
+  .gb__readout {
+    padding: 0 18px;
+  }
+
+  .gb__dock {
+    display: flex;
+    flex-direction: column;
+    border-top: 0;
+    border-left: 2px solid var(--gb-ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .gb__spec {
+    flex: none;
+    grid-template-columns: 0.8fr 1.4fr 0.8fr;
+    height: 56px;
+  }
+
+  .gb__spec-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 14px;
+  }
+
+  .gb__spec dt {
+    font-size: 10px;
+  }
+
+  .gb__spec dd {
+    max-width: 100%;
+    font-size: 15px;
+  }
+
+  .gb__tabs {
+    display: none;
+  }
+
+  .gb__panels {
+    display: block;
+  }
+
+  .gb__panel {
+    visibility: visible;
+  }
+
+  .gb__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--gb-ink);
+  }
+
+  .gb__label em {
+    margin-left: auto;
+    color: var(--gb-mid);
+  }
+
+  .gb__panel + .gb__panel .gb__label {
+    margin-top: 18px;
+    border-top: 1px solid var(--gb-ink);
+  }
+
+  .gb .gb__option {
+    height: 44px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .gb__options--metal .gb__option,
+  .gb__options--sets .gb__option {
+    height: 60px;
+  }
+
+  .gb .gb__tooth {
+    height: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb button,
+  .gb__reticle,
+  .gb__boot {
+    transition: none;
+  }
+}

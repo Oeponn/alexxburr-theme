@@ -8,6 +8,9 @@
     {% if product.price < product.compare_at_price %}
       <div class="sale-item icn">{{ 'products.general.sale' | t }}</div>
     {% endif %}
+  {% elsif product.tags contains 'archive' %}
+    {%- comment -%} Archive pieces are past work, never for sale: not "sold out". {%- endcomment -%}
+    <div class="icn archived">Archive</div>
   {% else %}
     <div class="so icn">{{ 'products.general.sold' | t }}</div>
   {% endif %}
@@ -68,7 +71,13 @@
       <span class="prod-title">{{ product.title }}</span>
     </a>
 
-    {% render 'product-price-listing', product: product %}
+    {%- if product.tags contains 'archive' -%}
+      {%- comment -%} No "$0.00" on past work: when it was made instead. {%- endcomment -%}
+      {%- assign made_on = product.metafields.custom.made_on.value -%}
+      {%- if made_on -%}<span class="prod-made">{{ made_on | date: '%m.%y' }}</span>{%- endif -%}
+    {%- else -%}
+      {% render 'product-price-listing', product: product %}
+    {%- endif -%}
 
     {% if template contains 'collection' or template == 'index' or template == 'search' %}
       {% if settings.secondary_images_hover == 'alternate_colors' and product.media.size > 1 %}
