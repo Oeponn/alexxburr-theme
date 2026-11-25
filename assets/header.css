@@ -324,21 +324,45 @@ ul.main-nav.site-header__links {
 .search-overlay__backdrop {
   position: absolute;
   inset: 0;
+  /* Under iOS Safari's see-through bottom toolbar too (see door-menu.css). */
+  bottom: -50vh;
   background: rgba(17, 17, 17, 0.6);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
+/* The field on a bar across the top; live results scroll under it, inside
+   the screen. */
 .search-overlay__panel {
   position: relative;
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   width: min(720px, 100%);
+  max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   background: #fff;
   border: 2px solid #111;
   opacity: 0;
   transform: translateY(-12px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.search-overlay__bar {
+  display: flex;
+  align-items: stretch;
+  flex: none;
+}
+
+.search-overlay__results {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid #111;
+}
+
+.search-overlay__results[hidden] {
+  display: none;
 }
 
 .search-overlay.is-open .search-overlay__backdrop {
@@ -351,6 +375,7 @@ ul.main-nav.site-header__links {
 }
 
 .search-overlay__form {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -430,6 +455,11 @@ ul.main-nav.site-header__links {
 @media screen and (min-width: 990px) {
   .search-overlay {
     padding-top: 96px;
+  }
+
+  .search-overlay__panel {
+    max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
   }
 
   .search-overlay__input {

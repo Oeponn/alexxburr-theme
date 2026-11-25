@@ -2,13 +2,14 @@
 // the design.
 //
 // The cast comes from grillz-builder-cast.js. A design is one metal for the
-// whole piece plus a cut per tooth. Tapping a tooth, on the cast or in the
-// map, puts the current cut on it; tapping it again takes it off. Every
-// change can be undone and is kept in the address (so a link shares it) and
-// in local storage.
+// whole piece plus a style per tooth: a cut (solid, heart, star, diamond,
+// iced, solo stone) with two switches on top, fang and open face. Tapping a
+// tooth, on the cast or in the map, puts the loaded style on it; tapping it
+// again takes it off. Every change can be undone and is kept in the address
+// (so a link shares it) and in local storage.
 import * as THREE from 'three';
 import {
-  buildCast, capGeometry, stoneGeometry, stoneSpots, gumLine, ROWS, GUM, FANG_LENGTH,
+  buildCast, capGeometry, capLook, stoneGeometry, ROWS,
 } from 'grillz-builder/cast';
 
 // No WebGL (or a script failed): the boot screen says so and points to the
@@ -30,18 +31,33 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const calm = () => reducedMotion.matches;
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
 
-// One letter per cut, for the address. '-' is a bare tooth.
-const CODES = { bare: '-', solid: 's', open: 'o', heart: 'h', star: 'r', diamond: 'd', iced: 'i', solo: 'g', fang: 'f' };
-const BY_CODE = Object.fromEntries(Object.entries(CODES).map(([cut, code]) => [code, cut]));
-// Which branch of the cap shader a cut uses: 0 polished, 1 open face,
-// 2 diamond cut, 3 heart window, 4 star window.
-const SHADER_STYLE = { solid: 0, open: 1, diamond: 2, heart: 3, star: 4, iced: 0, solo: 0, fang: 0 };
-const WINDOWED = new Set(['open', 'heart', 'star']);
+// A tooth's style as a token, which is also how the address spells it: the
+// cut's letter, then F for a fang and O for an open face ('dF' is a
+// diamond-cut fang, 'iO' an iced open face). '-' is a bare tooth. Heart and
+// star are windows of their own, so they don't take an open face.
+const CUT_CODES = { solid: 's', heart: 'h', star: 'r', diamond: 'd', iced: 'i', solo: 'g' };
+const CODE_CUTS = Object.fromEntries(Object.entries(CUT_CODES).map(([cut, code]) => [code, cut]));
+const LEGACY = { o: 'sO', f: 'sF' }; // open face and fang were cuts once
+const OWN_WINDOW = new Set(['heart', 'star']);
+const OPEN_NAMES = { solid: 'Open face', diamond: 'Open diamond cut', iced: 'Iced open face', solo: 'Open face + stone' };
+
+function makeToken({ cut, fang = false, open = false }) {
+  if (!CUT_CODES[cut]) return null;
+  return CUT_CODES[cut] + (fang ? 'F' : '') + (open && !OWN_WINDOW.has(cut) ? 'O' : '');
+}
+
+function readToken(token) {
+  const cut = token ? CODE_CUTS[token[0]] : null;
+  if (!cut) return null;
+  return { cut, fang: token.includes('F'), open: token.includes('O') && !OWN_WINDOW.has(cut) };
+}
+
 const KIND_SHORT = { central: 'Central', lateral: 'Lateral', canine: 'Canine', pm1: '1st premolar', pm2: '2nd premolar' };
 const ORDER = [...ROWS.upper, ...ROWS.lower];
 const DEFAULT_DESIGN = 'g=14y.--ssssss--.----------';
 const STORE_KEY = 'gb-design';
 const SOUND_KEY = 'gb-sound';
+const LIGHT_KEY = 'gb-light';
 
 /* Sound ------------------------------------------------------------------------
    Synthesised, so there's nothing to load: a metallic clank when a cap goes
@@ -116,15 +132,18 @@ function makeSound() {
   return sound;
 }
 
-/* Studio --------------------------------------------------------------------------
-   What the metal reflects: a bright ceiling, a dark band at the horizon and
-   a grey floor, plus softboxes for crisp highlights. Gold needs the dark to
-   look like gold rather than yellow plastic. The visible background is a
-   separate, flat light grey. */
+/* Light ---------------------------------------------------------------------------
+   Two set-ups, switched from the HUD.
+   Studio (the default) is the photographic one: a hard key light with
+   shadows, and a room for the metal to reflect: a bright ceiling, a dark
+   band at the horizon and a grey floor, softboxes for long highlights and a
+   few small, very hot lamps that the stones and polished edges catch as
+   sparks. Gold needs the dark to look like gold rather than yellow plastic.
+   Even is a soft, shadowless dome: flatter, but every tooth reads clearly.
+   The visible background is a separate, flat light grey either way. */
 
-function studioEnvironment(renderer) {
+function domeEnvironment(renderer, stops, lamps) {
   const studio = new THREE.Scene();
-  const stops = [[-1, 0.42], [-0.4, 0.34], [-0.12, 0.1], [0.02, 0.05], [0.12, 0.75], [0.45, 1.05], [1, 1.3]];
   const shade = (y) => {
     for (let i = 1; i < stops.length; i++) {
       if (y <= stops[i][0]) {
@@ -142,41 +161,81 @@ function studioEnvironment(renderer) {
   dome.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   studio.add(new THREE.Mesh(dome, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
 
-  const panel = (width, height, value, at) => {
-    const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(width, height),
-      new THREE.MeshBasicMaterial({ color: new THREE.Color(value, value, value), side: THREE.DoubleSide }),
-    );
+  // A lamp is a flat panel of one brightness, or, given `edge`, one that
+  // fades top and bottom to that brightness (a soft strip: hard edges in the
+  // room show up in polished metal as lines that read as grooves).
+  for (const [width, height, value, at, edge] of lamps) {
+    const geometry = new THREE.PlaneGeometry(width, height, 1, edge === undefined ? 1 : 12);
+    const position = geometry.attributes.position;
+    const colors = new Float32Array(position.count * 3);
+    for (let i = 0; i < position.count; i++) {
+      const fromEdge = 1 - Math.abs(position.getY(i) / (height / 2));
+      const v = edge === undefined ? value : edge + (value - edge) * THREE.MathUtils.smoothstep(fromEdge, 0, 0.85);
+      colors.fill(v, i * 3, i * 3 + 3);
+    }
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide }));
     mesh.position.set(...at);
     mesh.lookAt(0, 0, 0);
     studio.add(mesh);
-  };
-  panel(7, 1.4, 5.5, [0, 5.2, 1.5]); // overhead strip
-  panel(1.1, 6, 3.6, [-5.2, 0.6, 2]); // left strip
-  panel(1.1, 6, 3.2, [5.2, 0.6, 0.5]); // right strip
-  panel(4.2, 1.6, 2.6, [0, 2.2, 6]); // front card, high: lights the lip faces
-  panel(5, 1.2, 0.0, [0, -1.4, 6]); // front, low: a dark band across them
+  }
   const generator = new THREE.PMREMGenerator(renderer);
-  const texture = generator.fromScene(studio, 0.025).texture;
+  const texture = generator.fromScene(studio, 0.02).texture;
   generator.dispose();
   return texture;
 }
 
+function studioEnvironment(renderer) {
+  return domeEnvironment(
+    renderer,
+    [[-1, 0.42], [-0.4, 0.34], [-0.12, 0.1], [0.02, 0.05], [0.12, 0.75], [0.45, 1.05], [1, 1.3]],
+    [
+      [7, 1.4, 5.5, [0, 5.2, 1.5]], // overhead strip
+      [1.1, 6, 3.6, [-5.2, 0.6, 2]], // left strip
+      [1.1, 6, 3.2, [5.2, 0.6, 0.5]], // right strip
+      [4.2, 2.4, 2.6, [0, 2.2, 6], 0.9], // front card, high: lights the lip faces
+      [5, 1.8, 0.0, [0, -1.4, 6], 0.22], // front, low: a dark band across them
+      // Small hot lamps: sparks in the stones.
+      [0.45, 0.45, 60, [-3.2, 4.4, 3.4]],
+      [0.4, 0.4, 48, [3.6, 3.4, 3.8]],
+      [0.35, 0.35, 40, [1.2, 4.9, -1.5]],
+      [0.3, 0.3, 36, [-1.8, 1.6, 5.8]],
+      [0.3, 0.3, 30, [5.4, 1.2, -2.2]],
+    ],
+  );
+}
+
+function evenEnvironment(renderer) {
+  return domeEnvironment(
+    renderer,
+    [[-1, 0.48], [-0.25, 0.6], [0.15, 0.88], [1, 1.08]],
+    [
+      [9, 9, 1.5, [0, 6, 2]], // a broad soft ceiling
+      [3, 6, 1.2, [-6, 1, 3]], // and two soft walls, just enough to keep the
+      [3, 6, 1.1, [6, 1, 2]], // metal looking like metal
+    ],
+  );
+}
+
 /* Cap shader ---------------------------------------------------------------------
-   Caps are standard metal with three additions, all driven by the per-vertex
+   Caps are standard metal with two additions, both driven by the per-vertex
    face data the cast module bakes into each cap (tooth-local x and height,
-   room to the side outline, how much the surface faces the lip):
-   - windows (open face, heart, star) are cut out of the lip face with a
-     rounded, bevelled edge;
-   - diamond cut is a field of small pyramids bumped into the normal, which
-     glint as the cast turns;
+   room to the side outline, how much the surface faces the lip) and by the
+   numbers capLook works out for the style:
+   - a window (open face, heart or star) cut out of the lip face with a
+     rounded, bevelled edge. gbHole mirrors holeDistance in the cast module,
+     which keeps the stones clear of it;
+   - diamond cut: a field of small pyramids bumped into the normal, which
+     glint as the cast turns.
    Bumps use screen-space derivatives of a height, so there's no texture. */
 
 const CAP_PARS = /* glsl */ `
-uniform float uStyle;
-uniform vec4 uGum;   // zenith, papilla, half width, crown top (mm)
-uniform vec4 uShape; // centre height, scale, up (+1 lower / -1 upper), -
-varying vec4 vFace;  // x, height, room to the side outline, faces the lip
+uniform float uWindow; // 0 none, 1 open face, 2 heart, 3 star
+uniform float uFinish; // 0 polished, 1 diamond cut
+uniform vec4 uGum;     // zenith, papilla, half width, crown height (mm)
+uniform vec4 uFrame;   // open face: side, gum and edge bands, corner radius (mm)
+uniform vec4 uShape;   // heart / star: centre height, scale, up (+1 lower / -1 upper)
+varying vec4 vFace;    // x, height, room to the side outline, faces the lip
 
 float gbSmin(float a, float b, float k) {
   float h = max(k - abs(a - b), 0.0) / k;
@@ -202,21 +261,18 @@ float gbStar(vec2 p, float r, float rf) {
 }
 // Distance from the edge of the window in mm: negative inside it (no metal).
 float gbHole() {
-  if (vFace.w < 0.2) return 1e3;
-  if (uStyle > 0.5 && uStyle < 1.5) {
+  if (vFace.w < 0.2 || uWindow < 0.5) return 1e3;
+  if (uWindow < 1.5) {
     float edge = clamp(abs(vFace.x) / uGum.z, 0.0, 1.0);
     float gum = uGum.x + (uGum.y - uGum.x) * pow(edge * edge, 0.85);
-    float side = vFace.z - 0.95;
-    float top = (uGum.w - 1.1) - vFace.y;
-    float bottom = vFace.y - (gum + 1.05);
-    return -gbSmin(gbSmin(side, top, 1.8), bottom, 1.8);
+    float side = vFace.z - uFrame.x;
+    float top = (uGum.w - uFrame.z) - vFace.y;
+    float bottom = vFace.y - (gum + uFrame.y);
+    return -gbSmin(gbSmin(side, top, uFrame.w), bottom, uFrame.w);
   }
-  if (uStyle > 2.5 && uStyle < 4.5) {
-    vec2 p = vec2(vFace.x, (vFace.y - uShape.x) * uShape.z) / uShape.y;
-    float d = uStyle < 3.5 ? gbHeart(p + vec2(0.0, 0.55)) : gbStar(p, 0.62, 0.42);
-    return d * uShape.y;
-  }
-  return 1e3;
+  vec2 p = vec2(vFace.x, (vFace.y - uShape.x) * uShape.z) / uShape.y;
+  float d = uWindow < 2.5 ? gbHeart(p + vec2(0.0, 0.55)) : gbStar(p, 0.62, 0.42);
+  return d * uShape.y;
 }
 float gbFacets() {
   vec2 q = mat2(0.7071, -0.7071, 0.7071, 0.7071) * vFace.xy / 0.9;
@@ -238,9 +294,8 @@ vec3 gbPerturb(vec3 n, vec3 sx, vec3 sy, vec2 dh, float facing) {
 
 const CAP_CUT = /* glsl */ `
 float gbEdge = gbHole();
-float gbHeight = uStyle > 1.5 && uStyle < 2.5
-  ? gbFacets()
-  : 0.24 * (1.0 - pow(1.0 - clamp(gbEdge / 0.5, 0.0, 1.0), 2.0));
+float gbHeight = 0.24 * (1.0 - pow(1.0 - clamp(gbEdge / 0.5, 0.0, 1.0), 2.0));
+if (uFinish > 0.5) gbHeight += gbFacets();
 vec2 gbDh = vec2(dFdx(gbHeight), dFdy(gbHeight));
 vec3 gbSx = dFdx(-vViewPosition);
 vec3 gbSy = dFdy(-vViewPosition);
@@ -253,8 +308,10 @@ normal = gbPerturb(normal, gbSx, gbSy, gbDh, faceDirection);
 
 function makeCapMaterial() {
   const uniforms = {
-    uStyle: { value: 0 },
+    uWindow: { value: 0 },
+    uFinish: { value: 0 },
     uGum: { value: new THREE.Vector4() },
+    uFrame: { value: new THREE.Vector4() },
     uShape: { value: new THREE.Vector4() },
   };
   const material = new THREE.MeshStandardMaterial({ metalness: 1, roughness: 0.16, side: THREE.DoubleSide });
@@ -270,6 +327,195 @@ function makeCapMaterial() {
   };
   material.customProgramCacheKey = () => 'grillz-cap';
   material.userData.uniforms = uniforms;
+  return material;
+}
+
+/* Stones -------------------------------------------------------------------------
+   Small brilliants, shaded as diamonds rather than mirrors. Two parts:
+   - the flash off a facet: about a sixth of the light straight on, nearly
+     all of it at a glancing angle;
+   - the light that comes back out from inside. A ray through the crown is
+     bent down into the pavilion, bounces off its facets and leaves through
+     the table or a crown facet, bent apart by colour on the way out (fire).
+     Where it leaves depends on the view, so turning the cast makes each
+     facet flash on and off. It's traced in the stone's own space against
+     the pavilion cone, split into the geometry's eight facets.
+   The room's small hot lamps are what the stones light up with. */
+
+const GEM_VERTEX = /* glsl */ `
+vGemLocal = position;
+#ifdef USE_INSTANCING
+  mat3 gemTurn = mat3(instanceMatrix);
+#else
+  mat3 gemTurn = mat3(1.0);
+#endif
+vGemSide = normalMatrix * (gemTurn * vec3(1.0, 0.0, 0.0));
+vGemUp = normalMatrix * (gemTurn * vec3(0.0, 1.0, 0.0));
+vGemOut = normalMatrix * (gemTurn * vec3(0.0, 0.0, 1.0));
+`;
+
+const GEM_PARS = /* glsl */ `
+varying vec3 vGemLocal;
+varying vec3 vGemSide;
+varying vec3 vGemUp;
+varying vec3 vGemOut;
+uniform float uGemFire;
+
+// Outward normal of the pavilion facet under p (eight facets, centred
+// between the girdle points).
+vec3 gemFacet(vec3 p) {
+  float a = (floor(atan(p.z, p.x) / 0.785398) + 0.5) * 0.785398;
+  return normalize(vec3(cos(a) * 0.42, -0.462, sin(a) * 0.42));
+}
+
+// Distance along d from p (inside the stone) to the pavilion: a cone from
+// the girdle (radius 0.5 at y 0) down to the culet (y -0.42). -1 if none.
+float gemPavilion(vec3 p, vec3 d) {
+  const float k = 0.7056; // (0.42 / 0.5)^2
+  vec3 q = vec3(p.x, p.y + 0.42, p.z);
+  float a = k * (d.x * d.x + d.z * d.z) - d.y * d.y;
+  float b = 2.0 * (k * (q.x * d.x + q.z * d.z) - q.y * d.y);
+  float c = k * (q.x * q.x + q.z * q.z) - q.y * q.y;
+  float disc = b * b - 4.0 * a * c;
+  if (disc < 0.0 || abs(a) < 1e-5) return -1.0;
+  float r = sqrt(disc);
+  float best = 1e4;
+  for (int i = 0; i < 2; i++) {
+    float s = (-b + (i == 0 ? -r : r)) / (2.0 * a);
+    float y = q.y + s * d.y;
+    if (s > 1e-3 && y > 0.0 && y < 0.42) best = min(best, s);
+  }
+  return best < 1e3 ? best : -1.0;
+}
+
+vec3 gemRoom(vec3 viewDir) {
+  #ifdef USE_ENVMAP
+    vec3 w = inverseTransformDirection(viewDir, viewMatrix);
+    return textureCubeUV(envMap, envMapRotation * w, 0.0).rgb * envMapIntensity;
+  #else
+    return vec3(1.0);
+  #endif
+}
+`;
+
+const GEM_SHADE = /* glsl */ `
+{
+  vec3 n = normalize(normal);
+  vec3 v = normalize(vViewPosition);
+  mat3 toView = mat3(normalize(vGemSide), normalize(vGemUp), normalize(vGemOut));
+  mat3 toLocal = transpose(toView);
+  vec3 nL = toLocal * n;
+  vec3 vL = toLocal * v;
+  float facing = clamp(dot(n, v), 0.0, 1.0);
+  float fresnel = 0.17 + 0.83 * pow(1.0 - facing, 5.0);
+  vec3 flash = gemRoom(reflect(-v, n));
+
+  // In through this facet, then round the pavilion.
+  vec3 p = vGemLocal;
+  vec3 d = refract(-vL, nL, 1.0 / 2.42);
+  for (int i = 0; i < 3; i++) {
+    float s = gemPavilion(p, d);
+    if (s < 0.0) break;
+    p += d * s;
+    d = reflect(d, gemFacet(p));
+  }
+  // Out through the table, or the crown facet it reaches nearer the girdle.
+  float lift = max(0.17 - p.y, 0.0) / max(d.y, 0.05);
+  vec2 exitAt = p.xz + d.xz * lift;
+  float exitTurn = (floor(atan(exitAt.y, exitAt.x) / 0.785398) + 0.5) * 0.785398;
+  vec3 crown = length(exitAt) < 0.27
+    ? vec3(0.0, 1.0, 0.0)
+    : normalize(vec3(cos(exitTurn) * 0.57, 0.82, sin(exitTurn) * 0.57));
+  vec3 iors = vec3(2.42 - uGemFire, 2.42, 2.42 + uGemFire * 1.6);
+  vec3 fire;
+  for (int c = 0; c < 3; c++) {
+    vec3 o = refract(d, -crown, iors[c]);
+    // Caught inside: it rattles round and leaks out dim.
+    vec3 room = dot(o, o) < 0.01 ? gemRoom(toView * reflect(d, -crown)) * 0.3 : gemRoom(toView * o);
+    fire[c] = room[c];
+  }
+  // Heading out through the bottom (into the metal): dark.
+  if (d.y < 0.0) fire *= 0.18;
+  outgoingLight = flash * fresnel + fire * (1.0 - fresnel);
+}
+`;
+
+function makeGemMaterial() {
+  const uniforms = { uGemFire: { value: 0.05 } };
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xffffff, metalness: 0, roughness: 0, flatShading: true,
+  });
+  material.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, uniforms);
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vGemLocal;\nvarying vec3 vGemSide;\nvarying vec3 vGemUp;\nvarying vec3 vGemOut;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>\n${GEM_VERTEX}`);
+    // After the environment map's own declarations, which it samples.
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <envmap_physical_pars_fragment>', `#include <envmap_physical_pars_fragment>\n${GEM_PARS}`)
+      .replace('#include <opaque_fragment>', `${GEM_SHADE}\n#include <opaque_fragment>`);
+  };
+  material.customProgramCacheKey = () => 'grillz-gem';
+  return material;
+}
+
+/* Plaster: dental stone is matte and a little grainy, with the odd pinhole
+   from an air bubble. A fine grain darkens and bumps the surface, a broad
+   mottle varies it, and rare pits pock it; all of it fades out before it's
+   small enough to shimmer. Measured in each mesh's own millimetres. */
+
+const PLASTER_PARS = /* glsl */ `
+varying vec3 vGrain;
+uniform float uGrain;
+float gbHash(vec3 p) {
+  p = fract(p * 0.3183099 + 0.1);
+  p *= 17.0;
+  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+float gbNoise(vec3 x) {
+  vec3 i = floor(x);
+  vec3 f = fract(x);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(gbHash(i), gbHash(i + vec3(1, 0, 0)), f.x), mix(gbHash(i + vec3(0, 1, 0)), gbHash(i + vec3(1, 1, 0)), f.x), f.y),
+    mix(mix(gbHash(i + vec3(0, 0, 1)), gbHash(i + vec3(1, 0, 1)), f.x), mix(gbHash(i + vec3(0, 1, 1)), gbHash(i + vec3(1, 1, 1)), f.x), f.y),
+    f.z);
+}
+vec3 gbBump(vec3 n, vec3 sx, vec3 sy, vec2 dh, float facing) {
+  vec3 r1 = cross(sy, n);
+  vec3 r2 = cross(n, sx);
+  float det = dot(sx, r1) * facing;
+  vec3 grad = sign(det) * (dh.x * r1 + dh.y * r2);
+  return normalize(abs(det) * n - grad);
+}
+`;
+
+const PLASTER_COLOUR = /* glsl */ `
+vec3 gbG = vGrain * 3.4;
+float gbFine = 1.0 - smoothstep(0.3, 0.85, length(fwidth(gbG)));
+float gbGrain = gbNoise(gbG) * 0.6 + gbNoise(gbG * 2.3 + 3.1) * 0.4;
+float gbMottle = gbNoise(vGrain * 0.32);
+float gbPit = smoothstep(0.9, 0.95, gbNoise(vGrain * 2.1 + 7.0)) * gbFine;
+diffuseColor.rgb *= 1.0 + uGrain * ((gbGrain - 0.5) * 0.1 * gbFine + (gbMottle - 0.5) * 0.06 - gbPit * 0.14);
+float gbRelief = uGrain * ((gbGrain - 0.5) * 0.045 * gbFine - gbPit * 0.04);
+vec2 gbDh = vec2(dFdx(gbRelief), dFdy(gbRelief));
+vec3 gbSx = dFdx(-vViewPosition);
+vec3 gbSy = dFdy(-vViewPosition);
+`;
+
+function addGrain(material, strength) {
+  const uniforms = { uGrain: { value: strength } };
+  material.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, uniforms);
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vGrain;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGrain = position;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>\n${PLASTER_PARS}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>\n${PLASTER_COLOUR}`)
+      .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = gbBump(normal, gbSx, gbSy, gbDh, faceDirection);');
+  };
+  material.customProgramCacheKey = () => 'grillz-plaster';
   return material;
 }
 
@@ -337,10 +583,15 @@ async function start(root) {
   const shareButton = $('[data-gb-share]');
   const soundButton = $('[data-gb-sound]');
   const biteButton = $('[data-gb-bite]');
+  const lightButton = $('[data-gb-light]');
   const recentreButton = $('[data-gb-recentre]');
   const tabs = $$('[role="tab"]');
+  const cutPanel = $('[data-gb-cuts]');
   const cutButtons = $$('[data-gb-cut]');
+  const modButtons = $$('[data-gb-mod]');
   const metalButtons = $$('[data-gb-metal]');
+  const setsPanel = $('[data-gb-sets]');
+  const setsHint = $('[data-gb-sets-hint]');
   const setButtons = $$('[data-gb-set]');
   const mapButtons = $$('[data-gb-tooth]');
 
@@ -388,10 +639,11 @@ async function start(root) {
 
   await bootStepTo('Sculpting teeth', 5);
 
+  // Dental stone: matte, with a fine grain (see addGrain).
   const plaster = {
-    tooth: new THREE.MeshStandardMaterial({ color: 0xefeee9, roughness: 0.46, vertexColors: true, envMapIntensity: 0.42 }),
-    gum: new THREE.MeshStandardMaterial({ color: 0x95928b, roughness: 0.94, vertexColors: true, envMapIntensity: 0.32 }),
-    base: new THREE.MeshStandardMaterial({ color: 0xa3a099, roughness: 0.94, vertexColors: true, envMapIntensity: 0.32 }),
+    tooth: addGrain(new THREE.MeshStandardMaterial({ color: 0xefeee9, roughness: 0.78, vertexColors: true, envMapIntensity: 0.4 }), 0.8),
+    gum: addGrain(new THREE.MeshStandardMaterial({ color: 0x95928b, roughness: 0.96, vertexColors: true, envMapIntensity: 0.32 }), 1),
+    base: addGrain(new THREE.MeshStandardMaterial({ color: 0xa3a099, roughness: 0.96, vertexColors: true, envMapIntensity: 0.32 }), 1),
   };
   const cast = buildCast(plaster);
   scene.add(cast.root);
@@ -407,7 +659,8 @@ async function start(root) {
 
   const teeth = [...cast.teeth.values()];
   for (const tooth of teeth) {
-    tooth.cut = null;
+    tooth.cut = null; // the style token it's wearing, or null when bare
+    tooth.look = null;
     tooth.cap = null;
     tooth.stones = null;
     tooth.anim = null;
@@ -434,7 +687,8 @@ async function start(root) {
 
   // Hard key light from the upper left, low enough that the upper cast's
   // base doesn't shade the upper teeth; a soft fill from the sky.
-  const key = new THREE.DirectionalLight(0xffffff, 2.1);
+  const KEY_INTENSITY = 2.1;
+  const key = new THREE.DirectionalLight(0xffffff, KEY_INTENSITY);
   key.position.set(target.x - 70, target.y + 85, target.z + 150);
   key.target.position.copy(target);
   key.castShadow = true;
@@ -444,15 +698,15 @@ async function start(root) {
   key.shadow.bias = -0.0004;
   key.shadow.normalBias = 0.35;
   scene.add(key, key.target);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x8c8c88, 1.25));
+  const fill = new THREE.HemisphereLight(0xffffff, 0x8c8c88, 1.25);
+  scene.add(fill);
 
   await bootStepTo('Polishing metal', 9);
 
-  scene.environment = studioEnvironment(renderer);
+  const rooms = { studio: studioEnvironment(renderer), even: evenEnvironment(renderer) };
+  scene.environment = rooms.studio;
   const stoneGeo = stoneGeometry();
-  const stoneMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, metalness: 1, roughness: 0.02, envMapIntensity: 1.7, flatShading: true,
-  });
+  const stoneMaterial = makeGemMaterial();
 
   const camera = new THREE.PerspectiveCamera(24, 1, 5, 2000);
 
@@ -545,8 +799,11 @@ async function start(root) {
 
   const up = new THREE.Vector3(0, 1, 0);
 
+  // How far a tooth reaches past its natural tip with what it's wearing.
+  const reachOf = (tooth) => (tooth.look && tooth.cut && tooth.look.fang ? tooth.fangLength : 0);
+
   function tipOf(tooth) {
-    const top = tooth.spec.H + (tooth.cut === 'fang' ? FANG_LENGTH : 0);
+    const top = tooth.spec.H + reachOf(tooth);
     return tooth.holder.localToWorld(new THREE.Vector3(0, top * 0.8, tooth.profile(tooth.spec.H * 0.8).z0 + 1.5));
   }
 
@@ -557,49 +814,45 @@ async function start(root) {
 
   function ensureCap(tooth) {
     if (tooth.cap) return tooth.cap;
-    const material = makeCapMaterial();
-    const cap = new THREE.Mesh(capGeometry(tooth), material);
+    const cap = new THREE.Mesh(capGeometry(tooth), makeCapMaterial());
     cap.castShadow = true;
     cap.receiveShadow = true;
     cap.visible = false;
     cap.userData.toothId = tooth.id;
     tooth.holder.add(cap);
     tooth.cap = cap;
-    const zenith = gumLine(tooth, 0);
-    const { uniforms } = material.userData;
-    uniforms.uGum.value.set(GUM.zenith, GUM.papilla, tooth.spec.W / 2, tooth.spec.H);
-    uniforms.uShape.value.set(
-      (zenith + tooth.spec.H) / 2 + 0.15,
-      Math.min(tooth.spec.W * 0.34, (tooth.spec.H - zenith) * 0.31),
-      tooth.arch === 'upper' ? -1 : 1,
-      0,
-    );
     paintMetal(tooth, METALS[shownMetal]);
     return cap;
   }
 
-  const spotCache = new Map();
-  function spotsFor(tooth, cut) {
-    const key = `${tooth.id}:${cut}`;
-    if (!spotCache.has(key)) spotCache.set(key, stoneSpots(tooth, cut));
-    return spotCache.get(key);
+  // What a style does to a tooth (shape, window, finish, stones), worked out
+  // once per tooth and style.
+  const looks = new Map();
+  function lookFor(tooth, token) {
+    const key = `${tooth.id}:${token}`;
+    if (!looks.has(key)) looks.set(key, capLook(tooth, readToken(token)));
+    return looks.get(key);
   }
 
-  // Shape the cap for a cut: fang or regular shell, shader branch, stones.
-  function shapeCap(tooth, cut) {
+  // Shape the cap for a style: plain or fang shell, window, finish, stones.
+  function shapeCap(tooth, token) {
     const cap = ensureCap(tooth);
-    const fang = cut === 'fang';
-    cap.geometry = capGeometry(tooth, fang);
+    const look = lookFor(tooth, token);
+    tooth.look = look;
+    cap.geometry = capGeometry(tooth, look.fang);
     const { uniforms } = cap.material.userData;
-    uniforms.uStyle.value = SHADER_STYLE[cut];
-    uniforms.uGum.value.w = tooth.spec.H + (fang ? FANG_LENGTH : 0);
+    uniforms.uWindow.value = look.window;
+    uniforms.uFinish.value = look.finish;
+    uniforms.uGum.value.fromArray(look.gum);
+    uniforms.uFrame.value.fromArray(look.frame);
+    uniforms.uShape.value.fromArray(look.shape);
     if (tooth.stones) {
       cap.remove(tooth.stones);
       tooth.stones.dispose();
       tooth.stones = null;
     }
-    if (cut === 'iced' || cut === 'solo') {
-      const spots = spotsFor(tooth, cut);
+    if (look.stones.length) {
+      const spots = look.stones;
       const mesh = new THREE.InstancedMesh(stoneGeo, stoneMaterial, spots.length);
       const q = new THREE.Quaternion();
       const spin = new THREE.Quaternion();
@@ -619,7 +872,7 @@ async function start(root) {
       tooth.cap.add(mesh);
       tooth.stones = mesh;
     }
-    tooth.windowed = WINDOWED.has(cut);
+    tooth.windowed = look.window > 0;
   }
 
   function settle(tooth) {
@@ -726,23 +979,32 @@ async function start(root) {
 
   /* Design state -------------------------------------------------------------- */
 
+  // state.cuts maps tooth ids to style tokens (see makeToken); bare teeth
+  // aren't in it. The brush is the style that taps put on: a cut ('bare'
+  // takes caps off) and the two switches.
   const state = { metal: '14y', cuts: new Map() };
-  let brush = 'solid';
+  const brush = { cut: 'solid', fang: false, open: false };
+  const brushToken = () => makeToken(brush);
   const undoStack = [];
 
   function encode() {
-    const row = (ids) => ids.map((id) => CODES[state.cuts.get(id) || 'bare']).join('');
+    const row = (ids) => ids.map((id) => state.cuts.get(id) || '-').join('');
     return `${state.metal}.${row(ROWS.upper)}.${row(ROWS.lower)}`;
   }
 
   function decode(text) {
-    const match = /^([a-z0-9]+)\.([-a-z]{10})\.([-a-z]{10})$/.exec(text || '');
+    const match = /^([a-z0-9]+)\.([-a-zA-Z]+)\.([-a-zA-Z]+)$/.exec(text || '');
     if (!match || !METALS[match[1]]) return null;
+    const tokens = [];
+    for (const row of [match[2], match[3]]) {
+      const found = row.match(/[-a-z][A-Z]*/g) || [];
+      if (found.length !== 10 || found.join('') !== row) return null;
+      tokens.push(...found);
+    }
     const cuts = new Map();
-    const letters = match[2] + match[3];
     ORDER.forEach((id, i) => {
-      const cut = BY_CODE[letters[i]];
-      if (cut && cut !== 'bare') cuts.set(id, cut);
+      const style = readToken(LEGACY[tokens[i]] || tokens[i]);
+      if (style) cuts.set(id, makeToken(style));
     });
     return { metal: match[1], cuts };
   }
@@ -815,15 +1077,24 @@ async function start(root) {
     if (!hold) sayTimer = window.setTimeout(() => { readout.textContent = idleLine(); }, 2600);
   }
 
+  // A style's name, for the readout: 'Diamond cut fang', 'Iced open face'.
+  function styleName(token) {
+    const style = readToken(token);
+    if (!style) return 'Bare';
+    let name = style.open ? OPEN_NAMES[style.cut] : CUTS[style.cut];
+    if (style.fang) name = style.cut === 'solo' && style.open ? 'Open fang + stone' : `${name} fang`;
+    return name;
+  }
+
   function idleLine() {
-    return `${CUTS[brush]} loaded · ${finePointer ? 'click' : 'tap'} a tooth`;
+    const tap = finePointer ? 'click' : 'tap';
+    if (brush.cut === 'bare') return `Remove · ${tap} a cap or a set`;
+    return `${styleName(brushToken())} loaded · ${tap} a tooth`;
   }
 
   function stoneCount() {
     let total = 0;
-    for (const [id, cut] of state.cuts) {
-      if (cut === 'iced' || cut === 'solo') total += spotsFor(cast.teeth.get(id), cut).length;
-    }
+    for (const [id, token] of state.cuts) total += lookFor(cast.teeth.get(id), token).stones.length;
     return total;
   }
 
@@ -840,16 +1111,37 @@ async function start(root) {
     countEl.textContent = `${pad(state.cuts.size)}/${ORDER.length}`;
     metalNameEl.textContent = METALS[state.metal].name;
     stonesEl.textContent = pad(stoneCount(), 3);
-    cutButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.gbCut === brush)));
+    cutButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.gbCut === brush.cut)));
+    // The switches don't apply to Remove, and heart / star have their own
+    // window instead of an open face.
+    modButtons.forEach((b) => {
+      const mod = b.dataset.gbMod;
+      const off = brush.cut === 'bare' || (mod === 'open' && OWN_WINDOW.has(brush.cut));
+      b.setAttribute('aria-pressed', String(brush[mod] && !off));
+      b.classList.toggle('is-idle', off);
+    });
+    // The cut glyphs preview the switches.
+    cutPanel.classList.toggle('is-fang', brush.fang);
+    cutPanel.classList.toggle('is-open', brush.open);
+    // With Remove loaded, sets take caps off: grey out any with none to take.
+    const removing = brush.cut === 'bare';
+    setsPanel.classList.toggle('is-removing', removing);
+    setsHint.textContent = removing ? 'Takes those caps off' : 'Swaps the whole design';
+    setButtons.forEach((b) => {
+      b.disabled = removing && !b.dataset.teeth.split(',').some((id) => state.cuts.has(Number(id)));
+    });
     metalButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.gbMetal === state.metal)));
     const swatch = METALS[state.metal].swatch;
     mapButtons.forEach((b) => {
       const id = Number(b.dataset.gbTooth);
-      const cut = state.cuts.get(id) || '';
-      b.setAttribute('aria-pressed', String(Boolean(cut)));
-      b.dataset.cut = cut;
+      const token = state.cuts.get(id) || '';
+      const style = readToken(token);
+      b.setAttribute('aria-pressed', String(Boolean(style)));
+      b.dataset.cut = style ? style.cut : '';
+      b.classList.toggle('is-fang', Boolean(style && style.fang));
+      b.classList.toggle('is-open', Boolean(style && (style.open || OWN_WINDOW.has(style.cut))));
       b.style.setProperty('--cap', swatch);
-      b.setAttribute('aria-label', `${toothName(cast.teeth.get(id))}, #${id}: ${cut ? CUTS[cut] : 'bare'}`);
+      b.setAttribute('aria-label', `${toothName(cast.teeth.get(id))}, #${id}: ${style ? styleName(token) : 'bare'}`);
     });
     undoButton.disabled = undoStack.length === 0;
     clearButton.disabled = state.cuts.size === 0;
@@ -858,7 +1150,8 @@ async function start(root) {
   function paint(id, { fromMap = false } = {}) {
     const tooth = cast.teeth.get(id);
     const current = state.cuts.get(id) || null;
-    const next = brush === 'bare' || current === brush ? null : brush;
+    const loaded = brushToken();
+    const next = !loaded || current === loaded ? null : loaded;
     hint = false;
     aim(id, { hold: 1800 });
     if (next === current) {
@@ -870,7 +1163,7 @@ async function start(root) {
       if (next) state.cuts.set(id, next);
       else state.cuts.delete(id);
     });
-    say(`${toothCode(tooth)} · ${next ? CUTS[next] : 'Off'}`);
+    say(`${toothCode(tooth)} · ${next ? styleName(next) : 'Off'}`);
   }
 
   // Tabs (phones): one panel at a time, arrow keys move along.
@@ -898,11 +1191,28 @@ async function start(root) {
   });
 
   cutButtons.forEach((button) => button.addEventListener('click', () => {
-    brush = button.dataset.gbCut;
+    brush.cut = button.dataset.gbCut;
     sound.unlock();
     sound.play('tick');
+    // A heart or star is a window already: it takes the open face's place.
+    const swapped = brush.open && OWN_WINDOW.has(brush.cut);
+    if (swapped) brush.open = false;
     updateUi();
-    say(idleLine(), { hold: true });
+    say(swapped ? `${CUTS[brush.cut]} · replaces the open face` : idleLine(), { hold: !swapped });
+  }));
+
+  // Fang and open face switch on and off on top of the cut.
+  modButtons.forEach((button) => button.addEventListener('click', () => {
+    const mod = button.dataset.gbMod;
+    sound.unlock();
+    sound.play('tick');
+    if (brush.cut === 'bare') brush.cut = 'solid';
+    brush[mod] = !brush[mod];
+    // An open face replaces a heart or star window.
+    const swapped = mod === 'open' && brush.open && OWN_WINDOW.has(brush.cut);
+    if (swapped) brush.cut = 'solid';
+    updateUi();
+    say(swapped ? 'Open face · replaces the window' : idleLine(), { hold: !swapped });
   }));
 
   metalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -915,11 +1225,21 @@ async function start(root) {
   setButtons.forEach((button) => button.addEventListener('click', () => {
     sound.unlock();
     const ids = button.dataset.teeth.split(',').map(Number);
-    const cut = button.dataset.cut || (brush === 'bare' ? 'solid' : brush);
-    if (ids.some((id) => cast.teeth.get(id).arch === 'lower') && bitten) setBite(false);
     hint = false;
-    commit(() => { state.cuts = new Map(ids.map((id) => [id, cut])); }, { stagger: true });
-    say(`${labelOf(button)} · ${CUTS[cut]}`);
+    // With Remove loaded, a set takes its own teeth's caps off and leaves the
+    // rest (so Full set clears the lot).
+    if (brush.cut === 'bare') {
+      if (!ids.some((id) => state.cuts.has(id))) return;
+      commit(() => { ids.forEach((id) => state.cuts.delete(id)); }, { stagger: true });
+      say(state.cuts.size ? `${labelOf(button)} · caps off` : 'Every cap off · undo brings them back');
+      return;
+    }
+    // Otherwise it swaps in a whole design: the loaded style on its teeth,
+    // with a fang if the set says so.
+    const token = makeToken({ ...brush, fang: brush.fang || 'fang' in button.dataset });
+    if (ids.some((id) => cast.teeth.get(id).arch === 'lower') && bitten) setBite(false);
+    commit(() => { state.cuts = new Map(ids.map((id) => [id, token])); }, { stagger: true });
+    say(`${labelOf(button)} · ${styleName(token)}`);
   }));
 
   mapButtons.forEach((button) => {
@@ -943,7 +1263,7 @@ async function start(root) {
     sound.unlock();
     if (!state.cuts.size) return;
     commit(() => { state.cuts = new Map(); }, { stagger: true });
-    say('Cleared · undo brings it back');
+    say('Reset · every cap off · undo brings them back');
   });
 
   shareButton.addEventListener('click', async () => {
@@ -1012,6 +1332,37 @@ async function start(root) {
   biteButton.addEventListener('click', () => {
     sound.unlock();
     setBite(!bitten);
+  });
+
+  /* Light: studio (key light, shadows, the hot room) or even (soft dome). ---------- */
+
+  let lightMode = 'studio';
+  try {
+    if (window.localStorage.getItem(LIGHT_KEY) === 'even') lightMode = 'even';
+  } catch (error) { /* storage off */ }
+
+  function setLight(mode) {
+    lightMode = mode;
+    const studio = mode === 'studio';
+    scene.environment = rooms[mode];
+    // Dimmed rather than hidden, so the shaders stay as compiled.
+    key.intensity = studio ? KEY_INTENSITY : 0;
+    shadowCatcher.visible = studio;
+    fill.intensity = studio ? 1.25 : 1.9;
+    fill.groundColor.set(studio ? 0x8c8c88 : 0xb4b4b0);
+    lightButton.setAttribute('aria-pressed', String(!studio));
+    renderer.shadowMap.needsUpdate = true;
+    requestRender();
+  }
+
+  lightButton.addEventListener('click', () => {
+    sound.unlock();
+    sound.play('tick');
+    setLight(lightMode === 'studio' ? 'even' : 'studio');
+    try {
+      window.localStorage.setItem(LIGHT_KEY, lightMode);
+    } catch (error) { /* storage off */ }
+    say(lightMode === 'studio' ? 'Studio light · key, shadows, sparkle' : 'Even light · soft, no shadows');
   });
 
   /* Camera ------------------------------------------------------------------------ */
@@ -1110,7 +1461,7 @@ async function start(root) {
     }
     const tooth = cast.teeth.get(id);
     const box = tooth.crown;
-    const fang = tooth.cut === 'fang' ? FANG_LENGTH : 0;
+    const fang = reachOf(tooth);
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -1403,14 +1754,16 @@ async function start(root) {
   // Compile every shader now (a cap in each style and a stone), so the first
   // tap doesn't stall.
   resize();
+  setLight(lightMode);
   const warm = teeth.find((t) => t.id === 9);
-  shapeCap(warm, 'iced');
+  shapeCap(warm, makeToken({ cut: 'iced' }));
   warm.cap.visible = true;
   placeCamera();
   renderer.compile(scene, camera);
   warm.cap.visible = false;
-  shapeCap(warm, 'solid');
+  shapeCap(warm, makeToken({ cut: 'solid' }));
   warm.cut = null;
+  warm.look = null;
 
   await bootStepTo('Ready', 12);
 
@@ -1433,7 +1786,9 @@ async function start(root) {
   }, calm() ? 0 : 380);
 
   // Test hook for the harness.
-  root.gb = { state, cast, view, renderer, scene, camera, paint, sync, setBite, encode, requestRender };
+  root.gb = {
+    state, brush, cast, view, target, renderer, scene, camera, paint, sync, setBite, setLight, encode, requestRender, lookFor,
+  };
   window.__ready = true;
 }
 

@@ -52,7 +52,9 @@
 {%- endcapture -%}
 
 {{ 'header.css' | asset_url | stylesheet_tag }}
+{{ 'predictive-search.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'header.js' | asset_url }}" defer></script>
+<script src="{{ 'predictive-search.js' | asset_url }}" defer></script>
 
 <div class="header-section" data-section-id="{{ section.id }}" data-section-type="header-section">
 
@@ -110,24 +112,33 @@
     </nav>
   </header>
 
-  {%- comment -%} Full screen search, replaces the old inline #searchbox. {%- endcomment -%}
+  {%- comment -%}
+    Full screen search, replaces the old inline #searchbox. Results come up
+    under the field as you type (assets/predictive-search.js renders
+    sections/predictive-search.liquid into the results box).
+  {%- endcomment -%}
   <div class="search-overlay" id="SearchOverlay" data-search-overlay hidden>
     <div class="search-overlay__backdrop" data-search-close></div>
     <div class="search-overlay__panel" role="dialog" aria-modal="true" aria-label="{{ 'general.search.placeholder' | t }}">
-      <form action="{{ routes.search_url }}" method="get" class="search-overlay__form" role="search">
-        <span class="search-overlay__icon">{{ icon_search }}</span>
-        <input
-          type="search"
-          name="q"
-          class="search-overlay__input"
-          placeholder="{{ 'general.search.placeholder' | t }}"
-          autocomplete="off"
-          data-search-input>
-        {% if settings.search_products %}<input type="hidden" name="type" value="product">{% endif %}
-      </form>
-      <button type="button" class="search-overlay__close" data-search-close aria-label="{{ 'general.search.title' | t }}">
-        <svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg>
-      </button>
+      <div class="search-overlay__bar">
+        <form action="{{ routes.search_url }}" method="get" class="search-overlay__form" role="search" data-predictive-search="SearchOverlayResults" data-predictive-url="{{ routes.predictive_search_url }}">
+          <span class="search-overlay__icon">{{ icon_search }}</span>
+          <input
+            type="search"
+            name="q"
+            class="search-overlay__input"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            autocomplete="off"
+            aria-controls="SearchOverlayResults"
+            data-search-input>
+          {% if settings.search_products %}<input type="hidden" name="type" value="product">{% endif %}
+          <p class="predictive-status" data-predictive-status aria-live="polite"></p>
+        </form>
+        <button type="button" class="search-overlay__close" data-search-close aria-label="{{ 'general.search.title' | t }}">
+          <svg class="site-header__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+      </div>
+      <div class="search-overlay__results" id="SearchOverlayResults" role="region" aria-label="Search results" data-predictive-results hidden></div>
     </div>
   </div>
 

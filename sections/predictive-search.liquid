@@ -1,0 +1,88 @@
+{%- comment -%}
+  Live search results, rendered on request: assets/predictive-search.js asks
+  Shopify's predictive search for this section
+  (/search/suggest?q=…&section_id=predictive-search) as the visitor types in
+  the header search or the door menu, and drops the markup under the field.
+  Not placed on any page.
+
+  Pieces come first (square thumb, title, then the piece's MM.YY date, or a
+  price for anything that isn't archive work), then pages with a line of
+  their text, then a row that opens the full search page.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  {%- assign products = predictive_search.resources.products -%}
+  {%- assign pages = predictive_search.resources.pages -%}
+  {%- assign total = products.size | plus: pages.size -%}
+  {%- capture all_url -%}{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}{% if settings.search_products %}&type=product{% endif %}{%- endcapture -%}
+
+  <div class="predictive" data-predictive-count="{{ total }}">
+    {%- if total == 0 -%}
+      <p class="predictive__label"><span>00</span> No match</p>
+      <p class="predictive__empty">Nothing for &ldquo;{{ predictive_search.terms | escape }}&rdquo; yet. Try grillz, fangs or caps, or design your own.</p>
+      <ul class="predictive__list" role="list">
+        <li><a class="predictive__row predictive__row--page" href="/pages/builder" data-predictive-option><span class="predictive__name">Open the builder</span><span class="predictive__arrow" aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    {%- else -%}
+      {%- if products.size > 0 -%}
+        <p class="predictive__label"><span>01</span> Pieces</p>
+        <ul class="predictive__list" role="list">
+          {%- for product in products -%}
+            {%- liquid
+              assign meta = ''
+              if product.tags contains 'archive'
+                assign made_on = product.metafields.custom.made_on.value
+                if made_on
+                  assign meta = made_on | date: '%m.%y'
+                endif
+              else
+                assign meta = product.price | money
+              endif
+            -%}
+            <li>
+              <a class="predictive__row predictive__row--piece" href="{{ product.url }}" data-predictive-option>
+                <span class="predictive__thumb">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 168 | image_tag: width: 56, height: 56, widths: '56, 112, 168', sizes: '56px', loading: 'lazy', alt: '' }}
+                  {%- endif -%}
+                </span>
+                <span class="predictive__name">{{ product.title | escape }}</span>
+                {%- if meta != blank -%}<span class="predictive__meta">{{ meta }}</span>{%- endif -%}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if pages.size > 0 -%}
+        <p class="predictive__label"><span>{% if products.size > 0 %}02{% else %}01{% endif %}</span> Pages</p>
+        <ul class="predictive__list" role="list">
+          {%- for page in pages -%}
+            {%- comment -%} A space before every tag, so paragraphs don't run together once the tags go. {%- endcomment -%}
+            {%- assign line = page.content | replace: '<', ' <' | strip_html | strip_newlines | split: ' ' | join: ' ' | truncatewords: 14 -%}
+            <li>
+              <a class="predictive__row predictive__row--page" href="{{ page.url }}" data-predictive-option>
+                <span class="predictive__text">
+                  <span class="predictive__name">{{ page.title | escape }}</span>
+                  {%- if line != blank -%}<span class="predictive__line">{{ line | escape }}</span>{%- endif -%}
+                </span>
+                <span class="predictive__arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+
+    <a class="predictive__all" href="{{ all_url }}" data-predictive-option>
+      <span>All results for &ldquo;{{ predictive_search.terms | escape }}&rdquo;</span>
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive search"
+}
+{% endschema %}

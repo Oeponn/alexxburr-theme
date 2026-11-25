@@ -183,6 +183,14 @@
   cursor: default;
 }
 
+/* A worded tool (Reset): as wide as its label. */
+.gb .gb__tool--text {
+  width: auto;
+  padding: 0 12px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
 .gb .gb__tool[aria-pressed='true'][data-gb-bite] {
   background: var(--gb-ink);
   color: var(--gb-paper);
@@ -207,7 +215,7 @@
 .gb__readout {
   left: 0;
   bottom: 0;
-  right: calc(var(--gb-tool) * 2 + 8px);
+  right: calc(var(--gb-tool) * 3 + 8px);
   height: var(--gb-tool);
   padding: 0 14px;
   line-height: var(--gb-tool);
@@ -511,18 +519,26 @@
   height: 20px;
 }
 
-.gb__glyph .fill {
+.gb__glyph .tooth {
   fill: var(--fg);
 }
 
-.gb__glyph .line,
-.gb__glyph .dash {
+/* Iced is drawn as an outline full of stones. */
+.gb__glyph--iced .tooth {
   fill: none;
   stroke: var(--fg);
   stroke-width: 1.5;
 }
 
+/* Holes are painted in the cell's own colour. */
+.gb__glyph .hole {
+  fill: var(--bg);
+}
+
 .gb__glyph .dash {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5;
   stroke-dasharray: 2.5 2;
 }
 
@@ -537,6 +553,40 @@
   stroke: var(--fg);
   stroke-width: 2.4;
   stroke-linecap: square;
+}
+
+/* The glyphs preview the switches: a fang outline, an open face window
+   (a solo stone moves down into the bar under it). */
+.gb__glyph .tooth--fang,
+.gb__glyph .window,
+.gb__glyph .stone--open,
+.gb__options--cut.is-fang .gb__glyph .tooth:not(.tooth--fang),
+.gb__options--cut.is-open .gb__glyph .stone:not(.stone--open) {
+  display: none;
+}
+
+.gb__options--cut.is-fang .gb__glyph .tooth--fang,
+.gb__options--cut.is-open .gb__glyph .window,
+.gb__options--cut.is-open .gb__glyph .stone--open {
+  display: inline;
+}
+
+/* Switches (Fang, Open face): a check square, filled when on. */
+.gb .gb__check {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin: 0 4px;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.gb .gb__option--switch[aria-pressed='true'] .gb__check {
+  background: currentColor;
+  box-shadow: none;
+}
+
+.gb .gb__option--switch.is-idle {
+  --fg: #bbb;
 }
 
 .gb__options--metal .gb__option,
@@ -581,6 +631,18 @@
   --fg: var(--gb-paper);
 }
 
+/* Remove loaded: sets take caps off, so their teeth show hollow, and a set
+   with nothing left to take off is greyed out. */
+.gb__options--sets.is-removing .gb__mini i.on {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+.gb .gb__option--set:disabled {
+  --fg: #bbb;
+  cursor: default;
+}
+
 /* Map: both rows of teeth as buttons, as you'd see them facing the wearer.
    A capped tooth fills with its metal. */
 .gb__map {
@@ -618,15 +680,30 @@
 
 .gb .gb__tooth svg {
   width: 14px;
-  height: 19px;
+  height: 23px;
   fill: var(--gb-paper);
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linejoin: miter;
+  overflow: visible;
 }
 
 .gb .gb__tooth[aria-pressed='true'] svg {
   fill: var(--cap, #e2b65c);
+}
+
+.gb .gb__tooth .win,
+.gb .gb__tooth .fang {
+  display: none;
+}
+
+.gb .gb__tooth.is-open .win {
+  display: inline;
+  fill: var(--gb-paper);
+}
+
+.gb .gb__tooth.is-fang .fang {
+  display: inline;
 }
 
 .gb .gb__tooth.is-target {

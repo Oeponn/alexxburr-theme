@@ -51,13 +51,16 @@
         {%- endfor -%}
       </ul>
 
-      <form class="door-menu__search" action="{{ routes.search_url }}" method="get" role="search">
+      {%- comment -%} Live results drop in under the field (assets/predictive-search.js). {%- endcomment -%}
+      <form class="door-menu__search" action="{{ routes.search_url }}" method="get" role="search" data-predictive-search="DoorMenuResults" data-predictive-url="{{ routes.predictive_search_url }}">
         <label class="door-menu__label" for="DoorMenuSearch"><span>{{ menu.links.size | plus: 1 | prepend: '0' | slice: -2, 2 }}</span> Search</label>
         <div class="door-menu__search-row">
-          <input id="DoorMenuSearch" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t | upcase }}" autocomplete="off">
+          <input id="DoorMenuSearch" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t | upcase }}" autocomplete="off" aria-controls="DoorMenuResults">
           {%- if settings.search_products -%}<input type="hidden" name="type" value="product">{%- endif -%}
           <button type="submit" aria-label="{{ 'general.search.submit' | t }}">&#8594;</button>
         </div>
+        <p class="predictive-status" data-predictive-status aria-live="polite"></p>
+        <div class="door-menu__results" id="DoorMenuResults" role="region" aria-label="Search results" data-predictive-results hidden></div>
       </form>
 
       <ul class="door-menu__meta" role="list">

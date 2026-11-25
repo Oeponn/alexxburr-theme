@@ -1,0 +1,299 @@
+/* Live search results (sections/predictive-search.liquid, filled in by
+   assets/predictive-search.js) under the header search and the door menu
+   search. Ruled rows like the rest of the site: pieces with a square thumb,
+   title and date; pages with a line of their text; then a black row that
+   opens the full search. Ink on paper in the header, inverted on the doors. */
+
+/* Read out to screen readers only ("6 results"). */
+.predictive-status {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: 0 !important;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.search-overlay__results,
+.door-menu__results {
+  --ps-ink: #111;
+  --ps-paper: #fff;
+  --ps-gray: #555;
+  --ps-dim: #bbb;
+  --ps-rule: #d9d9d9;
+  --ps-pad: 16px;
+}
+
+.door-menu__results {
+  --ps-ink: #fff;
+  --ps-paper: #111;
+  --ps-gray: #8a8a8a;
+  --ps-dim: #555;
+  --ps-rule: #333;
+  --ps-pad: 0px;
+  margin-top: 4px;
+}
+
+.door-menu__results[hidden] {
+  display: none;
+}
+
+.predictive {
+  color: var(--ps-ink);
+  font-size: 14px;
+}
+
+.predictive :where(p, ul, li) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.predictive__label {
+  display: flex;
+  gap: 10px;
+  padding: 14px var(--ps-pad) 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ps-gray);
+}
+
+.predictive__label span {
+  color: var(--ps-ink);
+}
+
+.predictive__list {
+  border-top: 1px solid var(--ps-rule);
+}
+
+.predictive__row,
+.predictive__row:visited {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 8px var(--ps-pad);
+  border-bottom: 1px solid var(--ps-rule);
+  color: var(--ps-ink);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.predictive__row--page {
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 56px;
+}
+
+.predictive__thumb {
+  width: 48px;
+  height: 48px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.predictive__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.predictive__text {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.predictive__name {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.predictive__line {
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ps-gray);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.predictive__meta,
+.predictive__arrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ps-gray);
+  white-space: nowrap;
+}
+
+.predictive__arrow {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.predictive__empty {
+  padding: 0 var(--ps-pad) 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ps-gray);
+}
+
+/* Full search: the primary button. */
+.predictive__all,
+.predictive__all:visited {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  margin-top: 12px;
+  padding: 0 16px;
+  background: var(--ps-ink);
+  color: var(--ps-paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.predictive__all span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The theme's global a:hover would recolour (and maybe underline) these;
+   phones fire :hover on tap, so hold the plain look first. */
+.predictive .predictive__row:hover {
+  color: var(--ps-ink);
+  border-bottom: 1px solid var(--ps-rule);
+}
+
+.predictive .predictive__all:hover {
+  color: var(--ps-paper);
+  border-bottom: 0;
+}
+
+/* Rows invert on hover (real pointers) and keyboard focus. */
+.predictive .predictive__all:focus-visible {
+  outline: 2px solid var(--ps-paper);
+  outline-offset: -5px;
+}
+
+.predictive .predictive__row:focus-visible {
+  background: var(--ps-ink);
+  color: var(--ps-paper);
+  outline: none;
+}
+
+.predictive .predictive__row:focus-visible :is(.predictive__meta, .predictive__arrow, .predictive__line) {
+  color: var(--ps-dim);
+}
+
+@media (hover: hover) {
+  .predictive .predictive__row:hover {
+    background: var(--ps-ink);
+    color: var(--ps-paper);
+  }
+
+  .predictive .predictive__row:hover :is(.predictive__meta, .predictive__arrow, .predictive__line) {
+    color: var(--ps-dim);
+  }
+
+  .search-overlay__results .predictive__all:hover {
+    background: #333;
+  }
+
+  .door-menu__results .predictive__all:hover {
+    background: #d9d9d9;
+  }
+
+  /* On the doors, rows sit flush like the menu's own and open up when lit. */
+  .door-menu__results .predictive__row:hover {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+.door-menu__results .predictive__row:focus-visible {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* Searching: a short bar runs along the foot of the field. */
+.search-overlay__form.is-searching::after,
+.door-menu__search.is-searching .door-menu__search-row::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 28%;
+  height: 2px;
+  background: currentColor;
+  animation: predictive-scan 0.9s linear infinite;
+}
+
+.search-overlay__form.is-searching::after {
+  color: #111;
+}
+
+.door-menu__search-row {
+  position: relative;
+  overflow: hidden;
+}
+
+.door-menu__search.is-searching .door-menu__search-row::after {
+  color: #fff;
+}
+
+@keyframes predictive-scan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(360%); }
+}
+
+@media (min-width: 750px) {
+  .predictive__row {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+  }
+
+  .predictive__row--page {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .predictive__thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .predictive__name {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .predictive__row,
+  .predictive__all {
+    transition: none;
+  }
+
+  .search-overlay__form.is-searching::after,
+  .door-menu__search.is-searching .door-menu__search-row::after {
+    animation: none;
+    width: 100%;
+  }
+}

@@ -52,7 +52,15 @@ was dropped; don't bring it back.)
   window (a hard-edged mask hole, half on each door) around the header logo. The X draws in stroke by stroke where the
   menu button was, and the index fades up. Its section type is `door-menu`,
   so theme.js's Testament slide-out (which pushed `#panel` sideways) never
-  starts.
+  starts. The doors run 50vh past the bottom of the screen: iOS Safari draws
+  the page behind its see-through bottom toolbar, below where a fixed box
+  ends (the search overlay's backdrop does the same).
+- Live search: the header search overlay and the door menu's search field
+  show results as you type (`assets/predictive-search.{js,css}`). It's
+  Shopify's built-in predictive search (`routes.predictive_search_url`,
+  products and pages, no app needed) rendering
+  `sections/predictive-search.liquid` through the Section Rendering API. Any
+  form with `data-predictive-search="<results box id>"` gets it.
 - Footer: `sections/site-footer.liquid` + `assets/site-footer.css`. Ruled
   three-cell grid (studio tagline, contact rows for Instagram / text / call,
   `footer` menu as an index), then the "shore": a full-width Unsteady
@@ -64,13 +72,29 @@ was dropped; don't bring it back.)
 - `/pages/builder`: the 3D grillz builder. `templates/page.builder.liquid`
   renders `sections/grillz-builder.liquid` + `assets/grillz-builder.{css,js}`
   and `assets/grillz-builder-cast.js`. The cast (two plaster arches, ten
-  teeth each, US tooth numbers 4-13 / 20-29) is sculpted in code, not
-  loaded; caps are offset copies of each crown, and a shader on them cuts
-  the open-face / heart / star windows and diamond-cut facets. A design is
-  one metal plus a cut per tooth, kept in the URL hash (`#g=…`, so links
-  share it) and localStorage. The cut, metal and set lists live in the
-  section markup (the script reads them from the buttons); a metal's 3D
-  look is its `data-color` / `data-rough`. The stage is
+  teeth each, US tooth numbers 4-13 / 20-29, on trimmed bases with eased
+  edges that cover the whole gum) is sculpted in code, not loaded. Caps are
+  offset copies of each crown (fangs wrap the crown, then run on into a
+  rounded point along one smooth, convex curve: a dip there reads as a
+  groove in polished metal), and a shader on them cuts the open-face /
+  heart / star windows and diamond-cut facets.
+  A tooth's style is a cut (solid, heart, star, diamond, iced, solo stone)
+  plus two switches, fang and open face (heart and star swap with open
+  face). `capLook` in the cast module turns a style into the cap's shape,
+  window, finish and stone layout. A design is one metal plus a style per
+  tooth, kept in the URL hash and localStorage as tokens: the cut's letter,
+  then `F` for fang and `O` for open face, `-` for bare
+  (`#g=14y.--sFdFsFOiO----.----------`; the old `f` / `o` letters still
+  read as fang / open face). Sets swap in a whole design with the loaded
+  style; with Remove loaded they take just their own teeth's caps off
+  (greyed out when there's nothing to take), and the HUD's Reset clears
+  every cap. The plaster has a shader grain, the stones a
+  diamond shader (refraction, pavilion bounces, dispersion), and the HUD
+  switches between studio light (key light, shadows, hot lamps the stones
+  spark in) and even light (soft dome, no shadows), remembered in
+  localStorage. The cut, metal and set lists live in the section markup
+  (the script reads them from the buttons); a metal's 3D look is its
+  `data-color` / `data-rough`. The stage is
   `100svh - header` with a fixed-height dock, so nothing shifts; keep
   `--gb-header` in step with the header's height settings. three.js comes
   from jsDelivr through an import map (the cast module's URL is written

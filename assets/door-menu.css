@@ -35,7 +35,10 @@
 .door-menu__door {
   position: absolute;
   top: 0;
-  bottom: 0;
+  /* Past the bottom of the screen: iOS Safari draws the page behind its
+     see-through bottom toolbar, below where a fixed box ends, so the doors
+     run on under it rather than let the page show through. */
+  bottom: -50vh;
   width: 50%;
   background: var(--door);
   /* Off: parked just past each edge. The transition here is the one used when
