@@ -766,10 +766,12 @@ async function start(root) {
   /* Tweens ------------------------------------------------------------------- */
 
   const tweens = new Set();
-  let clock = performance.now();
 
+  // Timed from now, not from the last frame drawn: the loop sleeps between
+  // interactions, and a tween timed from a stale frame would start in the
+  // past and jump straight to its end.
   function tween(duration, update, { delay = 0, ease = easeOut, done, begin } = {}) {
-    const item = { start: clock + delay, duration, update, ease, done, begin };
+    const item = { start: performance.now() + delay, duration, update, ease, done, begin };
     tweens.add(item);
     requestRender();
     return item;
@@ -1668,7 +1670,6 @@ async function start(root) {
 
   function frame(time) {
     frameRequested = false;
-    clock = time;
     const dt = Math.min((time - last) / 1000, 0.05);
     last = time;
 
