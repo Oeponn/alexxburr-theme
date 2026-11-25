@@ -82,10 +82,15 @@ was dropped; don't bring it back.)
   plus two switches, fang and open face (heart and star swap with open
   face). `capLook` in the cast module turns a style into the cap's shape,
   window, finish and stone layout. A design is one metal plus a style per
-  tooth, kept in the URL hash and localStorage as tokens: the cut's letter,
-  then `F` for fang and `O` for open face, `-` for bare
-  (`#g=14y.--sFdFsFOiO----.----------`; the old `f` / `o` letters still
-  read as fang / open face). Sets swap in a whole design with the loaded
+  tooth (a token: the cut's letter, then `F` for fang and `O` for open
+  face). It's kept in the URL hash and localStorage as a short share code
+  (`#g=121X5A`, 17 characters at most): the whole design packed into one
+  number, written in base 62 after a version digit (`SHARE` in
+  `grillz-builder.js`). Each version's lists of metals and styles are fixed:
+  to add a cut or metal, add a new version and keep the old one so links
+  already shared still open. The older readable spelling
+  (`#g=14y.--sFdFsO----.----------`, with `f` / `o` for fang / open face)
+  still reads. Sets swap in a whole design with the loaded
   style; with Remove loaded they take just their own teeth's caps off
   (greyed out when there's nothing to take), and the HUD's Reset clears
   every cap. The plaster has a shader grain, the stones a

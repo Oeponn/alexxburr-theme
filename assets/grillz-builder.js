@@ -31,10 +31,10 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const calm = () => reducedMotion.matches;
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
 
-// A tooth's style as a token, which is also how the address spells it: the
-// cut's letter, then F for a fang and O for an open face ('dF' is a
-// diamond-cut fang, 'iO' an iced open face). '-' is a bare tooth. Heart and
-// star are windows of their own, so they don't take an open face.
+// A tooth's style as a token: the cut's letter, then F for a fang and O for
+// an open face ('dF' is a diamond-cut fang, 'iO' an iced open face). '-' is
+// a bare tooth. Heart and star are windows of their own, so they don't take
+// an open face.
 const CUT_CODES = { solid: 's', heart: 'h', star: 'r', diamond: 'd', iced: 'i', solo: 'g' };
 const CODE_CUTS = Object.fromEntries(Object.entries(CUT_CODES).map(([cut, code]) => [code, cut]));
 const LEGACY = { o: 'sO', f: 'sF' }; // open face and fang were cuts once
@@ -50,6 +50,66 @@ function readToken(token) {
   const cut = token ? CODE_CUTS[token[0]] : null;
   if (!cut) return null;
   return { cut, fang: token.includes('F'), open: token.includes('O') && !OWN_WINDOW.has(cut) };
+}
+
+/* Share code: a whole design in a few characters for the address
+   (#g=1g3Xw2). The metal and every tooth's style are packed into one number
+   (mixed radix: the metal's place in its list, then each tooth's style's
+   place in its list, front teeth first so the usual designs come out
+   shortest) and written in base 62 after a version digit. It's not a hash:
+   the code is the design, so links need no server and never expire.
+   A version's lists are fixed. To add a cut or a metal, add a version with
+   longer lists, make it SHARE_VERSION and keep the old ones, so links
+   already out there still open. */
+
+const SHARE = {
+  1: {
+    metals: ['14y', '10y', '18y', 'rose', 'white', 'silver', 'black'],
+    styles: ['-', 's', 'sF', 'sO', 'sFO', 'd', 'dF', 'dO', 'dFO', 'i', 'iF', 'iO', 'iFO', 'g', 'gF', 'gO', 'gFO', 'h', 'hF', 'r', 'rF'],
+  },
+};
+const SHARE_VERSION = '1';
+// From the front of the mouth out, upper before lower.
+const SHARE_ORDER = [8, 9, 7, 10, 6, 11, 24, 25, 23, 26, 22, 27, 5, 12, 21, 28, 4, 13, 20, 29];
+const BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function packDesign(metal, cuts) {
+  const { metals, styles } = SHARE[SHARE_VERSION];
+  let n = 0n;
+  for (const id of [...SHARE_ORDER].reverse()) {
+    const style = styles.indexOf(cuts.get(id) || '-');
+    if (style < 0) return null;
+    n = n * BigInt(styles.length) + BigInt(style);
+  }
+  const m = metals.indexOf(metal);
+  if (m < 0) return null;
+  n = n * BigInt(metals.length) + BigInt(m);
+  let digits = '';
+  do {
+    digits = BASE62[Number(n % 62n)] + digits;
+    n /= 62n;
+  } while (n > 0n);
+  return SHARE_VERSION + digits;
+}
+
+function unpackDesign(code) {
+  const table = SHARE[code[0]];
+  if (!table || code.length > 32 || !/^[0-9a-zA-Z]+$/.test(code.slice(1))) return null;
+  let n = 0n;
+  for (const digit of code.slice(1)) n = n * 62n + BigInt(BASE62.indexOf(digit));
+  const take = (radix) => {
+    const value = Number(n % BigInt(radix));
+    n /= BigInt(radix);
+    return value;
+  };
+  const metal = table.metals[take(table.metals.length)];
+  const cuts = new Map();
+  for (const id of SHARE_ORDER) {
+    const style = table.styles[take(table.styles.length)];
+    if (style !== '-') cuts.set(id, style);
+  }
+  // Anything left over means it wasn't one of ours.
+  return n === 0n ? { metal, cuts } : null;
 }
 
 const KIND_SHORT = { central: 'Central', lateral: 'Lateral', canine: 'Canine', pm1: '1st premolar', pm2: '2nd premolar' };
@@ -989,13 +1049,27 @@ async function start(root) {
   const brushToken = () => makeToken(brush);
   const undoStack = [];
 
-  function encode() {
+  // The readable spelling: metal, then the upper and lower rows of tokens
+  // (14y.--sFdFsO----.----------). Links used it before the share code, so
+  // it still reads; it's also what the test hook reports.
+  function spell() {
     const row = (ids) => ids.map((id) => state.cuts.get(id) || '-').join('');
     return `${state.metal}.${row(ROWS.upper)}.${row(ROWS.lower)}`;
   }
 
+  // What goes in the address: the share code (spelled out only if the design
+  // somehow has a metal or style the code doesn't know).
+  function encode() {
+    return packDesign(state.metal, state.cuts) || spell();
+  }
+
   function decode(text) {
-    const match = /^([a-z0-9]+)\.([-a-zA-Z]+)\.([-a-zA-Z]+)$/.exec(text || '');
+    if (!text) return null;
+    if (!text.includes('.')) {
+      const design = unpackDesign(text);
+      return design && METALS[design.metal] ? design : null;
+    }
+    const match = /^([a-z0-9]+)\.([-a-zA-Z]+)\.([-a-zA-Z]+)$/.exec(text);
     if (!match || !METALS[match[1]]) return null;
     const tokens = [];
     for (const row of [match[2], match[3]]) {
@@ -1788,7 +1862,7 @@ async function start(root) {
 
   // Test hook for the harness.
   root.gb = {
-    state, brush, cast, view, target, renderer, scene, camera, paint, sync, setBite, setLight, encode, requestRender, lookFor,
+    state, brush, cast, view, target, renderer, scene, camera, paint, sync, setBite, setLight, encode, spell, decode, requestRender, lookFor,
   };
   window.__ready = true;
 }
