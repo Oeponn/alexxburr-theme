@@ -45,7 +45,7 @@
             <a class="door-menu__row" href="{{ link.url }}"{% if external %} target="_blank" rel="noopener"{% endif %}{% if link.current %} aria-current="page"{% endif %}>
               <span class="door-menu__key">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
               <span class="door-menu__value">{{ link.title | escape }}</span>
-              <span class="door-menu__arrow" aria-hidden="true">{% if external %}&#8599;{% else %}&#8594;{% endif %}</span>
+              <span class="door-menu__arrow" aria-hidden="true">{% if external %}{% render 'arrow-out' %}{% else %}&#8594;{% endif %}</span>
             </a>
           </li>
         {%- endfor -%}
@@ -65,12 +65,12 @@
 
       <ul class="door-menu__meta" role="list">
         {%- if ig_url != blank -%}
-          <li><a href="{{ ig_url }}" target="_blank" rel="noopener"><span>Instagram</span> {{ section.settings.instagram_handle | escape }} &#8599;</a></li>
+          <li><a href="{{ ig_url }}" target="_blank" rel="noopener"><span>Instagram</span> {{ section.settings.instagram_handle | escape }} {% render 'arrow-out' %}</a></li>
         {%- endif -%}
         {%- if section.settings.phone != blank -%}
           {%- assign tel = section.settings.phone | remove: '(' | remove: ')' | remove: ' ' | remove: '-' | remove: '.' -%}
-          <li><a href="sms:+1{{ tel }}"><span>Text</span> {{ section.settings.phone | escape }} &#8599;</a></li>
-          <li><a href="tel:+1{{ tel }}"><span>Call</span> {{ section.settings.phone | escape }} &#8599;</a></li>
+          <li><a href="sms:+1{{ tel }}"><span>Text</span> {{ section.settings.phone | escape }} {% render 'arrow-out' %}</a></li>
+          <li><a href="tel:+1{{ tel }}"><span>Call</span> {{ section.settings.phone | escape }} {% render 'arrow-out' %}</a></li>
         {%- endif -%}
         {%- if shop.customer_accounts_enabled -%}
           {%- if customer -%}

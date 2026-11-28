@@ -36,7 +36,7 @@
           <a class="site-footer__row" href="{{ ig_url }}" target="_blank" rel="noopener">
             <span class="site-footer__key">Instagram</span>
             <span class="site-footer__value">{{ section.settings.instagram_handle | default: '@alexxburrrr' | escape }}</span>
-            <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+            <span class="site-footer__arrow" aria-hidden="true">{%- render 'arrow-out' -%}</span>
           </a>
         </li>
         {%- if section.settings.phone != blank -%}
@@ -45,14 +45,14 @@
             <a class="site-footer__row" href="sms:+1{{ tel }}">
               <span class="site-footer__key">Text</span>
               <span class="site-footer__value">{{ section.settings.phone | escape }}</span>
-              <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+              <span class="site-footer__arrow" aria-hidden="true">{%- render 'arrow-out' -%}</span>
             </a>
           </li>
           <li>
             <a class="site-footer__row" href="tel:+1{{ tel }}">
               <span class="site-footer__key">Call</span>
               <span class="site-footer__value">{{ section.settings.phone | escape }}</span>
-              <span class="site-footer__arrow" aria-hidden="true">&#8599;</span>
+              <span class="site-footer__arrow" aria-hidden="true">{%- render 'arrow-out' -%}</span>
             </a>
           </li>
         {%- endif -%}
